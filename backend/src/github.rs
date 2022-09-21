@@ -1,3 +1,4 @@
+use actix_web::error::ParseError::Uri;
 use reqwest::{Client, Response};
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Deserialize};
@@ -52,7 +53,39 @@ pub async fn list_repository() -> Result<Vec<Repository>, reqwest::Error> {
 
     let json_response = response.json::<Vec<Repository>>().await?;
 
-    println!("{:#?}", json_response);
+    Ok(json_response)
+}
+
+pub struct Issue {
+    node_id: String,
+    html_url: String,
+    title: String,
+    comments: i64,
+    user: User,
+    labels: Vec<Label>,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>
+}
+
+pub struct User {
+    login: String,
+    avatar_url: String,
+    html_url: String
+}
+
+pub struct Label {
+    name: String,
+    color: String,
+    description: String
+}
+
+pub async fn list_issues(repo: String) -> Result<Vec<Issue>, reqwest::Error> {
+    let response = Client::new()
+        .get(format!("https://api.github.com/repos/teknologi-umum/{}/issues", repo))
+        .send()
+        .await?;
+
+    let json_response = response.json::<Vec<Issue>>().await?;
 
     Ok(json_response)
 }
