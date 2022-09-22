@@ -6,8 +6,9 @@ import {
   useStylesScoped$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { Countdown } from "~/components/countdown";
 import { Header } from "~/components/header";
-import { Label, parseLabel } from "~/components/label";
+import { Label } from "~/components/label";
 import { RepositoryCard, type Repository } from "~/components/repository-card";
 import styles from "../styles/index.css";
 
@@ -101,8 +102,11 @@ export default component$(() => {
 
   return (
     <div>
+      <Countdown />
       <Header />
-      <p class="filter-tips">Kesusahan nyari issue? Klik aja filter di bawah biar gampang nyarinya!</p>
+      <p class="filter-tips">
+        Kesusahan nyari issue? Klik aja filter di bawah biar gampang nyarinya!
+      </p>
       <div class="filters">
         {FAKE_FILTERS.map((filter) => {
           const isFilterActive = state.activeFilters.includes(filter);
