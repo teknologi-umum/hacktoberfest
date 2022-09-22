@@ -6,8 +6,9 @@ use reqwest::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Serialize)]
 pub struct Repository {
+    pub name: String,
     pub full_name: String,
     pub html_url: String,
     pub description: String,
@@ -96,7 +97,7 @@ impl Github {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Issue {
     pub node_id: String,
     pub html_url: String,
@@ -110,14 +111,14 @@ pub struct Issue {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct User {
     pub login: String,
     pub avatar_url: String,
     pub html_url: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Label {
     pub name: String,
     pub color: String,
