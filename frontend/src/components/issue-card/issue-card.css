@@ -42,7 +42,7 @@
 }
 
 .issue-card:not(:first-of-type)::before {
-  top: -5.25rem;
+  top: -10rem;
 }
 
 .issue-card__title {
@@ -50,6 +50,8 @@
   font-size: 1.8rem;
   font-weight: 500;
   color: #efefef;
+  line-height: 1.25em;
+  margin-bottom: 0.5rem;
 }
 
 .issue-card__labels {
@@ -99,4 +101,11 @@
 .issue-card__label.cyan {
   color: rgb(89, 219, 236);
   background-color: rgba(55, 175, 196, 0.1);
+}
+
+@media only screen and (max-width: 860px) {
+  .issue-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

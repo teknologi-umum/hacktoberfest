@@ -10,6 +10,15 @@ export default component$(() => {
       <main>
         <Slot />
       </main>
+      <footer>
+        <span class="footer-text">
+          Have any suggestions for this website? Visit{" "}
+          <a href="https://github.com/teknologi-umum/hacktoberfest">
+            teknologi-umum/hacktoberfest
+          </a>{" "}
+          and let us know what you think! ツ
+        </span>
+      </footer>
     </>
   );
 });

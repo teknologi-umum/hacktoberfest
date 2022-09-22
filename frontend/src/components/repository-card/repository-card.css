@@ -79,3 +79,18 @@
   transform: scaleY(0);
   max-height: 0;
 }
+
+@media only screen and (max-width: 860px) {
+  .repository-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .repository-card__left-content {
+    margin-bottom: 1rem;
+  }
+
+  .repository-card__right-content {
+    padding-left: 4rem;
+  }
+}
