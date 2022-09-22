@@ -17,9 +17,7 @@ pub struct Repository {
     pub forks_count: i64,
     pub forks: i64,
     pub topics: Vec<String>,
-    #[serde(with = "rfc3339_formatter")]
     pub created_at: DateTime<Utc>,
-    #[serde(with = "rfc3339_formatter")]
     pub updated_at: DateTime<Utc>,
 }
 
@@ -31,9 +29,7 @@ pub struct Issue {
     pub comments: i64,
     pub user: User,
     pub labels: Vec<Label>,
-    #[serde(with = "rfc3339_formatter")]
     pub created_at: DateTime<Utc>,
-    #[serde(with = "rfc3339_formatter")]
     pub updated_at: DateTime<Utc>,
 }
 
@@ -49,29 +45,6 @@ pub struct Label {
     pub name: String,
     pub color: String,
     pub description: String,
-}
-
-
-mod rfc3339_formatter {
-    use chrono::{DateTime, TimeZone, Utc};
-    use serde::{self, Deserialize, Deserializer, Serializer};
-
-    pub fn serialize<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let s = format!("{}", date.to_rfc3339());
-        serializer.serialize_str(&s)
-    }
-
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        Utc.datetime_from_str(&s, "%Y-%m-%dT%H:%M:%SZ")
-            .map_err(serde::de::Error::custom)
-    }
 }
 
 pub struct Github {
@@ -168,7 +141,24 @@ impl Github {
 
 #[cfg(test)]
 mod tests {
+    use chrono::{DateTime, Utc};
+
     use crate::github::Github;
+
+    #[test]
+    fn test_chrono_serde() -> Result<(), String> {
+        let tcs = vec![
+            r#""2022-09-21T05:52:31Z""#,
+            "null",
+        ];
+        for tc in tcs.iter() {
+            match serde_json::from_str::<Option<DateTime<Utc>>>(*tc) {
+                Ok(dt) => println!("{:?}", dt),
+                Err(e) => return Err(e.to_string()),
+            }
+        }
+        Ok(())
+    }
 
     #[tokio::test]
     async fn test_list_repository() {
@@ -180,15 +170,19 @@ mod tests {
     #[tokio::test]
     async fn test_list_issues() {
         let gh = Github::new();
-        let repository = gh.list_issues(String::from("blog")).await.unwrap();
-        assert_eq!(repository.len(), 8);
+        let repository = gh.list_issues("blog".into()).await.unwrap();
+        assert!(repository.len() > 0, "repository len 0");
     }
 
     #[tokio::test]
     async fn test_list_languages() {
         let gh = Github::new();
         let repository =  gh.list_languages(String::from("blog")).await.unwrap();
-        assert_eq!(repository.len(), 4);
-        assert_eq!(*(repository.get(0).unwrap()), String::from("TypeScript"));
+        assert!(repository.len() > 0, "repositry len 0");
+        let rep0 = repository.get(0);
+        assert_ne!(rep0, None);
+        if let Some(s) = rep0 {
+            assert_eq!(*s, String::from("TypeScript"));
+        }
     }
 }
