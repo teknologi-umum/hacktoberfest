@@ -7,8 +7,9 @@ use reqwest::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Serialize)]
 pub struct Repository {
+    pub name: String,
     pub full_name: String,
     pub html_url: String,
     pub description: String,
