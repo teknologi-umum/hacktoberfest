@@ -37,5 +37,9 @@
     "typescript": "4.8.3",
     "vite": "3.1.1",
     "vite-tsconfig-paths": "3.5.0"
+  },
+  "dependencies": {
+    "@fontsource/cairo": "^4.5.10",
+    "@fontsource/press-start-2p": "^4.5.10"
   }
 }

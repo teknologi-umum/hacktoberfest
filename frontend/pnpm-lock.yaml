@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 specifiers:
   '@builder.io/qwik': 0.9.0
   '@builder.io/qwik-city': 0.0.111
+  '@fontsource/cairo': ^4.5.10
+  '@fontsource/press-start-2p': ^4.5.10
   '@types/eslint': 8.4.6
   '@types/express': 4.17.13
   '@types/node': latest
@@ -16,6 +18,10 @@ specifiers:
   typescript: 4.8.3
   vite: 3.1.1
   vite-tsconfig-paths: 3.5.0
+
+dependencies:
+  '@fontsource/cairo': 4.5.10
+  '@fontsource/press-start-2p': 4.5.10
 
 devDependencies:
   '@builder.io/qwik': 0.9.0
@@ -93,6 +99,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@fontsource/cairo/4.5.10:
+    resolution: {integrity: sha512-HNl7EowpV5k1yvhKdrG8/3dK9cCMc8gphN7LQfWlLKCi8vthgYU3iwV9u8ahaBLWzH8P46UEG41DWiVSSKdLqA==}
+    dev: false
+
+  /@fontsource/press-start-2p/4.5.10:
+    resolution: {integrity: sha512-LnWJd0DBbnLrHMymE0cLWoPQPltXE1aQZJ1eM7WuJdOljq/gamwJR41LXytRoNIE8BN2KA20VNrigCHMlvC9Bw==}
+    dev: false
 
   /@humanwhocodes/config-array/0.10.5:
     resolution: {integrity: sha512-XVVDtp+dVvRxMoxSiSfasYaG02VEe1qH5cKgMQJWhol6HwzbcqoCMJi8dAGoYAO57jhUyhI6cWuRiTcRaDaYug==}

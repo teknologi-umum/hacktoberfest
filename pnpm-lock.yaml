@@ -1,0 +1,19 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@fontsource/cairo': ^4.5.10
+  '@fontsource/press-start-2p': ^4.5.10
+
+dependencies:
+  '@fontsource/cairo': 4.5.10
+  '@fontsource/press-start-2p': 4.5.10
+
+packages:
+
+  /@fontsource/cairo/4.5.10:
+    resolution: {integrity: sha512-HNl7EowpV5k1yvhKdrG8/3dK9cCMc8gphN7LQfWlLKCi8vthgYU3iwV9u8ahaBLWzH8P46UEG41DWiVSSKdLqA==}
+    dev: false
+
+  /@fontsource/press-start-2p/4.5.10:
+    resolution: {integrity: sha512-LnWJd0DBbnLrHMymE0cLWoPQPltXE1aQZJ1eM7WuJdOljq/gamwJR41LXytRoNIE8BN2KA20VNrigCHMlvC9Bw==}
+    dev: false
