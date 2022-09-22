@@ -1,6 +1,6 @@
 export function HtmlIcon() {
   return (
-    <svg width="1em" height="1em" viewBox="0 0 32 32">
+    <svg width="1.75em" height="1.75em" viewBox="0 0 32 32">
       <path
         fill="#e44f26"
         d="M5.902 27.201L3.655 2h24.69l-2.25 25.197L15.985 30L5.902 27.201z"

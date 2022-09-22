@@ -85,3 +85,18 @@
   color: rgb(236, 89, 89);
   background-color: rgba(196, 55, 79, 0.1);
 }
+
+.issue-card__label.purple {
+  color: rgb(158, 89, 236);
+  background-color: rgba(121, 55, 196, 0.1);
+}
+
+.issue-card__label.blue {
+  color: rgb(89, 135, 236);
+  background-color: rgba(55, 65, 196, 0.1);
+}
+
+.issue-card__label.cyan {
+  color: rgb(89, 219, 236);
+  background-color: rgba(55, 175, 196, 0.1);
+}

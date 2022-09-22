@@ -45,6 +45,21 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.repository-card__right-content {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.repository-card__language {
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #efefef;
+}
+
 .issues {
   display: flex;
   flex-direction: column;

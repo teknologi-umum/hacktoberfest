@@ -15,15 +15,19 @@ export const COLOUR_MAP: Record<string, string> = {
   easy: "green",
   medium: "yellow",
   hard: "red",
+  bug: "red",
+  "help wanted": "purple",
+  "good first issue": "blue",
+  "enhancement": "cyan"
 };
 
 export function parseDifficultyLabel(label: string) {
   const PREFIX = "difficulty: ";
   const isDifficultyLabel = label.startsWith(PREFIX);
-  const difficulty = isDifficultyLabel ? label.slice(PREFIX.length) : label;
+  const strippedLabel = isDifficultyLabel ? label.slice(PREFIX.length) : label;
   return {
-    text: difficulty,
-    colour: isDifficultyLabel ? COLOUR_MAP[difficulty] : "white",
+    text: strippedLabel,
+    colour: strippedLabel in COLOUR_MAP ? COLOUR_MAP[strippedLabel] : "white",
   };
 }
 

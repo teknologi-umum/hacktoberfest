@@ -1,6 +1,7 @@
 import { component$, useStore, useStylesScoped$ } from "@builder.io/qwik";
 import { GithubIcon } from "../icons/ic_github";
 import { IssueCard, type Issue } from "../issue-card";
+import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
 import styles from "./repository-card.css";
 
 export type Repository = {
@@ -32,6 +33,13 @@ export default component$((props: Repository) => {
             </a>
             <p class="repository-card__description">{props.description}</p>
           </div>
+        </div>
+        <div class="repository-card__right-content">
+          {props.languages.map((language) => (
+            <div class="repository-card__language">
+              {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}
+            </div>
+          ))}
         </div>
       </div>
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>
