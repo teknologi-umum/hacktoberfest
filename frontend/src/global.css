@@ -17,6 +17,7 @@ body {
 }
 
 body {
+  position: relative;
   font-size: 1.6rem;
   background-image: linear-gradient(to top, #1f0741 8%, #0C011B 40%);
   overflow-x: hidden;
@@ -58,4 +59,14 @@ main {
   filter: blur(14rem);
   transform: rotateZ(-15deg) translateX(-4rem);
   background-color: rgba(216, 120, 42, 0.384);
+}
+
+
+.pink-nebula {
+  top: 64rem;
+  width: 80rem;
+  height: 10rem;
+  filter: blur(14rem);
+  transform: rotateZ(10deg) translateX(-32rem);
+  background-color: rgba(233, 47, 217, 0.384);
 }

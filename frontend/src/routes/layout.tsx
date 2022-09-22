@@ -6,6 +6,7 @@ export default component$(() => {
       <div class="starfield" />
       <div class="blue-nebula" />
       <div class="orange-nebula" />
+      <div class="pink-nebula" />
       <main>
         <Slot />
       </main>
