@@ -1,7 +1,6 @@
-use actix_web::error::ParseError::Uri;
-use reqwest::{Client, Response};
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use reqwest::{Client, Response};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Repository {
@@ -16,32 +15,28 @@ pub struct Repository {
     pub stargazers_count: i64,
     pub forks_count: i64,
     pub forks: i64,
-    pub topics: Vec<String>
+    pub topics: Vec<String>,
 }
 
 mod rfc3339_formatter {
-    use chrono::{DateTime, Utc, TimeZone};
-    use serde::{self, Deserialize, Serializer, Deserializer};
+    use chrono::{DateTime, TimeZone, Utc};
+    use serde::{self, Deserialize, Deserializer, Serializer};
 
-    pub fn serialize<S>(
-        date: &DateTime<Utc>,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    pub fn serialize<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
         let s = format!("{}", date.to_rfc3339());
         serializer.serialize_str(&s)
     }
 
-    pub fn deserialize<'de, D>(
-        deserializer: D,
-    ) -> Result<DateTime<Utc>, D::Error>
-        where
-            D: Deserializer<'de>,
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
+    where
+        D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        Utc.datetime_from_str(&s, "%Y-%m-%dT%H:%M:%SZ").map_err(serde::de::Error::custom)
+        Utc.datetime_from_str(&s, "%Y-%m-%dT%H:%M:%SZ")
+            .map_err(serde::de::Error::custom)
     }
 }
 
@@ -56,32 +51,37 @@ pub async fn list_repository() -> Result<Vec<Repository>, reqwest::Error> {
     Ok(json_response)
 }
 
+#[derive(Deserialize)]
 pub struct Issue {
-    node_id: String,
-    html_url: String,
-    title: String,
-    comments: i64,
-    user: User,
-    labels: Vec<Label>,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>
+    pub node_id: String,
+    pub html_url: String,
+    pub title: String,
+    pub comments: i64,
+    pub user: User,
+    pub labels: Vec<Label>,
+    #[serde(with = "rfc3339_formatter")]
+    pub created_at: DateTime<Utc>,
+    #[serde(with = "rfc3339_formatter")]
+    pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Deserialize)]
 pub struct User {
-    login: String,
-    avatar_url: String,
-    html_url: String
+    pub login: String,
+    pub avatar_url: String,
+    pub html_url: String,
 }
 
+#[derive(Deserialize)]
 pub struct Label {
-    name: String,
-    color: String,
-    description: String
+    pub name: String,
+    pub color: String,
+    pub description: String,
 }
 
 pub async fn list_issues(repo: String) -> Result<Vec<Issue>, reqwest::Error> {
     let response = Client::new()
-        .get(format!("https://api.github.com/repos/teknologi-umum/{}/issues", repo))
+        .get(format!("https://api.github.com/repos/teknologi-umum/{repo}/issues"))
         .send()
         .await?;
 
@@ -92,11 +92,18 @@ pub async fn list_issues(repo: String) -> Result<Vec<Issue>, reqwest::Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::github::{list_repository};
+    use crate::github::list_repository;
+    use crate::github::list_issues;
 
     #[tokio::test]
-     async fn test_list_repository() {
+    async fn test_list_repository() {
         let repository = list_repository().await.unwrap();
+        assert_eq!(repository.len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_list_issues() {
+        let repository = list_issues(String::from("blog")).await.unwrap();
         assert_eq!(repository.len(), 10);
     }
 }
