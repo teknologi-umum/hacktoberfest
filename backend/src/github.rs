@@ -1,5 +1,9 @@
+use actix_web::http;
 use chrono::{DateTime, Utc};
-use reqwest::{Client, Response};
+use reqwest::{
+    header::{HeaderMap, HeaderValue},
+    Client, Response,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -7,15 +11,15 @@ pub struct Repository {
     pub full_name: String,
     pub html_url: String,
     pub description: String,
-    #[serde(with = "rfc3339_formatter")]
-    pub created_at: DateTime<Utc>,
-    #[serde(with = "rfc3339_formatter")]
-    pub updated_at: DateTime<Utc>,
-    pub language: String,
+    pub language: Option<String>,
     pub stargazers_count: i64,
     pub forks_count: i64,
     pub forks: i64,
     pub topics: Vec<String>,
+    #[serde(with = "rfc3339_formatter")]
+    pub created_at: DateTime<Utc>,
+    #[serde(with = "rfc3339_formatter")]
+    pub updated_at: DateTime<Utc>,
 }
 
 mod rfc3339_formatter {
@@ -40,15 +44,56 @@ mod rfc3339_formatter {
     }
 }
 
-pub async fn list_repository() -> Result<Vec<Repository>, reqwest::Error> {
-    let response: Response = Client::new()
-        .get("https://api.github.com/users/teknologi-umum/repos?type=public&sort=updated&per_page=100")
-        .send()
-        .await?;
+pub struct Github {
+    client: Client,
+}
 
-    let json_response = response.json::<Vec<Repository>>().await?;
+impl Github {
+    pub fn new() -> Self {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            http::header::USER_AGENT,
+            HeaderValue::from_str("hacktoberfest.teknologiumum.com")
+                .expect("failed to set User-Agent header"),
+        );
+        headers.insert(
+            http::header::CONTENT_TYPE,
+            HeaderValue::from_str("application/vnd.github+json")
+                .expect("failed to set Content-Type header"),
+        );
+        let client = Client::builder()
+            .default_headers(headers)
+            .build()
+            .expect("Failed to build reqwest::Client");
 
-    Ok(json_response)
+        Github { client }
+    }
+
+    pub async fn list_repository(&self) -> Result<Vec<Repository>, reqwest::Error> {
+        let response: Response = self.client
+            .get("https://api.github.com/users/teknologi-umum/repos?type=public&sort=updated&per_page=100")
+            .send()
+            .await?;
+
+
+        let json_response = response.json::<Vec<Repository>>().await?;
+
+        Ok(json_response)
+    }
+
+    pub async fn list_issues(&self, repo: String) -> Result<Vec<Issue>, reqwest::Error> {
+        let response = self
+            .client
+            .get(format!(
+                "https://api.github.com/repos/teknologi-umum/{repo}/issues"
+            ))
+            .send()
+            .await?;
+
+        let json_response = response.json::<Vec<Issue>>().await?;
+
+        Ok(json_response)
+    }
 }
 
 #[derive(Deserialize)]
@@ -79,31 +124,21 @@ pub struct Label {
     pub description: String,
 }
 
-pub async fn list_issues(repo: String) -> Result<Vec<Issue>, reqwest::Error> {
-    let response = Client::new()
-        .get(format!("https://api.github.com/repos/teknologi-umum/{repo}/issues"))
-        .send()
-        .await?;
-
-    let json_response = response.json::<Vec<Issue>>().await?;
-
-    Ok(json_response)
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::github::list_repository;
-    use crate::github::list_issues;
+    use crate::github::Github;
 
     #[tokio::test]
     async fn test_list_repository() {
-        let repository = list_repository().await.unwrap();
-        assert_eq!(repository.len(), 10);
+        let gh = Github::new();
+        let repository = gh.list_repository().await.unwrap();
+        assert_eq!(repository.len(), 27);
     }
 
     #[tokio::test]
     async fn test_list_issues() {
-        let repository = list_issues(String::from("blog")).await.unwrap();
-        assert_eq!(repository.len(), 10);
+        let gh = Github::new();
+        let repository = gh.list_issues(String::from("blog")).await.unwrap();
+        assert_eq!(repository.len(), 9);
     }
 }
