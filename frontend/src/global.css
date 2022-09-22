@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cairo&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: 62.5%;
+}
+
+html,
+body {
+  width: 100%;
+}
+
+body {
+  font-size: 1.6rem;
+  background-image: linear-gradient(to top, #1f0741 8%, #0C011B 40%);
+  overflow-x: hidden;
+}
+
+main {
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+}
+
+.starfield {
+  position: absolute;
+  inset: 0;
+  background-image: url(/stars.png);
+  opacity: 0.5;
+}
+
+[class$=-nebula] {
+  position: absolute;
+  z-index: -1;
+  mix-blend-mode: lighten;
+  left: 50%;
+}
+
+.blue-nebula {
+  top: 20rem;
+  width: 60rem;
+  height: 10rem;
+  filter: blur(14rem);
+  transform: rotateZ(15deg) translateX(-80rem);
+  background-color: rgba(90, 60, 226, 0.432);
+}
+
+
+.orange-nebula {
+  top: 20rem;
+  width: 80rem;
+  height: 10rem;
+  filter: blur(14rem);
+  transform: rotateZ(-15deg) translateX(-4rem);
+  background-color: rgba(216, 120, 42, 0.384);
+}

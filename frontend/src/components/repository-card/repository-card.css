@@ -1,0 +1,66 @@
+.repository-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 0.2rem #efefef solid;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(1rem);
+  border-image: linear-gradient(to top right, #8446d4, #e478d5, #eea68a) 30%;
+  box-shadow: 0 0 1rem rgba(156, 95, 236, 0.25);
+  transition: box-shadow ease-out 0.1s;
+}
+
+.repository-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 1.5rem rgba(168, 112, 241, 0.65);
+}
+
+.repository-card__left-content {
+  font-family: "Cairo", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #efefef;
+}
+
+.repository-card__title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #efefef;
+  line-height: 1em;
+  transition: text-shadow ease-in 0.1s;
+}
+
+.repository-card__title:hover {
+  text-shadow: 0 0 0.5rem rgba(184, 135, 243, 0.75);
+}
+
+.repository-card__description {
+  line-height: 1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-left: 5.2rem;
+  overflow: hidden;
+  /* transition: transform ease-in-out 0.2s, max-height ease-in-out 0.25s; */
+  transform-origin: top center;
+}
+
+.issues.visible {
+  transform: scaleY(1);
+  max-height: 1000rem;
+}
+
+.issues.invisible {
+  transform: scaleY(0);
+  max-height: 0;
+}
