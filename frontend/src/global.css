@@ -90,3 +90,25 @@ footer {
   text-decoration-style: dashed;
   text-underline-offset: 0.15em;
 }
+
+[class^="line-"] {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0.2rem;
+  background-color: rgba(255, 255, 255, 0.025);
+  z-index: -1;
+}
+
+.line-0 {
+  left: 20vw;
+}
+.line-1 {
+  left: 40vw;
+}
+.line-2 {
+  left: 60vw;
+}
+.line-3 {
+  left: 80vw;
+}

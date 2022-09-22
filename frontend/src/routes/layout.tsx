@@ -7,6 +7,11 @@ export default component$(() => {
       <div class="blue-nebula" />
       <div class="orange-nebula" />
       <div class="pink-nebula" />
+      {Array(4)
+        .fill(0)
+        .map((_, i) => (
+          <div class={`line-${i}`} />
+        ))}
       <main>
         <Slot />
       </main>
