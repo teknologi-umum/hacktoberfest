@@ -75,7 +75,9 @@ export default component$(() => {
           <span>{state.seconds}</span> detik
         </div>
       </div>
-      <p class="countdown__title">sampai Hacktoberfest dimulai</p>
+      <p class="countdown__title">
+        sampai Hacktoberfest {Date.now() < START_DATE ? "dimulai" : "berakhir"}
+      </p>
     </div>
   );
 });
