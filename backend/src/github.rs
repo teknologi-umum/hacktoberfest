@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use actix_web::http;
 use chrono::{DateTime, Utc};
 use reqwest::{
@@ -21,6 +22,35 @@ pub struct Repository {
     #[serde(with = "rfc3339_formatter")]
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Deserialize)]
+pub struct Issue {
+    pub node_id: String,
+    pub html_url: String,
+    pub title: String,
+    pub comments: i64,
+    pub user: User,
+    pub labels: Vec<Label>,
+    #[serde(with = "rfc3339_formatter")]
+    pub created_at: DateTime<Utc>,
+    #[serde(with = "rfc3339_formatter")]
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Deserialize)]
+pub struct User {
+    pub login: String,
+    pub avatar_url: String,
+    pub html_url: String,
+}
+
+#[derive(Deserialize)]
+pub struct Label {
+    pub name: String,
+    pub color: String,
+    pub description: String,
+}
+
 
 mod rfc3339_formatter {
     use chrono::{DateTime, TimeZone, Utc};
@@ -92,37 +122,49 @@ impl Github {
 
         let json_response = response.json::<Vec<Issue>>().await?;
 
-        Ok(json_response)
+        // PR are included on the issues endpoint, we should strip the PRs
+        let mut clean_issues: Vec<Issue> = vec![];
+        for issue in json_response {
+            if !issue.node_id.starts_with("PR_") {
+                clean_issues.push(issue);
+            }
+        }
+
+        Ok(clean_issues)
+    }
+
+    pub async fn list_languages(&self, repo: String) -> Result<Vec<String>, reqwest::Error> {
+        let response = self
+            .client
+            .get(format!("https://api.github.com/repos/teknologi-umum/{repo}/languages"))
+            .send()
+            .await?;
+
+        let mut json_response = response.json::<HashMap<String, i64>>().await?;
+
+        let mut language_set: Vec<(String, i64)> = vec![];
+
+        for (key, value) in &json_response {
+            language_set.push((String::from(key), *value));
+        }
+        json_response.clear();
+
+        language_set.sort_by(|a, b| {
+            let (_, a_bytes) = a;
+            let (_, b_bytes) = b;
+
+            b_bytes.cmp(a_bytes)
+        });
+
+        let mut languages: Vec<String> = vec![];
+        for (language, _) in language_set {
+            languages.push(language);
+        }
+
+        Ok(languages)
     }
 }
 
-#[derive(Deserialize)]
-pub struct Issue {
-    pub node_id: String,
-    pub html_url: String,
-    pub title: String,
-    pub comments: i64,
-    pub user: User,
-    pub labels: Vec<Label>,
-    #[serde(with = "rfc3339_formatter")]
-    pub created_at: DateTime<Utc>,
-    #[serde(with = "rfc3339_formatter")]
-    pub updated_at: DateTime<Utc>,
-}
-
-#[derive(Deserialize)]
-pub struct User {
-    pub login: String,
-    pub avatar_url: String,
-    pub html_url: String,
-}
-
-#[derive(Deserialize)]
-pub struct Label {
-    pub name: String,
-    pub color: String,
-    pub description: String,
-}
 
 #[cfg(test)]
 mod tests {
@@ -139,6 +181,14 @@ mod tests {
     async fn test_list_issues() {
         let gh = Github::new();
         let repository = gh.list_issues(String::from("blog")).await.unwrap();
-        assert_eq!(repository.len(), 9);
+        assert_eq!(repository.len(), 8);
+    }
+
+    #[tokio::test]
+    async fn test_list_languages() {
+        let gh = Github::new();
+        let repository =  gh.list_languages(String::from("blog")).await.unwrap();
+        assert_eq!(repository.len(), 4);
+        assert_eq!(*(repository.get(0).unwrap()), String::from("TypeScript"));
     }
 }
