@@ -5,7 +5,7 @@ export const COLOUR_MAP: Record<string, string> = {
   easy: "green",
   medium: "yellow",
   hard: "red",
-  bug: "red",
+  bug: "orange",
   "help wanted": "purple",
   "good first issue": "blue",
   enhancement: "cyan",

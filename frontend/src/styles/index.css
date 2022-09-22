@@ -1,3 +1,13 @@
+.filter-tips {
+    color: white;
+    text-align: center;
+    font-family: 'Cairo', sans-serif;
+    opacity: 0.625;
+    font-size: 1.8rem;
+    margin-top: 3.2rem;
+    margin-bottom: 1rem;
+}
+
 .filters {
     display: flex;
     align-items: center;
@@ -5,7 +15,7 @@
     flex-wrap: wrap;
     margin: 0 auto;
     gap: 1rem;
-    margin: 3.2rem 0;
+    margin-bottom: 3.2rem;
 }
 
 .filters div {

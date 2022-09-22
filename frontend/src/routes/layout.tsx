@@ -17,11 +17,12 @@ export default component$(() => {
       </main>
       <footer>
         <span class="footer-text">
-          Have any suggestions for this website? Visit{" "}
+          Punya masukan untuk website ini? Gas, langsung aja ke {" "}
           <a href="https://github.com/teknologi-umum/hacktoberfest">
             teknologi-umum/hacktoberfest
           </a>{" "}
-          and let us know what you think! ツ
+          buat kasih tau kita apa masalahnya.
+          <p>Kalo kamu pengen langsung kontribusi buat bikin website ini jadi lebih bagus boleh banget!</p>
         </span>
       </footer>
     </>

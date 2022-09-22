@@ -33,6 +33,11 @@
   background-color: rgba(196, 55, 79, 0.1);
 }
 
+.label.orange {
+  color: rgb(236, 167, 89);
+  background-color: rgba(196, 119, 55, 0.1);
+}
+
 .label.purple {
   color: rgb(158, 89, 236);
   background-color: rgba(121, 55, 196, 0.1);

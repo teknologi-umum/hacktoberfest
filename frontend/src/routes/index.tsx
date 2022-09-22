@@ -102,6 +102,7 @@ export default component$(() => {
   return (
     <div>
       <Header />
+      <p class="filter-tips">Kesusahan nyari issue? Klik aja filter di bawah biar gampang nyarinya!</p>
       <div class="filters">
         {FAKE_FILTERS.map((filter) => {
           const isFilterActive = state.activeFilters.includes(filter);

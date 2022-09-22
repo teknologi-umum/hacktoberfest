@@ -13,7 +13,7 @@ export default component$(() => {
         </h1>
       </div>
       <p class="detail">
-        Don't know where to start your Hacktoberfest journey? Start exploring our repositories!
+        Bingung Hacktoberfest mau kontribusi kemana? Kuy, mulai kontribusi dari repo punya teknum!
       </p>
     </header>
   );
