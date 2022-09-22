@@ -59,50 +59,6 @@
   gap: 1rem;
 }
 
-.issue-card__label {
-  color: #efefef;
-  font-family: "Cairo", sans-serif;
-  line-height: 1em;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  text-transform: lowercase;
-}
-
-.issue-card__label.white {
-  color: rgb(255, 255, 255);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.issue-card__label.green {
-  color: rgb(54, 207, 169);
-  background-color: rgba(55, 196, 160, 0.1);
-}
-
-.issue-card__label.yellow {
-  color: rgb(207, 179, 54);
-  background-color: rgba(196, 135, 55, 0.1);
-}
-
-.issue-card__label.red {
-  color: rgb(236, 89, 89);
-  background-color: rgba(196, 55, 79, 0.1);
-}
-
-.issue-card__label.purple {
-  color: rgb(158, 89, 236);
-  background-color: rgba(121, 55, 196, 0.1);
-}
-
-.issue-card__label.blue {
-  color: rgb(89, 135, 236);
-  background-color: rgba(55, 65, 196, 0.1);
-}
-
-.issue-card__label.cyan {
-  color: rgb(89, 219, 236);
-  background-color: rgba(55, 175, 196, 0.1);
-}
-
 @media only screen and (max-width: 860px) {
   .issue-card {
     flex-direction: column;

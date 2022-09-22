@@ -1,3 +1,17 @@
+.filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    gap: 1rem;
+    margin: 3.2rem 0;
+}
+
+.filters div {
+    cursor: pointer;
+}
+
 .card-container {
     display: flex;
     flex-direction: column;

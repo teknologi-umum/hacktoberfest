@@ -1,4 +1,5 @@
-import { component$, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, mutable, useStylesScoped$ } from "@builder.io/qwik";
+import { Label } from "../label";
 import styles from "./issue-card.css?inline";
 
 type Label = {
@@ -11,26 +12,6 @@ export type Issue = {
   labels: Label[];
 };
 
-export const COLOUR_MAP: Record<string, string> = {
-  easy: "green",
-  medium: "yellow",
-  hard: "red",
-  bug: "red",
-  "help wanted": "purple",
-  "good first issue": "blue",
-  "enhancement": "cyan"
-};
-
-export function parseDifficultyLabel(label: string) {
-  const PREFIX = "difficulty: ";
-  const isDifficultyLabel = label.startsWith(PREFIX);
-  const strippedLabel = isDifficultyLabel ? label.slice(PREFIX.length) : label;
-  return {
-    text: strippedLabel,
-    colour: strippedLabel in COLOUR_MAP ? COLOUR_MAP[strippedLabel] : "white",
-  };
-}
-
 export default component$((props: Issue) => {
   useStylesScoped$(styles);
 
@@ -38,12 +19,9 @@ export default component$((props: Issue) => {
     <a class="issue-card" href={props.html_url}>
       <span class="issue-card__title">{props.title}</span>
       <div className="issue-card__labels">
-        {props.labels.slice(0, 3).map((l) => {
-          const label = parseDifficultyLabel(l.name);
-          return (
-            <div class={`issue-card__label ${label.colour}`}>{label.text}</div>
-          );
-        })}
+        {props.labels.slice(0, 3).map((l) => (
+          <Label text={mutable(l.name)} />
+        ))}
       </div>
     </a>
   );

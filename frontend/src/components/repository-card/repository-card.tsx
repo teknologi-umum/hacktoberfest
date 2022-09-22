@@ -1,4 +1,9 @@
-import { component$, useStore, useStylesScoped$ } from "@builder.io/qwik";
+import {
+  component$,
+  mutable,
+  useStore,
+  useStylesScoped$,
+} from "@builder.io/qwik";
 import { GithubIcon } from "../icons/ic_github";
 import { IssueCard, type Issue } from "../issue-card";
 import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
@@ -44,7 +49,12 @@ export default component$((props: Repository) => {
       </div>
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>
         {props.issues.map((issue) => (
-          <IssueCard {...issue} />
+          <IssueCard
+            {...issue}
+            title={mutable(issue.title)}
+            html_url={mutable(issue.html_url)}
+            labels={mutable(issue.labels)}
+          />
         ))}
       </div>
     </div>
