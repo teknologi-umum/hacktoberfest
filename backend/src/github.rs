@@ -96,12 +96,10 @@ impl Github {
         let json_response = response.json::<Vec<Issue>>().await?;
 
         // PR are included on the issues endpoint, we should strip the PRs
-        let mut clean_issues: Vec<Issue> = vec![];
-        for issue in json_response {
-            if !issue.node_id.starts_with("PR_") {
-                clean_issues.push(issue);
-            }
-        }
+        let clean_issues: Vec<Issue> = json_response
+            .into_iter()
+            .filter(|issue| !issue.node_id.starts_with("PR_"))
+            .collect();
 
         Ok(clean_issues)
     }
@@ -129,10 +127,10 @@ impl Github {
             b_bytes.cmp(a_bytes)
         });
 
-        let mut languages: Vec<String> = vec![];
-        for (language, _) in language_set {
-            languages.push(language);
-        }
+        let languages: Vec<String> = language_set
+            .into_iter()
+            .map(|(l, _)| l)
+            .collect();
 
         Ok(languages)
     }
