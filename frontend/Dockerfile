@@ -1,10 +1,8 @@
-FROM node:18.6.0-alpine3.16
+FROM node:18.9.0-bullseye
 
 WORKDIR /home/app
 
-RUN apk add curl
-
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+RUN npm i -g pnpm
 
 # Files required by pnpm install
 COPY pnpm-lock.yaml ./
