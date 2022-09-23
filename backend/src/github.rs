@@ -72,24 +72,34 @@ impl Github {
         Github { client }
     }
 
+    /// list_repostory
+    /// 
     pub async fn list_repository(&self) -> Result<Vec<Repository>, reqwest::Error> {
+        
+
         let response: Response = self.client
-            .get("https://api.github.com/users/teknologi-umum/repos?type=public&sort=updated&per_page=100")
+            .get("https://api.github.com/users/teknologi-umum/repos")
+
+            .query(&[
+                ("type", "public"),
+                ("sort", "updated"),
+                ("per_page", "100"),
+            ])
             .send()
             .await?;
 
-
         let json_response = response.json::<Vec<Repository>>().await?;
-
         Ok(json_response)
     }
 
+    /// list_issues
+    /// 
     pub async fn list_issues(&self, repo: String) -> Result<Vec<Issue>, reqwest::Error> {
+        let uencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/issues");
         let response = self
             .client
-            .get(format!(
-                "https://api.github.com/repos/teknologi-umum/{repo}/issues"
-            ))
+            .get(u)
             .send()
             .await?;
 
@@ -104,10 +114,14 @@ impl Github {
         Ok(clean_issues)
     }
 
+    /// list_languages
+    /// 
     pub async fn list_languages(&self, repo: String) -> Result<Vec<String>, reqwest::Error> {
+        let uencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/languages");
         let response = self
             .client
-            .get(format!("https://api.github.com/repos/teknologi-umum/{repo}/languages"))
+            .get(u)
             .send()
             .await?;
 
@@ -144,6 +158,17 @@ mod tests {
     use crate::github::Github;
 
     #[test]
+    fn test_url_encoding_sec() {
+        let name = "aaaa/bb?type=private&_=";
+        let p = format!("http://0/asdsdasdad/asaaaaa/{name}/ooookay");
+        assert_eq!(p, "http://0/asdsdasdad/asaaaaa/aaaa/bb?type=private&_=/ooookay");
+
+        let uencoded_name = urlencoding::encode(&name[..]);
+        let p2 = format!("http://0/asdsdasdad/asaaaaa/{uencoded_name}/ooookay");
+        assert_eq!(p2, "http://0/asdsdasdad/asaaaaa/aaaa%2Fbb%3Ftype%3Dprivate%26_%3D/ooookay");
+    }
+    
+    #[test]
     fn test_chrono_serde() -> Result<(), String> {
         let tcs = vec![
             r#""2022-09-21T05:52:31Z""#,
@@ -177,10 +202,6 @@ mod tests {
         let gh = Github::new();
         let repository =  gh.list_languages(String::from("blog")).await.unwrap();
         assert!(repository.len() > 0, "repositry len 0");
-        let rep0 = repository.get(0);
-        assert_ne!(rep0, None);
-        if let Some(s) = rep0 {
-            assert_eq!(*s, String::from("TypeScript"));
-        }
+        assert_eq!(*repository.get(0).unwrap(), String::from("TypeScript"));
     }
 }
