@@ -1,5 +1,7 @@
 FROM node:18.9.0-bullseye
 
+RUN apt-get update && apt-get install -y curl
+
 WORKDIR /home/app
 
 RUN npm i -g pnpm
