@@ -77,7 +77,8 @@ impl Github {
     pub async fn list_repository(&self) -> Result<Vec<Repository>, reqwest::Error> {
         let u = format!("https://api.github.com/users/teknologi-umum/repos");
         let response: Response = self.client
-            .get(u)
+            .get("https://api.github.com/users/teknologi-umum/repos")
+
             .query(&[
                 ("type", "public"),
                 ("sort", "updated"),
