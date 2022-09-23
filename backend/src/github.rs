@@ -1,6 +1,7 @@
-use std::collections::HashMap;
+use std::{collections::HashMap};
 use actix_web::http;
 use chrono::{DateTime, Utc};
+use lazy_static::lazy_static;
 use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client, Response,
@@ -46,6 +47,11 @@ pub struct Label {
     pub name: String,
     pub color: String,
     pub description: String,
+}
+
+
+lazy_static! {
+    pub static ref DefaultClient: Github = Github::new();
 }
 
 pub struct Github {
