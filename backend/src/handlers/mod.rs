@@ -1,5 +1,5 @@
 pub mod healthcheck;
-pub mod repo;
+pub mod repositories;
 
 pub use healthcheck::*;
-pub use repo::*;
+pub use repositories::*;

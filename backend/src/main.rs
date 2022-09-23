@@ -57,8 +57,8 @@ async fn run_server(env: RunContext) -> Result<(), std::io::Error> {
     HttpServer::new(move || {
         App::new()
             .app_data(global_map.clone())
-            .service(healthcheck)
-            .service(repositories)
+            .service(healthcheck::Handler())
+            .service(repositories::Handler())
     })
         .bind(env.listen_address)?
         .workers(env.num_workers)
