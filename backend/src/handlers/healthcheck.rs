@@ -9,10 +9,7 @@ use std::collections::HashMap;
 
 #[get("/healthz")]
 async fn healthcheck(global_map: Data<HashMap<String, String>>) -> Result<HttpResponse> {
-    let mut resp: HashMap<String, String> = HashMap::new();
-    resp.insert(String::from("status"), String::from("ok"));
-
-    Ok(HttpResponse::Ok().json(resp))
+    Ok(HttpResponse::Ok().json(HashMap::from([("status", "ok")])))
 }
 
 #[cfg(test)]
