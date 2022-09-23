@@ -170,6 +170,7 @@ mod tests {
         let gh = Github::new();
         let repository = gh.list_repository().await.unwrap();
         assert_eq!(repository.len(), 27);
+        assert!(repository.len() > 0, "repository len 0");
     }
 
     #[tokio::test]
