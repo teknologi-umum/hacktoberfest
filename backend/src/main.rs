@@ -23,6 +23,8 @@ struct RunContext {
 }
 
 async fn run() -> Result<()> {
+    if cfg!(debug_assertions) { color_backtrace::install() }
+
     let app = clap_app!(hacktoberfestd => 
         (version: "")
         (about: "Hacktoberfest serverd")
