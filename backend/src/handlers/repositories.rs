@@ -1,5 +1,8 @@
+use std::borrow::Borrow;
 use std::collections::HashMap;
+use std::sync::Mutex;
 use actix_web::{get, web::{Data, self}, HttpRequest, Result, HttpResponse, Resource};
+use actix_web::http::header::ContentType;
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 
@@ -19,7 +22,16 @@ pub struct RepositoriesResponse {
     pub issues: Vec<Issue>,
 }
 
-async fn repositories(mut global_map: Data<HashMap<String, String>>, req: HttpRequest) -> Result<HttpResponse> {
+async fn repositories(mut global_map: Data<Mutex<HashMap<String, String>>>, req: HttpRequest) -> Result<HttpResponse> {
+    let unlocked_map = global_map.lock().unwrap();
+    let cached = match unlocked_map.get("repo") {
+        Some(o) => String::from(o),
+        _ => String::new()
+    };
+    if !String::is_empty(&cached) {
+        return Ok(HttpResponse::Ok().content_type(ContentType::json()).body(cached.clone()));
+    }
+
     let mut response: Vec<RepositoriesResponse> = vec![];
     let repository = DefaultClient.list_repository().await.unwrap();
     for repo in repository.iter() {
