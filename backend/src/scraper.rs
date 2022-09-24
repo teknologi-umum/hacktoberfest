@@ -25,7 +25,8 @@ pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) {
     let repository = DefaultClient.list_repository().await.unwrap();
     for repo in repository.iter() {
         // Skip if there isn't any "hacktoberfest" topic on the repository
-        if !repo.topics.contains(&String::from("hacktoberfest")) {
+        if !repo.topics.contains(&"hacktoberfest".into()) {
+
             continue
         }
 
