@@ -49,6 +49,7 @@ pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) {
 
     let json_collection = serde_json::to_string::<Vec<RepositoryCollection>>(&repository_collection).unwrap();
 
-    global_map.lock().unwrap().insert(String::from("repo"), json_collection);
+    global_map.lock().unwrap().insert("repo".into(), json_collection);
+
     println!("Scraped!");
 }
