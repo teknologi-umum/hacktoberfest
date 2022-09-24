@@ -57,18 +57,17 @@ async fn run() -> Result<()> {
     let server_map = Arc::clone(&global_map);
     let scraper_map = Arc::clone(&global_map);
 
-    thread::spawn(move || async {
-        // help lol
+    tokio::spawn( async move {
         loop {
             scraper::scrape(&scraper_map).await;
             thread::sleep(Duration::new(60 * 60, 0));
         }
     });
 
-
     if let Err(e) = run_server(env, Data::from(server_map)).await {
         return Err(e.into())
     }
+
     Ok(())
 }
 

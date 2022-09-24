@@ -19,6 +19,7 @@ pub fn Handler() -> Resource {
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::sync::Mutex;
     use actix_web::{http, test};
     use actix_web::web::{Data};
 
@@ -26,7 +27,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_healthcheck() {
-        let local_map = Data::new(HashMap::<String, String>::new());
+        let local_map = Data::new(Mutex::new(HashMap::<String, String>::new()));
         let resp = healthcheck(local_map).await;
         assert_eq!(resp
                 .expect("an error occurred")

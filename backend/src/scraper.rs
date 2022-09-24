@@ -20,7 +20,7 @@ pub struct RepositoryCollection {
 }
 
 pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) {
-    println!("Scraping");
+    println!("Scraping...");
     let mut repository_collection: Vec<RepositoryCollection> = vec![];
     let repository = DefaultClient.list_repository().await.unwrap();
     for repo in repository.iter() {

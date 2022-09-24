@@ -69,6 +69,7 @@ pub fn Handler() -> Resource {
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::sync::Mutex;
 
     use actix_web::{test::TestRequest, http, web::Data};
 
@@ -76,7 +77,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_repositories() {
-        let local_map = Data::new(HashMap::<String, String>::new());
+        let local_map = Data::new(Mutex::new(HashMap::<String, String>::new()));
         let req = TestRequest::default()
             .to_http_request();
         let resp = repositories(local_map, req).await;
