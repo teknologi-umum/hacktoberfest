@@ -187,7 +187,7 @@ impl Github {
                 return json_response;
             },
             StatusCode::FORBIDDEN => {
-                return Err(GithubError::App(GithubErrorMetadata::from_http_respsonse(response).await));
+                return Err(GithubError::App(GithubErrorMetadata::from_http_response(response).await));
             }
             status_code => {
                 return Err(GithubError::StatusCode(status_code))
