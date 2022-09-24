@@ -147,7 +147,7 @@ impl fmt::Display for GithubError {
             Self::Requwuest(err) => {
                 err.fmt(f)
             },
-            def => write!(f, stringify!(def)),
+            def => write!(f, "{}", def),
         }
     }
 }
