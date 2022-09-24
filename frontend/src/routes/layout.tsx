@@ -26,8 +26,8 @@ export default component$(() => {
           </a>{" "}
           buat kasih tau kita apa masalahnya.
           <p>
-            Kalo kamu pengen kontribusi buat bikin website ini jadi
-            lebih bagus, boleh banget!
+            Kalo kamu pengen kontribusi buat bikin website ini jadi lebih bagus,
+            boleh banget!
           </p>
         </span>
       </footer>

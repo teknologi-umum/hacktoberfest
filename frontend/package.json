@@ -1,6 +1,6 @@
 {
-  "name": "my-qwik-basic-starter",
-  "description": "Recommended for your first Qwik app",
+  "name": "hacktoberfest-frontend",
+  "description": "Website yang memuat semua issue untuk kebutuhan Hacktoberfest dari organisasi Teknologi Umum",
   "engines": {
     "node": ">=15.0.0"
   },
