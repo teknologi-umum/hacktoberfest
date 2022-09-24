@@ -1,6 +1,6 @@
 x-defaults:
   &defaults
-  ENVIRONMENT: development
+  ENVIRONMENT: production
 
 services:
   frontend:
