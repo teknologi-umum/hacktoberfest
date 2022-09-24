@@ -1,6 +1,4 @@
-use actix_web::dev::HttpServiceFactory;
 use actix_web::{
-    get,
     http,
     Result,
     HttpRequest, HttpResponse, web, Resource,

@@ -19,10 +19,15 @@ pub struct RepositoriesResponse {
     pub issues: Vec<Issue>,
 }
 
-async fn repositories(global_map: Data<HashMap<String, String>>, req: HttpRequest) -> Result<HttpResponse> {
+async fn repositories(mut global_map: Data<HashMap<String, String>>, req: HttpRequest) -> Result<HttpResponse> {
     let mut response: Vec<RepositoriesResponse> = vec![];
     let repository = DefaultClient.list_repository().await.unwrap();
     for repo in repository.iter() {
+        // Skip if there isn't any "hacktoberfest" topic on the repository
+        if !repo.topics.contains(&String::from("hacktoberfest")) {
+            continue
+        }
+
         let issues = DefaultClient.list_issues(repo.name.to_owned()).await.unwrap();
         let languages = DefaultClient.list_languages(repo.name.to_owned()).await.unwrap();
 
@@ -40,6 +45,7 @@ async fn repositories(global_map: Data<HashMap<String, String>>, req: HttpReques
             issues,
         })
     }
+
     Ok(HttpResponse::Ok().json(response))
 }
 
