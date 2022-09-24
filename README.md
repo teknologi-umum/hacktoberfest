@@ -13,7 +13,7 @@ dari ikut berkontribusi untuk ngoding atau bahkan sesederhana mencari dan melapo
 pada suatu software.
 
 Website [hacktoberfest.teknologiumum.com](https://hacktoberfest.teknologiumum.com)
-membantu mencari berbagai issue yang dapat dikerjakan agar kamu dapat memulaic berkontribusi
+membantu mencari berbagai issue yang dapat dikerjakan agar kamu dapat memulai berkontribusi
 pada proyek-proyek open source lokal.
 
 ## Lisensi
