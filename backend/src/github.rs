@@ -119,7 +119,8 @@ pub struct GithubErrorMetadata {
     pub rate: Rate,
 }
 impl GithubErrorMetadata {
-    async fn from_http_respsonse(resp: Response) -> Self {
+    async fn from_http_response(resp: Response) -> Self {
+
         let _rate: Rate;
         {
             _rate = Rate::from_headers(resp.headers());
