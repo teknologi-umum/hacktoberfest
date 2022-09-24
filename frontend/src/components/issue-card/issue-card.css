@@ -1,0 +1,67 @@
+.issue-card {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 0.2rem #efefef solid;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(1rem);
+  border-image: linear-gradient(to top right, #8446d4, #e478d5, #eea68a) 30%;
+  box-shadow: 0 0 1rem rgba(156, 95, 236, 0.25);
+  transition: box-shadow ease-out 0.1s;
+  text-decoration: none;
+}
+
+.issue-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 1.5rem rgba(168, 112, 241, 0.65);
+}
+
+.issue-card::before {
+  content: "";
+  position: absolute;
+  left: -2.5rem;
+  width: 2.25rem;
+  bottom: 50%;
+  border-image: linear-gradient(to top right, #8446d4, #e4788a, #eea68a) 30%;
+  border-left: 0.2rem solid;
+  border-bottom: 0.2rem solid;
+}
+
+.issue-card:first-of-type {
+  margin-top: 2rem;
+}
+
+.issue-card:first-of-type::before {
+  top: -2.25rem;
+}
+
+.issue-card:not(:first-of-type)::before {
+  top: -10rem;
+}
+
+.issue-card__title {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #efefef;
+  line-height: 1.25em;
+  margin-bottom: 0.5rem;
+}
+
+.issue-card__labels {
+  display: flex;
+  gap: 1rem;
+}
+
+@media only screen and (max-width: 860px) {
+  .issue-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

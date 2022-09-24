@@ -1,0 +1,43 @@
+.countdown {
+  font-family: "Cairo", sans-serif;
+  color: #efefef;
+  padding: 3.2rem 0;
+  margin: 0 -2rem 2.5rem -2rem;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0)
+  );
+  backdrop-filter: blur(1rem);
+}
+
+.countdown__title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-top: 1rem;
+}
+
+.countdown__items {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdown__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.2rem;
+  font-family: "Press Start 2p", sans-serif;
+}
+
+.countdown__item span {
+  font-family: "Press Start 2p", sans-serif;
+  font-size: 2.8rem;
+  color: #ffffff;
+  text-shadow: 0 0 0.5rem rgba(219, 210, 255, 0.842);
+}
