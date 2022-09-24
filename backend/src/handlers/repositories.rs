@@ -24,9 +24,9 @@ pub struct RepositoriesResponse {
 
 async fn repositories(mut global_map: Data<Mutex<HashMap<String, String>>>, req: HttpRequest) -> Result<HttpResponse> {
     let unlocked_map = global_map.lock().unwrap();
-    let cached = match unlocked_map.get("repo") {
-        Some(o) => String::from(o),
-        _ => String::new()
+    let cached: String = match unlocked_map.get("repo") {
+        Some(cached_repo) => cached_repo.into(),
+        _ => "".into()
     };
     if !String::is_empty(&cached) {
         return Ok(HttpResponse::Ok().content_type(ContentType::json()).body(cached.clone()));
