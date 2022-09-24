@@ -38,7 +38,7 @@ async fn run() -> Result<()> {
         (about: "Hacktoberfest serverd")
         (@arg addr: --addr +takes_value "Listen address for HTTP server")
         (@arg wrk: --wrk +takes_value "Number of HTTP server workers")
-        (@arg scrap_interval: --("scrap-intarval") +takes_value "Scrap interval in second")
+        (@arg scrap_interval: --("scrap-interval") +takes_value "Scrap interval in second")
     )
     .get_matches();
 
