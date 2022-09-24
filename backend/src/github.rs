@@ -1,14 +1,16 @@
-use std::collections::HashMap;
+use std::{collections::HashMap};
 use actix_web::http;
 use chrono::{DateTime, Utc};
+use lazy_static::lazy_static;
 use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client, Response,
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Serialize)]
 pub struct Repository {
+    pub name: String,
     pub full_name: String,
     pub html_url: String,
     pub description: String,
@@ -21,7 +23,7 @@ pub struct Repository {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Issue {
     pub node_id: String,
     pub html_url: String,
@@ -33,18 +35,23 @@ pub struct Issue {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct User {
     pub login: String,
     pub avatar_url: String,
     pub html_url: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Label {
     pub name: String,
     pub color: String,
     pub description: String,
+}
+
+
+lazy_static! {
+    pub static ref DefaultClient: Github = Github::new();
 }
 
 pub struct Github {
@@ -150,7 +157,6 @@ impl Github {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use chrono::{DateTime, Utc};
@@ -188,6 +194,7 @@ mod tests {
         let gh = Github::new();
         let repository = gh.list_repository().await.unwrap();
         assert_eq!(repository.len(), 27);
+        assert!(repository.len() > 0, "repository len 0");
     }
 
     #[tokio::test]
