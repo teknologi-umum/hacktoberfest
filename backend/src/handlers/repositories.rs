@@ -28,7 +28,7 @@ async fn repositories(mut global_map: Data<Mutex<HashMap<String, String>>>, req:
         Some(cached_repo) => cached_repo.into(),
         _ => "".into()
     };
-    if !String::is_empty(&cached) {
+    if !cached.is_empty() {
         return Ok(HttpResponse::Ok().content_type(ContentType::json()).body(cached.clone()));
     }
 
