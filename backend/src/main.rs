@@ -25,6 +25,7 @@ async fn main() {
 struct RunContext {
     listen_address: String,
     num_workers: usize,
+    scrap_interval: u64,
 }
 
 async fn run() -> Result<()> {
@@ -35,21 +36,29 @@ async fn run() -> Result<()> {
         (about: "Hacktoberfest serverd")
         (@arg addr: --addr +takes_value "Listen address for HTTP server")
         (@arg wrk: --wrk +takes_value "Number of HTTP server workers")
+        (@arg scrap_interval: --("scrap-intarval") +takes_value "Scrap interval in second")
     ).get_matches();
     
     let falback_laddr = env::var("LISTEN_ADDR").unwrap_or("127.0.0.1:8080".into());
     let fallback_num_wrk_str = env::var("NUM_WORKERS").unwrap_or("1".into());
+    let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or("3600".into());
     let mut fallback_num_wrk = 1;
     if let Ok(num_wrk) = fallback_num_wrk_str.parse::<usize>() {
         fallback_num_wrk = num_wrk;
     }
+    let mut fallback_scrap_interval = 3600;
+    if let Ok(num_scrap_inv) = fallback_scrap_interval_str.parse::<u64>() {
+        fallback_scrap_interval = num_scrap_inv;
+    }
 
     let laddr = app.value_of("addr").unwrap_or(&falback_laddr[..]);
     let num_wrk = value_t!(app, "wrk", usize).unwrap_or(fallback_num_wrk);
-    
+    let scrap_interval = value_t!(app, "scrap_interval", u64).unwrap_or(fallback_scrap_interval);
+
     let env = RunContext {
-        listen_address: String::from(laddr),
+        listen_address: laddr.into(),
         num_workers: num_wrk,
+        scrap_interval,
     };
 
 
@@ -58,9 +67,10 @@ async fn run() -> Result<()> {
     let scraper_map = Arc::clone(&global_map);
 
     tokio::spawn( async move {
+        println!("run scrapper");
         loop {
             scraper::scrape(&scraper_map).await;
-            thread::sleep(Duration::new(60 * 60, 0));
+            thread::sleep(Duration::new(scrap_interval, 0));
         }
     });
 
