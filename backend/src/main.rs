@@ -1,16 +1,14 @@
 use crate::github::Github;
-use crate::scraper::ScrapError;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, Result};
 use backoff::exponential::ExponentialBackoff;
 use backoff::SystemClock;
-use clap::{clap_app, value_t};
+use clap::clap_app;
 use scraper::run_scrape;
 use std::collections::HashMap;
 use std::process::exit;
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
-use std::{env, io, thread, usize};
+use std::{env, io, usize};
 
 mod github;
 mod handlers;
@@ -106,7 +104,7 @@ async fn run_server(
     env: RunContext,
     global_map: Data<Mutex<HashMap<String, String>>>,
 ) -> Result<(), io::Error> {
-    println!("run server {}", env.listen_address);
+    println!("Run server on: {}", env.listen_address);
 
     HttpServer::new(move || {
         App::new()
