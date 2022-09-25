@@ -1,10 +1,15 @@
-use crate::github::GithubError;
 use crate::github::{Github, Issue};
-use crate::RunContext;
+use crate::github::{GithubError};
+use crate::{RunContext};
 use chrono::{DateTime, Utc};
+use log::{debug, info};
+use scopeguard::defer;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Display;
+use std::future::Future;
+use std::io::Error;
+use std::process::Output;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -43,12 +48,14 @@ pub async fn run_scrape<B>(
 {
     println!("Run scrapper");
     loop {
-        backoff::future::retry_notify(
-            backoff.clone(),
-            || async { Ok(scrape(global_map, github_client).await?) },
-            |err, dur| println!("scrape error {:?}: {}", dur, err),
-        );
-        thread::sleep(Duration::new(ctx.scrap_interval, 0));
+        {
+            let _ = backoff::future::retry_notify(  
+                backoff.clone(),
+                || async { Ok(scrape(global_map, github_client).await?) },
+                |err, dur| println!("scrape error {:?}: {}", dur, err),
+            ).await;
+            thread::sleep(Duration::new(ctx.scrap_interval, 0));
+        }
     }
 }
 
@@ -56,8 +63,11 @@ pub async fn scrape(
     global_map: &Arc<Mutex<HashMap<String, String>>>,
     github_client: &Github,
 ) -> Result<(), ScrapError> {
+    println!("scrapper start");
+    defer! {
+        println!("scrapper stop");
+    }
     let mut repository_collection: Vec<RepositoryCollection> = vec![];
-    println!("Scraping repositories...");
     let repository = github_client
         .list_repository()
         .await
@@ -102,8 +112,6 @@ pub async fn scrape(
         .lock()
         .unwrap()
         .insert("repo".into(), json_collection);
-
-    println!("Scrap finished");
 
     Ok(())
 }
