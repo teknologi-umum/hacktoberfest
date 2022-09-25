@@ -1,9 +1,8 @@
-use crate::github::Issue;
-use crate::DEFAULT_CLIENT;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use crate::github::{Github, Issue};
 
 #[derive(Serialize, Deserialize)]
 pub struct RepositoryCollection {
@@ -19,24 +18,18 @@ pub struct RepositoryCollection {
     pub issues: Vec<Issue>,
 }
 
-pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) {
+pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>, github_client: &Github) {
     println!("Scraping...");
     let mut repository_collection: Vec<RepositoryCollection> = vec![];
-    let repository = DEFAULT_CLIENT.list_repository().await.unwrap();
+    let repository = github_client.list_repository().await.unwrap();
     for repo in repository.iter() {
         // Skip if there isn't any "hacktoberfest" topic on the repository
         if !repo.topics.contains(&"hacktoberfest".into()) {
             continue;
         }
 
-        let issues = DEFAULT_CLIENT
-            .list_issues(repo.name.to_owned())
-            .await
-            .unwrap();
-        let languages = DEFAULT_CLIENT
-            .list_languages(repo.name.to_owned())
-            .await
-            .unwrap();
+        let issues = github_client.list_issues(repo.name.to_owned()).await.unwrap();
+        let languages = github_client.list_languages(repo.name.to_owned()).await.unwrap();
 
         repository_collection.push(RepositoryCollection {
             full_name: repo.full_name.clone(),
