@@ -138,6 +138,8 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+server/
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

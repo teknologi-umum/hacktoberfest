@@ -82,8 +82,6 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
-      - name: Check formatting
-        run: pnpm fmt.check
       - name: Build
         run: pnpm build
 

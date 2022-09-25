@@ -85,11 +85,16 @@ export default component$(() => {
             <>
               {repositoriesData.map((repo) => (
                 <RepositoryCard
-                  description={mutable(repo.description)}
                   full_name={mutable(repo.full_name)}
                   html_url={mutable(repo.html_url)}
-                  issues={mutable(repo.issues)}
+                  description={mutable(repo.description)}
                   languages={mutable(repo.languages)}
+                  stars_count={mutable(repo.stars_count)}
+                  forks_count={mutable(repo.forks_count)}
+                  topics={mutable(repo.topics)}
+                  created_at={mutable(repo.created_at)}
+                  updated_at={mutable(repo.updated_at)}
+                  issues={mutable(repo.issues)}
                 />
               ))}
             </>
