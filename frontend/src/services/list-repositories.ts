@@ -1,7 +1,6 @@
 import { $ } from "@builder.io/qwik";
 import { API_BASE_URL } from "~/env";
 import type { Repository } from "~/models/repository";
-import jsonData from "./dumb.json";
 
 type RepositoriesListOptions = {
   signal: AbortSignal;
@@ -14,12 +13,10 @@ export const getRepositoriesList = $(
     // emulate loading
     await new Promise((res) => setTimeout(() => res(void 0), 500));
     let repositories: Repository[] = [];
-    if (!CACHE_MAP.get("repo")) {
-      // TODO: replace with real data from API
-      // const response = await fetch(`${API_BASE_URL}/repo`, { signal });
-      // repositories = await response.json();
-      repositories = jsonData;
-      CACHE_MAP.set("repo", jsonData);
+    if (!CACHE_MAP.has("repo")) {
+      const response = await fetch(`${API_BASE_URL}/repo`, { signal });
+      repositories = await response.json();
+      CACHE_MAP.set("repo", repositories);
     } else {
       repositories = CACHE_MAP.get("repo");
     }
@@ -30,8 +27,8 @@ export const getRepositoriesList = $(
           filters.length < 1
             ? repository.issues
             : repository.issues.filter((issue) =>
-                issue.labels.some((label) => filters.includes(label.name))
-              );
+              issue.labels.some((label) => filters.includes(label.name))
+            );
         return { ...repository, issues: filteredIssues };
       })
       .filter((repository) => repository.issues.length > 0);
