@@ -1,12 +1,16 @@
+use crate::github::Github;
+use crate::scraper::ScrapError;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, Result};
+use backoff::exponential::ExponentialBackoff;
+use backoff::SystemClock;
 use clap::{clap_app, value_t};
+use scraper::run_scrape;
 use std::collections::HashMap;
 use std::process::exit;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use std::{env, io, thread, usize};
-use crate::github::{Github};
 
 mod github;
 mod handlers;
@@ -22,7 +26,8 @@ async fn main() {
     }
 }
 
-struct RunContext {
+#[derive(Clone, Copy)]
+pub struct RunContext {
     listen_address: String,
     num_workers: usize,
     scrap_interval: u64,
@@ -51,9 +56,14 @@ async fn run() -> Result<()> {
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or("".into());
 
     let laddr: String = app.get_one("addr").unwrap_or(&falback_laddr).to_string();
-    let github_token: String = app.get_one("github_token").unwrap_or(&fallback_github_token).to_string();
+    let github_token: String = app
+        .get_one("github_token")
+        .unwrap_or(&fallback_github_token)
+        .to_string();
     let num_wrk: usize = *app.get_one("wrk").unwrap_or(&fallback_num_wrk);
-    let scrap_interval: u64 = *app.get_one("scrap_interval").unwrap_or(&fallback_scrap_interval);
+    let scrap_interval: u64 = *app
+        .get_one("scrap_interval")
+        .unwrap_or(&fallback_scrap_interval);
 
     let env = RunContext {
         listen_address: laddr.into(),
@@ -65,15 +75,24 @@ async fn run() -> Result<()> {
     let server_map = Arc::clone(&global_map);
     let scraper_map = Arc::clone(&global_map);
 
+    let run_context_clone: RunContext = env.clone();
     tokio::spawn(async move {
-        let github_client = if github_token.is_empty() { Github::new() }
-            else { Github::new_with_token(Some(String::from(github_token))) };
+        let github_client = if github_token.is_empty() {
+            Github::new()
+        } else {
+            Github::new_with_token(Some(String::from(github_token)))
+        };
 
-        println!("run scrapper");
-        loop {
-            scraper::scrape(&scraper_map, &github_client).await;
-            thread::sleep(Duration::new(scrap_interval, 0));
-        }
+        let exponential_backoff_box: Box<ExponentialBackoff<SystemClock>> =
+            Box::new(backoff::ExponentialBackoffBuilder::new().build());
+
+        run_scrape(
+            run_context_clone,
+            exponential_backoff_box,
+            &scraper_map,
+            &github_client,
+        )
+        .await;
     });
 
     if let Err(e) = run_server(env, Data::from(server_map)).await {
