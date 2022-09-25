@@ -1,5 +1,6 @@
-use crate::github::{Issue, GithubError};
-use crate::{DEFAULT_CLIENT, RunContext};
+use crate::github::{Github, Issue};
+use crate::github::{GithubError, Issue};
+use crate::{RunContext, DEFAULT_CLIENT};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -35,33 +36,45 @@ impl Display for ScrapError {
     }
 }
 
-pub async fn run_scrape<B> (ctx: RunContext, bf: B, global_map: &Arc<Mutex<HashMap<String, String>>>)
-where
+pub async fn run_scrape<B>(
+    ctx: RunContext,
+    backoff: B,
+    global_map: &Arc<Mutex<HashMap<String, String>>>,
+    github_client: &Github,
+) where
     B: backoff::backoff::Backoff + Clone,
 {
     println!("run scrapper");
     loop {
-        backoff::future::retry_notify(bf.clone(), || async {
-            Ok(scrape(global_map).await?)
-        }, |err, dur| println!("scrape error {:?}: {}", dur, err));
+        backoff::future::retry_notify(
+            backoff.clone(),
+            || async { Ok(scrape(global_map, github_client).await?) },
+            |err, dur| println!("scrape error {:?}: {}", dur, err),
+        );
         thread::sleep(Duration::new(ctx.scrap_interval, 0));
     }
 }
 
-pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) -> Result<(), ScrapError> {
+pub async fn scrape(
+    global_map: &Arc<Mutex<HashMap<String, String>>>,
+    github_client: &Github,
+) -> Result<(), ScrapError> {
     let mut repository_collection: Vec<RepositoryCollection> = vec![];
-    let repository = DEFAULT_CLIENT.list_repository().await.map_err(ScrapError::Github)?;
+    let repository = github_client
+        .list_repository()
+        .await
+        .map_err(ScrapError::Github)?;
     for repo in repository.iter() {
         // Skip if there isn't any "hacktoberfest" topic on the repository
         if !repo.topics.contains(&"hacktoberfest".into()) {
             continue;
         }
 
-        let issues = DEFAULT_CLIENT
+        let issues = github_client
             .list_issues(repo.name.to_owned())
             .await
             .map_err(ScrapError::Github)?;
-        let languages = DEFAULT_CLIENT
+        let languages = github_client
             .list_languages(repo.name.to_owned())
             .await
             .map_err(ScrapError::Github)?;
@@ -81,7 +94,8 @@ pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>) -> Result<
     }
 
     let json_collection =
-        serde_json::to_string::<Vec<RepositoryCollection>>(&repository_collection).map_err(ScrapError::Serde)?;
+        serde_json::to_string::<Vec<RepositoryCollection>>(&repository_collection)
+            .map_err(ScrapError::Serde)?;
 
     global_map
         .lock()
