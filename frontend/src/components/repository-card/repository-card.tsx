@@ -4,20 +4,14 @@ import {
   useStore,
   useStylesScoped$,
 } from "@builder.io/qwik";
+import type { Repository } from "~/models/repository";
 import { GithubIcon } from "../icons/ic_github";
-import { IssueCard, type Issue } from "../issue-card";
+import { IssueCard } from "../issue-card";
 import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
 import styles from "./repository-card.css";
 
-export type Repository = {
-  full_name: string;
-  html_url: string;
-  description: string;
-  languages: string[];
-  issues: Issue[];
-};
-
-export default component$((props: Repository) => {
+type RepositoryProps = Repository;
+export default component$((props: RepositoryProps) => {
   const state = useStore({
     isIssueVisible: true,
   });
@@ -31,7 +25,9 @@ export default component$((props: Repository) => {
         onClick$={() => (state.isIssueVisible = !state.isIssueVisible)}
       >
         <div class="repository-card__left-content">
-          <GithubIcon />
+          <div class="repository-card__gh-logo">
+            <GithubIcon />
+          </div>
           <div class="repository-card__detail">
             <a class="repository-card__title" href={props.html_url}>
               {props.full_name}
@@ -40,11 +36,14 @@ export default component$((props: Repository) => {
           </div>
         </div>
         <div class="repository-card__right-content">
-          {props.languages.map((language) => (
-            <div class="repository-card__language">
-              {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}
-            </div>
-          ))}
+          {props.languages
+            .sort()
+            .slice(0, 10)
+            .map((language) => (
+              <div class="repository-card__language">
+                {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}
+              </div>
+            ))}
         </div>
       </div>
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>

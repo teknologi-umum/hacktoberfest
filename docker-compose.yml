@@ -8,33 +8,34 @@ services:
     environment:
       <<: [ *defaults ]
       PORT: 3000
+      VITE_API_BASE_URL: https://hacktoberfest.teknologiumum.com/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.entrypoints=web,websecure"
-      - "traefik.http.routers.frontend.rule=Host(`hacktoberfest.teknologiumum.com`) && PathPrefix(`/`)"
-      - "traefik.http.routers.frontend.priority=1"
-      - "traefik.http.routers.frontend.tls.certresolver=tlsresolver"
-      - "traefik.http.routers.frontend.middlewares=frontend-error,frontend-header,frontend-rate,frontend-redirectscheme"
-      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
-      - "traefik.http.services.frontend.loadbalancer.server.scheme=http"
-      - "traefik.http.services.frontend.loadbalancer.healthcheck.interval=30s"
-      - "traefik.http.services.frontend.loadbalancer.healthcheck.path=/"
-      - "traefik.http.middlewares.frontend-error.errors.status=500-599"
-      - "traefik.http.middlewares.frontend-error.errors.service=frontend@docker"
-      - "traefik.http.middlewares.frontend-error.errors.query=/error"
-      - "traefik.http.middlewares.frontend-rate.ratelimit.average=200"
-      - "traefik.http.middlewares.frontend-rate.ratelimit.burst=100"
-      - "traefik.http.middlewares.frontend-rate.ratelimit.period=1s"
-      - "traefik.http.middlewares.frontend-header.headers.addvaryheader=true"
-      - "traefik.http.middlewares.frontend-header.headers.frameDeny=true"
-      - "traefik.http.middlewares.frontend-header.headers.browserxssfilter=true"
-      - "traefik.http.middlewares.frontend-header.headers.stsSeconds=604800"
-      - "traefik.http.middlewares.frontend-header.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.frontend-header.headers.browserXssFilter=true"
-      - "traefik.http.middlewares.frontend-header.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.frontend-header.headers.customResponseHeaders.server=Teknologi Umum"
-      - "traefik.http.middlewares.frontend-redirectscheme.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.frontend-redirectscheme.redirectscheme.permanent=true"
+      - "traefik.http.routers.hacktoberfest_frontend.entrypoints=web,websecure"
+      - "traefik.http.routers.hacktoberfest_frontend.rule=Host(`hacktoberfest.teknologiumum.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.hacktoberfest_frontend.priority=1"
+      - "traefik.http.routers.hacktoberfest_frontend.tls.certresolver=tlsresolver"
+      - "traefik.http.routers.hacktoberfest_frontend.middlewares=hacktoberfest_frontend-error,hacktoberfest_frontend-header,hacktoberfest_frontend-rate,hacktoberfest_frontend-redirectscheme"
+      - "traefik.http.services.hacktoberfest_frontend.loadbalancer.server.port=3000"
+      - "traefik.http.services.hacktoberfest_frontend.loadbalancer.server.scheme=http"
+      - "traefik.http.services.hacktoberfest_frontend.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.hacktoberfest_frontend.loadbalancer.healthcheck.path=/"
+      - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.status=500-599"
+      - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.service=hacktoberfest_frontend@docker"
+      - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.query=/error"
+      - "traefik.http.middlewares.hacktoberfest_frontend-rate.ratelimit.average=200"
+      - "traefik.http.middlewares.hacktoberfest_frontend-rate.ratelimit.burst=100"
+      - "traefik.http.middlewares.hacktoberfest_frontend-rate.ratelimit.period=1s"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.addvaryheader=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.frameDeny=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.browserxssfilter=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.stsSeconds=604800"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.hacktoberfest_frontend-header.headers.customResponseHeaders.server=Teknologi Umum"
+      - "traefik.http.middlewares.hacktoberfest_frontend-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.hacktoberfest_frontend-redirectscheme.redirectscheme.permanent=true"
     platform: linux/amd64
     healthcheck:
       test: curl -f http://localhost:3000/ || exit 1
@@ -69,35 +70,35 @@ services:
       <<: [ *defaults ]
       LISTEN_ADDR: 0.0.0.0:9090
       NUM_WORKERS: 1
-      SCRAP_INTERVAL: 3600 
-      GITHUB_TOKEN: ""
+      SCRAP_INTERVAL: 3600
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.entrypoints=web,websecure"
-      - "traefik.http.routers.backend.rule=Host(`hacktoberfest.teknologiumum.com`) && Path(`/repo`)"
-      - "traefik.http.routers.backend.priority=2"
-      - "traefik.http.routers.backend.tls.certresolver=tlsresolver"
-      - "traefik.http.routers.backend.middlewares=backend-error,backend-header,backend-rate,backend-redirectscheme"
-      - "traefik.http.services.backend.loadbalancer.server.port=9090"
-      - "traefik.http.services.backend.loadbalancer.server.scheme=http"
-      - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
-      - "traefik.http.services.backend.loadbalancer.healthcheck.path=/healthz"
-      - "traefik.http.middlewares.backend-error.errors.status=500-599"
-      - "traefik.http.middlewares.backend-error.errors.service=frontend@docker"
-      - "traefik.http.middlewares.backend-error.errors.query=/error"
-      - "traefik.http.middlewares.backend-rate.ratelimit.average=200"
-      - "traefik.http.middlewares.backend-rate.ratelimit.burst=100"
-      - "traefik.http.middlewares.backend-rate.ratelimit.period=1s"
-      - "traefik.http.middlewares.backend-header.headers.addvaryheader=true"
-      - "traefik.http.middlewares.backend-header.headers.frameDeny=true"
-      - "traefik.http.middlewares.backend-header.headers.browserxssfilter=true"
-      - "traefik.http.middlewares.backend-header.headers.stsSeconds=604800"
-      - "traefik.http.middlewares.backend-header.headers.stsIncludeSubdomains=true"
-      - "traefik.http.middlewares.backend-header.headers.browserXssFilter=true"
-      - "traefik.http.middlewares.backend-header.headers.contentTypeNosniff=true"
-      - "traefik.http.middlewares.backend-header.headers.customResponseHeaders.server=Teknologi Umum"
-      - "traefik.http.middlewares.backend-redirectscheme.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.backend-redirectscheme.redirectscheme.permanent=true"
+      - "traefik.http.routers.hacktoberfest_backend.entrypoints=web,websecure"
+      - "traefik.http.routers.hacktoberfest_backend.rule=Host(`hacktoberfest.teknologiumum.com`) && Path(`/repo`)"
+      - "traefik.http.routers.hacktoberfest_backend.priority=2"
+      - "traefik.http.routers.hacktoberfest_backend.tls.certresolver=tlsresolver"
+      - "traefik.http.routers.hacktoberfest_backend.middlewares=hacktoberfest_backend-error,hacktoberfest_backend-header,hacktoberfest_backend-rate,hacktoberfest_backend-redirectscheme"
+      - "traefik.http.services.hacktoberfest_backend.loadbalancer.server.port=9090"
+      - "traefik.http.services.hacktoberfest_backend.loadbalancer.server.scheme=http"
+      - "traefik.http.services.hacktoberfest_backend.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.hacktoberfest_backend.loadbalancer.healthcheck.path=/healthz"
+      - "traefik.http.middlewares.hacktoberfest_backend-error.errors.status=500-599"
+      - "traefik.http.middlewares.hacktoberfest_backend-error.errors.service=hacktoberfest_frontend@docker"
+      - "traefik.http.middlewares.hacktoberfest_backend-error.errors.query=/error"
+      - "traefik.http.middlewares.hacktoberfest_backend-rate.ratelimit.average=200"
+      - "traefik.http.middlewares.hacktoberfest_backend-rate.ratelimit.burst=100"
+      - "traefik.http.middlewares.hacktoberfest_backend-rate.ratelimit.period=1s"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.addvaryheader=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.frameDeny=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.browserxssfilter=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.stsSeconds=604800"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.hacktoberfest_backend-header.headers.customResponseHeaders.server=Teknologi Umum"
+      - "traefik.http.middlewares.hacktoberfest_backend-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.hacktoberfest_backend-redirectscheme.redirectscheme.permanent=true"
     platform: linux/amd64
     healthcheck:
       test: curl -f http://localhost:9090/healthz || exit 1
@@ -126,7 +127,6 @@ services:
       options:
         max-size: 100M
         max-file: 3
-
 
 networks:
   hacktoberfest:

@@ -1,0 +1,1170 @@
+[
+	{
+		"full_name": "teknologi-umum/decimal-clock",
+		"html_url": "https://github.com/teknologi-umum/decimal-clock",
+		"description": "1 day = 10 decimal hours, 1 decimal hour = 100 decimal minutes, 1 decimal minute = 100 decimal seconds",
+		"languages": [
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"TypeScript",
+			"Vue",
+			"Rust",
+			"Mint",
+			"Fantom",
+			"Kotlin",
+			"Elm",
+			"Mathematica",
+			"Svelte",
+			"Clojure",
+			"C#"
+		],
+		"stars_count": 17,
+		"forks_count": 15,
+		"topics": [
+			"decimal-clock",
+			"frameworks",
+			"frontend-framework",
+			"hacktoberfest",
+			"javascript"
+		],
+		"created_at": "2021-08-23T18:50:34Z",
+		"updated_at": "2022-09-23T01:55:24Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOF8uLls5SRnex",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/68",
+				"title": "Implement quik",
+				"comments": 1,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-09-21T05:42:31Z",
+				"updated_at": "2022-09-22T10:55:46Z"
+			},
+			{
+				"node_id": "I_kwDOF8uLls5EPm4s",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/62",
+				"title": "Implement nanojsx",
+				"comments": 1,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-02-20T07:21:12Z",
+				"updated_at": "2022-03-14T04:09:18Z"
+			},
+			{
+				"node_id": "I_kwDOF8uLls48dIKV",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/40",
+				"title": "Implement halogen",
+				"comments": 0,
+				"user": {
+					"login": "elianiva",
+					"avatar_url": "https://avatars.githubusercontent.com/u/51877647?v=4",
+					"html_url": "https://github.com/elianiva"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-10-03T05:25:46Z",
+				"updated_at": "2021-11-01T11:12:26Z"
+			},
+			{
+				"node_id": "I_kwDOF8uLls48cYeL",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/35",
+				"title": "Implement kotlin-react",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-10-02T14:51:33Z",
+				"updated_at": "2021-11-01T11:12:25Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzg3OTM4Mzk=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/27",
+				"title": "Implement Hyperscript",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-25T07:05:42Z",
+				"updated_at": "2021-11-01T11:12:25Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc3ODc3NzM=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/21",
+				"title": "Implement react-svg",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T07:20:26Z",
+				"updated_at": "2021-11-01T11:12:24Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc3ODY5MDg=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/20",
+				"title": "Implement webgl",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T07:19:14Z",
+				"updated_at": "2021-11-01T11:12:24Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc3ODUyNjY=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/18",
+				"title": "implement cyclejs",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T07:16:59Z",
+				"updated_at": "2021-11-01T11:12:23Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc3MDI3ODM=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/17",
+				"title": "Implement hybrids",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T04:57:33Z",
+				"updated_at": "2021-11-01T11:12:23Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc3MDI2OTc=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/16",
+				"title": "Implement lit",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T04:57:20Z",
+				"updated_at": "2021-11-01T11:12:22Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5Nzc2OTg0OTQ=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/14",
+				"title": "Implement mint-lang",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-24T04:46:50Z",
+				"updated_at": "2021-11-01T11:12:22Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NzczOTI1Nzc=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/13",
+				"title": "Implement platform-uno",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-23T20:12:55Z",
+				"updated_at": "2021-11-01T11:12:22Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NzczOTE2ODY=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/11",
+				"title": "Implement emscripten-canvas",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2021-08-23T20:12:02Z",
+				"updated_at": "2021-11-01T11:12:22Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NzczOTA1NDQ=",
+				"html_url": "https://github.com/teknologi-umum/decimal-clock/issues/9",
+				"title": "Implementation browser",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [],
+				"created_at": "2021-08-23T20:10:54Z",
+				"updated_at": "2021-11-01T11:12:21Z"
+			}
+		]
+	},
+	{
+		"full_name": "teknologi-umum/graphene",
+		"html_url": "https://github.com/teknologi-umum/graphene",
+		"description": "Lighter Carbon alternative made with Shiki",
+		"languages": [
+			"TypeScript",
+			"SCSS",
+			"HTML",
+			"Dockerfile",
+			"Shell"
+		],
+		"stars_count": 22,
+		"forks_count": 8,
+		"topics": [
+			"carbon",
+			"code-screenshot",
+			"code-snippets",
+			"hacktoberfest",
+			"shiki"
+		],
+		"created_at": "2021-08-06T11:16:39Z",
+		"updated_at": "2022-09-23T01:55:18Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOF3IZ8M5MkKKW",
+				"html_url": "https://github.com/teknologi-umum/graphene/issues/117",
+				"title": "Double spaces on svg format",
+				"comments": 0,
+				"user": {
+					"login": "krowter",
+					"avatar_url": "https://avatars.githubusercontent.com/u/42563517?v=4",
+					"html_url": "https://github.com/krowter"
+				},
+				"labels": [],
+				"created_at": "2022-06-25T10:50:53Z",
+				"updated_at": "2022-06-25T10:50:53Z"
+			},
+			{
+				"node_id": "I_kwDOF3IZ8M4-ZDIz",
+				"html_url": "https://github.com/teknologi-umum/graphene/issues/79",
+				"title": "eslint config",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [],
+				"created_at": "2021-11-07T13:57:28Z",
+				"updated_at": "2021-11-07T13:57:28Z"
+			},
+			{
+				"node_id": "I_kwDOF3IZ8M4-VvOs",
+				"html_url": "https://github.com/teknologi-umum/graphene/issues/77",
+				"title": "treating tabs",
+				"comments": 1,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [],
+				"created_at": "2021-11-05T14:02:42Z",
+				"updated_at": "2021-12-06T06:35:27Z"
+			}
+		]
+	},
+	{
+		"full_name": "teknologi-umum/bot",
+		"html_url": "https://github.com/teknologi-umum/bot",
+		"description": "Bot for a more interactive Teknologi Umum group",
+		"languages": [
+			"JavaScript",
+			"Handlebars",
+			"Shell",
+			"Dockerfile"
+		],
+		"stars_count": 18,
+		"forks_count": 12,
+		"topics": [
+			"bot",
+			"hacktoberfest",
+			"teknologi-umum",
+			"telegram",
+			"telegram-bot"
+		],
+		"created_at": "2021-07-26T16:30:34Z",
+		"updated_at": "2022-09-23T01:55:09Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOFzpYW85NbCf8",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/161",
+				"title": "Avoid term \"dukun\" completely",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: medium",
+						"color": "915424",
+						"description": ""
+					},
+					{
+						"name": "roadmap: public",
+						"color": "0E8A16",
+						"description": ""
+					}
+				],
+				"created_at": "2022-07-08T12:07:26Z",
+				"updated_at": "2022-07-08T12:08:21Z"
+			},
+			{
+				"node_id": "I_kwDOFzpYW849U2DT",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/123",
+				"title": "`/laodeai` handler: similarweb",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "difficulty: easy",
+						"color": "1FAA04",
+						"description": ""
+					}
+				],
+				"created_at": "2021-10-18T09:34:31Z",
+				"updated_at": "2021-11-01T13:15:19Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5ODY4NjIyNTE=",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/68",
+				"title": "`/laodeai`: Use `eval` as one of its handlers",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: easy",
+						"color": "1FAA04",
+						"description": ""
+					}
+				],
+				"created_at": "2021-09-02T15:14:12Z",
+				"updated_at": "2021-11-01T13:15:18Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5ODYxNzA2Mjk=",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/66",
+				"title": "Give `/eval` superpowers",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: hard",
+						"color": "A7957F",
+						"description": ""
+					}
+				],
+				"created_at": "2021-09-02T05:37:41Z",
+				"updated_at": "2021-09-04T17:53:26Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NjM0MTI5OTc=",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/23",
+				"title": "`/rosetta` Belajar koding lewat Bot",
+				"comments": 0,
+				"user": {
+					"login": "artileda",
+					"avatar_url": "https://avatars.githubusercontent.com/u/47468136?v=4",
+					"html_url": "https://github.com/artileda"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: medium",
+						"color": "915424",
+						"description": ""
+					}
+				],
+				"created_at": "2021-08-08T11:36:52Z",
+				"updated_at": "2021-11-01T13:15:17Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NjI0NDUxNDY=",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/18",
+				"title": "`/qr` <url>",
+				"comments": 4,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: easy",
+						"color": "1FAA04",
+						"description": ""
+					}
+				],
+				"created_at": "2021-08-06T06:40:44Z",
+				"updated_at": "2021-11-01T13:15:17Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NjIzNjAyOTU=",
+				"html_url": "https://github.com/teknologi-umum/bot/issues/16",
+				"title": "`/invoice` command",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "difficulty: medium",
+						"color": "915424",
+						"description": ""
+					}
+				],
+				"created_at": "2021-08-06T03:21:20Z",
+				"updated_at": "2021-11-01T13:15:16Z"
+			}
+		]
+	},
+	{
+		"full_name": "teknologi-umum/pesto",
+		"html_url": "https://github.com/teknologi-umum/pesto",
+		"description": "Remote Code Execution Engine that lets you execute any piece of code on a remote server via REST API",
+		"languages": [
+			"TypeScript",
+			"Astro",
+			"Java",
+			"Go",
+			"JavaScript",
+			"Shell",
+			"C",
+			"SCSS",
+			"Dockerfile",
+			"Makefile",
+			"C#",
+			"Brainfuck",
+			"C++",
+			"V",
+			"Common Lisp",
+			"PHP",
+			"Julia",
+			"Lua",
+			"Python",
+			"Ruby"
+		],
+		"stars_count": 8,
+		"forks_count": 0,
+		"topics": [
+			"hacktoberfest",
+			"rce",
+			"remote-code-execution-engine"
+		],
+		"created_at": "2022-06-04T06:08:05Z",
+		"updated_at": "2022-09-23T01:54:58Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOHclx6s5Ne4Eh",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/31",
+				"title": "Java Client SDK",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-07-10T14:49:37Z",
+				"updated_at": "2022-07-10T17:00:45Z"
+			},
+			{
+				"node_id": "I_kwDOHclx6s5Ne394",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/30",
+				"title": "Python Client SDK",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-07-10T14:47:54Z",
+				"updated_at": "2022-07-10T14:47:54Z"
+			},
+			{
+				"node_id": "I_kwDOHclx6s5Ne38I",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/29",
+				"title": "Go client SDK",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-07-10T14:47:21Z",
+				"updated_at": "2022-07-10T14:47:21Z"
+			},
+			{
+				"node_id": "I_kwDOHclx6s5Ne35V",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/28",
+				"title": "Node.js Client SDK",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-07-10T14:46:29Z",
+				"updated_at": "2022-07-10T14:46:29Z"
+			},
+			{
+				"node_id": "I_kwDOHclx6s5Ne31x",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/27",
+				"title": "C# Client SDK",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-07-10T14:45:27Z",
+				"updated_at": "2022-07-10T14:45:28Z"
+			},
+			{
+				"node_id": "I_kwDOHclx6s5LKWbG",
+				"html_url": "https://github.com/teknologi-umum/pesto/issues/2",
+				"title": "Registration module",
+				"comments": 4,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					}
+				],
+				"created_at": "2022-06-05T09:33:30Z",
+				"updated_at": "2022-07-18T17:18:45Z"
+			}
+		]
+	},
+	{
+		"full_name": "teknologi-umum/blog",
+		"html_url": "https://github.com/teknologi-umum/blog",
+		"description": "Blog for Teknologi Umum",
+		"languages": [
+			"TypeScript",
+			"JavaScript",
+			"CSS",
+			"Shell"
+		],
+		"stars_count": 18,
+		"forks_count": 19,
+		"topics": [
+			"blog",
+			"hacktoberfest",
+			"programming-articles",
+			"programming-blog",
+			"teknologi-umum"
+		],
+		"created_at": "2021-08-13T08:31:24Z",
+		"updated_at": "2022-09-23T01:54:50Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOF5QBB85SdvLG",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/113",
+				"title": "Hall Of Sponsors",
+				"comments": 0,
+				"user": {
+					"login": "ArjunRangga",
+					"avatar_url": "https://avatars.githubusercontent.com/u/98873666?v=4",
+					"html_url": "https://github.com/ArjunRangga"
+				},
+				"labels": [],
+				"created_at": "2022-09-23T09:25:05Z",
+				"updated_at": "2022-09-23T09:25:05Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85PYP4w",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/109",
+				"title": "view post by category got error",
+				"comments": 0,
+				"user": {
+					"login": "WahidinAji",
+					"avatar_url": "https://avatars.githubusercontent.com/u/48281037?v=4",
+					"html_url": "https://github.com/WahidinAji"
+				},
+				"labels": [],
+				"created_at": "2022-08-08T11:50:44Z",
+				"updated_at": "2022-08-08T11:54:54Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85N6VJX",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/103",
+				"title": "feat: add list a projects that were created by the organizations",
+				"comments": 0,
+				"user": {
+					"login": "iamyuu",
+					"avatar_url": "https://avatars.githubusercontent.com/u/45778229?v=4",
+					"html_url": "https://github.com/iamyuu"
+				},
+				"labels": [],
+				"created_at": "2022-07-17T16:00:55Z",
+				"updated_at": "2022-07-17T16:00:55Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85H833Q",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/96",
+				"title": "article: random ideas from telegram",
+				"comments": 0,
+				"user": {
+					"login": "elianiva",
+					"avatar_url": "https://avatars.githubusercontent.com/u/51877647?v=4",
+					"html_url": "https://github.com/elianiva"
+				},
+				"labels": [],
+				"created_at": "2022-04-18T15:06:09Z",
+				"updated_at": "2022-04-18T15:06:09Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85Gr7aq",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/95",
+				"title": "article: .NET Series",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [],
+				"created_at": "2022-03-30T05:53:02Z",
+				"updated_at": "2022-03-30T05:53:56Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85Gr62P",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/94",
+				"title": "article: Big O notation Part 2, 3, dst",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-03-30T05:49:37Z",
+				"updated_at": "2022-03-30T05:49:52Z"
+			},
+			{
+				"node_id": "I_kwDOF5QBB85BNLuQ",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/77",
+				"title": "darkmode theme",
+				"comments": 0,
+				"user": {
+					"login": "WahidinAji",
+					"avatar_url": "https://avatars.githubusercontent.com/u/48281037?v=4",
+					"html_url": "https://github.com/WahidinAji"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "help wanted",
+						"color": "008672",
+						"description": "Extra attention is needed"
+					}
+				],
+				"created_at": "2022-01-05T04:39:35Z",
+				"updated_at": "2022-01-07T14:30:24Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NzQyNjYxODQ=",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/16",
+				"title": "security: Client-side URL redirect",
+				"comments": 0,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "security",
+						"color": "B60205",
+						"description": ""
+					}
+				],
+				"created_at": "2021-08-19T04:50:20Z",
+				"updated_at": "2021-08-19T04:50:20Z"
+			},
+			{
+				"node_id": "MDU6SXNzdWU5NzIyNzgwNzg=",
+				"html_url": "https://github.com/teknologi-umum/blog/issues/5",
+				"title": "feat: AdSense",
+				"comments": 0,
+				"user": {
+					"login": "artileda",
+					"avatar_url": "https://avatars.githubusercontent.com/u/47468136?v=4",
+					"html_url": "https://github.com/artileda"
+				},
+				"labels": [
+					{
+						"name": "enhancement",
+						"color": "a2eeef",
+						"description": "New feature or request"
+					},
+					{
+						"name": "good first issue",
+						"color": "7057ff",
+						"description": "Good for newcomers"
+					}
+				],
+				"created_at": "2021-08-17T04:01:45Z",
+				"updated_at": "2021-08-17T04:01:45Z"
+			}
+		]
+	},
+	{
+		"full_name": "teknologi-umum/akademi",
+		"html_url": "https://github.com/teknologi-umum/akademi",
+		"description": "Kumpulan ide untuk berbagai macam proyek",
+		"languages": [],
+		"stars_count": 4,
+		"forks_count": 0,
+		"topics": [
+			"hacktoberfest",
+			"project-ideas",
+			"teknologi-umum"
+		],
+		"created_at": "2021-09-24T09:05:14Z",
+		"updated_at": "2022-06-22T10:17:09Z",
+		"issues": [
+			{
+				"node_id": "I_kwDOGG6VE8482GvB",
+				"html_url": "https://github.com/teknologi-umum/akademi/issues/4",
+				"title": "npm package for Microsoft FASTER persistent log and KV store",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "Kesulitan: Mudah",
+						"color": "B2DC83",
+						"description": ""
+					},
+					{
+						"name": "Bidang: General/Tooling",
+						"color": "8BF4EA",
+						"description": ""
+					}
+				],
+				"created_at": "2021-10-08T08:07:16Z",
+				"updated_at": "2021-10-08T08:07:58Z"
+			},
+			{
+				"node_id": "I_kwDOGG6VE848PDmN",
+				"html_url": "https://github.com/teknologi-umum/akademi/issues/3",
+				"title": "Internet of Things (WIP)",
+				"comments": 0,
+				"user": {
+					"login": "vmasdani",
+					"avatar_url": "https://avatars.githubusercontent.com/u/37009464?v=4",
+					"html_url": "https://github.com/vmasdani"
+				},
+				"labels": [
+					{
+						"name": "Kesulitan: Menengah",
+						"color": "FBE965",
+						"description": ""
+					},
+					{
+						"name": "Bidang: IOT",
+						"color": "6167B9",
+						"description": "https://en.wikipedia.org/wiki/Internet_of_things"
+					}
+				],
+				"created_at": "2021-09-29T07:12:04Z",
+				"updated_at": "2021-10-07T15:15:54Z"
+			},
+			{
+				"node_id": "I_kwDOGG6VE848O8Ve",
+				"html_url": "https://github.com/teknologi-umum/akademi/issues/2",
+				"title": "HTPL - Hyper Text Programming Language",
+				"comments": 0,
+				"user": {
+					"login": "ronnygunawan",
+					"avatar_url": "https://avatars.githubusercontent.com/u/3048897?v=4",
+					"html_url": "https://github.com/ronnygunawan"
+				},
+				"labels": [
+					{
+						"name": "Kesulitan: Menengah",
+						"color": "FBE965",
+						"description": ""
+					},
+					{
+						"name": "Bidang: Websites",
+						"color": "5BA956",
+						"description": ""
+					},
+					{
+						"name": "Bidang: General/Tooling",
+						"color": "8BF4EA",
+						"description": ""
+					}
+				],
+				"created_at": "2021-09-29T06:36:56Z",
+				"updated_at": "2021-09-29T06:42:05Z"
+			},
+			{
+				"node_id": "I_kwDOGG6VE848O2no",
+				"html_url": "https://github.com/teknologi-umum/akademi/issues/1",
+				"title": "JASON - JSON but cleaner",
+				"comments": 1,
+				"user": {
+					"login": "aldy505",
+					"avatar_url": "https://avatars.githubusercontent.com/u/7274326?v=4",
+					"html_url": "https://github.com/aldy505"
+				},
+				"labels": [
+					{
+						"name": "Kesulitan: Menengah",
+						"color": "FBE965",
+						"description": ""
+					},
+					{
+						"name": "Bidang: General/Tooling",
+						"color": "8BF4EA",
+						"description": ""
+					}
+				],
+				"created_at": "2021-09-29T06:04:21Z",
+				"updated_at": "2022-03-29T14:49:40Z"
+			}
+		]
+	}
+]

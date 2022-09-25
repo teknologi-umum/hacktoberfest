@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem;
+  gap: 1rem;
   border: 0.2rem #efefef solid;
   background-image: linear-gradient(
     to right,
@@ -27,6 +28,10 @@
   color: #efefef;
 }
 
+.repository-card__gh-logo {
+  width: 3.2rem;
+}
+
 .repository-card__title {
   font-size: 2.4rem;
   font-weight: 600;
@@ -41,7 +46,7 @@
 }
 
 .repository-card__description {
-  line-height: 1em;
+  line-height: 1.25em;
   color: rgba(255, 255, 255, 0.5);
 }
 
