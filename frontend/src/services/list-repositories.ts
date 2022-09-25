@@ -10,10 +10,8 @@ type RepositoriesListOptions = {
 export const CACHE_MAP = new Map();
 export const getRepositoriesList = $(
   async ({ filters, signal }: RepositoriesListOptions) => {
-    // emulate loading
-    await new Promise((res) => setTimeout(() => res(void 0), 500));
     let repositories: Repository[] = [];
-    if (!CACHE_MAP.has("repo")) {
+    if (CACHE_MAP.has("repo") === undefined) {
       const response = await fetch(`${API_BASE_URL}/repo`, { signal });
       repositories = await response.json();
       CACHE_MAP.set("repo", repositories);
