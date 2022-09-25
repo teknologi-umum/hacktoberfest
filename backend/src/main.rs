@@ -1,18 +1,18 @@
 use actix_web::web::Data;
-use clap::{clap_app, value_t};
+use clap::{clap_app};
 use actix_web::{App, HttpServer, Result};
 use std::{io, env, usize, thread};
 use std::process::exit;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use crate::github::{DefaultClient, Github};
+use crate::github::{Github};
 
 mod github;
 mod handlers;
 mod scraper;
 
-use crate::handlers::{*};
+use crate::handlers::*;
 
 #[tokio::main]
 async fn main() {    
@@ -42,21 +42,15 @@ async fn run() -> Result<()> {
     
     let falback_laddr = env::var("LISTEN_ADDR").unwrap_or("127.0.0.1:8080".into());
     let fallback_num_wrk_str = env::var("NUM_WORKERS").unwrap_or("1".into());
+    let fallback_num_wrk = fallback_num_wrk_str.parse::<usize>().unwrap_or(1);
     let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or("3600".into());
+    let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(3600);
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or("".into());
-    let mut fallback_num_wrk = 1;
-    if let Ok(num_wrk) = fallback_num_wrk_str.parse::<usize>() {
-        fallback_num_wrk = num_wrk;
-    }
-    let mut fallback_scrap_interval = 3600;
-    if let Ok(num_scrap_inv) = fallback_scrap_interval_str.parse::<u64>() {
-        fallback_scrap_interval = num_scrap_inv;
-    }
 
-    let laddr = app.value_of("addr").unwrap_or(&falback_laddr[..]);
-    let github_token = app.value_of("github_token").unwrap_or(&fallback_github_token[..]);
-    let num_wrk = value_t!(app, "wrk", usize).unwrap_or(fallback_num_wrk);
-    let scrap_interval = value_t!(app, "scrap_interval", u64).unwrap_or(fallback_scrap_interval);
+    let laddr: String = app.get_one("addr").unwrap_or(&falback_laddr).to_string();
+    let github_token: String = app.get_one("github_token").unwrap_or(&fallback_github_token).to_string();
+    let num_wrk: usize = *app.get_one("wrk").unwrap_or(&fallback_num_wrk);
+    let scrap_interval: u64 = *app.get_one("scrap_interval").unwrap_or(&fallback_scrap_interval);
 
     let env = RunContext {
         listen_address: laddr.into(),
