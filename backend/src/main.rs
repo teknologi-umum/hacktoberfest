@@ -26,7 +26,7 @@ async fn main() {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct RunContext {
     listen_address: String,
     num_workers: usize,

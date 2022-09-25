@@ -1,6 +1,6 @@
 use crate::github::{Github, Issue};
-use crate::github::{GithubError, Issue};
-use crate::{RunContext, DEFAULT_CLIENT};
+use crate::github::{GithubError};
+use crate::{RunContext};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
