@@ -108,19 +108,19 @@ jobs:
       - name: Pull latest code
         run: >
           ssh 
-            -i /root/.ssh/id_ed25519 
-            -p ${{ secrets.SSH_PORT }} 
-            -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 
-            'ssh hacktoberfest "cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest && git pull"'
+          -i /root/.ssh/id_ed25519 
+          -p ${{ secrets.SSH_PORT }} 
+          -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 
+          'ssh hacktoberfest "cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest && git pull"'
       - name: Build Docker images
         run: >
           ssh 
-            -i /root/.ssh/id_ed25519 
-            -p ${{ secrets.SSH_PORT }} 
-            -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 
-            'ssh hacktoberfest \'tmux -d -s cd "echo ${{ secrets.SSH_PASSWORD }} | sudo -S sh -c \"cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest &&
-            docker compose up -d --build frontend backend &&
-            docker container prune -f && 
-            docker image prune -f && 
-            docker builder prune -f &&
-            exit\""\''
+          -i /root/.ssh/id_ed25519 
+          -p ${{ secrets.SSH_PORT }} 
+          -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 
+          'ssh hacktoberfest \'tmux -d -s cd "echo ${{ secrets.SSH_PASSWORD }} | sudo -S sh -c \"cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest &&
+          docker compose up -d --build frontend backend &&
+          docker container prune -f && 
+          docker image prune -f && 
+          docker builder prune -f &&
+          exit\""\''
