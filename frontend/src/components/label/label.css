@@ -9,8 +9,8 @@
 }
 
 .label.glow {
-    filter: brightness(1.75);
-    text-shadow: 0 0 0.25rem rgba(255, 255, 255, 0.25);
+  filter: brightness(1.75);
+  text-shadow: 0 0 0.25rem rgba(255, 255, 255, 0.25);
 }
 
 .label.white {

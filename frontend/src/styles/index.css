@@ -1,31 +1,57 @@
 .filter-tips {
-    color: white;
-    text-align: center;
-    font-family: 'Cairo', sans-serif;
-    opacity: 0.625;
-    font-size: 1.8rem;
-    margin-top: 3.2rem;
-    margin-bottom: 1rem;
+  color: white;
+  text-align: center;
+  font-family: "Cairo", sans-serif;
+  opacity: 0.625;
+  font-size: 1.8rem;
+  margin-top: 3.2rem;
+  margin-bottom: 1rem;
 }
 
 .filters {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 0 auto;
-    gap: 1rem;
-    margin-bottom: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  gap: 1rem;
+  margin-bottom: 3.2rem;
 }
 
 .filters div {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .card-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin: 0 auto;
-    max-width: 80rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  max-width: 80rem;
+}
+
+.loading-text,
+.error-text {
+  display: block;
+  margin: 8rem 0 2rem 0;
+  font-family: "Press Start 2p", sans-serif;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #efefef;
+}
+
+.loading-text {
+  text-shadow: 0 0 0.5rem rgba(219, 210, 255, 0.5);
+}
+
+.error-text {
+  color: #ffecec;
+  text-shadow: 0 0 0.5rem rgba(253, 190, 190, 0.5);
+}
+
+.error-message {
+  font-family: "Cairo", sans-serif;
+  color: #efefef;
+  text-align: center;
+  opacity: 0.8;
 }

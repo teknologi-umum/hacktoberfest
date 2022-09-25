@@ -1,18 +1,11 @@
 import { component$, mutable, useStylesScoped$ } from "@builder.io/qwik";
+import { Issue } from "~/models/issue";
 import { Label } from "../label";
-import styles from "./issue-card.css?inline";
+import styles from "./issue-card.css";
 
-type Label = {
-  name: string;
-};
+type IssueProps = Issue
 
-export type Issue = {
-  title: string;
-  html_url: string;
-  labels: Label[];
-};
-
-export default component$((props: Issue) => {
+export default component$((props: IssueProps) => {
   useStylesScoped$(styles);
 
   return (
