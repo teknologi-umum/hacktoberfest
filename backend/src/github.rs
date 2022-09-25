@@ -1,4 +1,3 @@
-use std::{collections::HashMap, fmt};
 use actix_web::http;
 use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
@@ -6,7 +5,8 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
     Client, Response, StatusCode,
 };
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use std::{collections::HashMap, fmt};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RateLimitResponse {
@@ -23,13 +23,20 @@ pub struct Rate {
 }
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
-        let _rate = Rate { limit: todo!(), remaining: todo!(), reset: todo!(), used: todo!(), resource: todo!() };
+        let _rate = Rate {
+            limit: todo!(),
+            remaining: todo!(),
+            reset: todo!(),
+            used: todo!(),
+            resource: todo!(),
+        };
         let mpairs = vec![
-            ("x-ratelimit-limit",     &_rate.limit),
+            ("x-ratelimit-limit", &_rate.limit),
             ("x-ratelimit-remaining", &_rate.remaining),
-            ("x-ratelimit-reset",     &_rate.reset),
-            ("x-ratelimit-used",      &_rate.used),
+            ("x-ratelimit-reset", &_rate.reset),
+            ("x-ratelimit-used", &_rate.used),
         ];
+
         for (header_key, mut v_dst) in mpairs.iter() {
             if let Some(hval_limit) = headers.get(*header_key) {
                 let val = hval_limit.to_str().unwrap_or("0");
@@ -38,12 +45,13 @@ impl Rate {
                 }
             }
         }
+
         // parse resource
         if let Some(hval_resource) = headers.get("x-ratelimit-resource") {
             let val = hval_resource.to_str().unwrap_or("");
             _rate.resource = val.into();
         }
-        
+
         _rate
     }
 }
@@ -55,7 +63,6 @@ pub struct Resources {
     pub integration_manifest: Rate,
     pub search: Rate,
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Repository {
@@ -109,8 +116,9 @@ pub struct GithubErrorResponse {
 }
 
 lazy_static! {
-    pub static ref DefaultClient: Github = Github::new();
+    pub static ref DEFAULT_CLIENT: Github = Github::new();
 }
+
 #[derive(Debug)]
 pub struct GithubErrorMetadata {
     pub response: GithubErrorResponse,
@@ -118,15 +126,12 @@ pub struct GithubErrorMetadata {
 }
 impl GithubErrorMetadata {
     async fn from_http_response(resp: Response) -> Self {
-        let rate: Rate;
-        {
-            rate = Rate::from_headers(resp.headers());
-        }
-        let response = resp.json::<GithubErrorResponse>().await.expect("unknown error");
-        GithubErrorMetadata {
-            response,
-            rate: rate,
-        }
+        let rate = Rate::from_headers(resp.headers());
+        let response = resp
+            .json::<GithubErrorResponse>()
+            .await
+            .expect("unknown error");
+        GithubErrorMetadata { response, rate }
     }
 }
 
@@ -146,7 +151,9 @@ impl fmt::Display for GithubError {
 }
 
 impl Github {
-    pub fn new() -> Self { Self::new_with_token(None) }
+    pub fn new() -> Self {
+        Self::new_with_token(None)
+    }
     pub fn new_with_token(token: Option<String>) -> Self {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -160,8 +167,11 @@ impl Github {
                 .expect("failed to set Content-Type header"),
         );
         if let Some(token) = token {
-            headers.insert(http::header::AUTHORIZATION, HeaderValue::from_str(&format!("Bearer {token}")[..])
-                    .expect("failed to set Authorization header"));
+            headers.insert(
+                http::header::AUTHORIZATION,
+                HeaderValue::from_str(&format!("Bearer {token}")[..])
+                    .expect("failed to set Authorization header"),
+            );
         }
         let client = Client::builder()
             .default_headers(headers)
@@ -175,40 +185,42 @@ impl Github {
         T: DeserializeOwned + 'static,
     {
         match response.status() {
-            StatusCode::OK => response.json::<T>().await
-                    .map_err(GithubError::Requwest),
-            StatusCode::FORBIDDEN => Err(GithubError::App(GithubErrorMetadata::from_http_response(response).await)),
+            StatusCode::OK => response.json::<T>().await.map_err(GithubError::Requwest),
+            StatusCode::FORBIDDEN => Err(GithubError::App(
+                GithubErrorMetadata::from_http_response(response).await,
+            )),
             status_code => Err(GithubError::StatusCode(status_code)),
         }
     }
 
-    /// rate_limit 
-    /// 
+    /// rate_limit
+    ///
     /// rate limit info
     pub async fn rate_limit(&self) -> Result<RateLimitResponse, GithubError> {
-        let response = self.client
+        let response = self
+            .client
             .get("https://api.github.com/rate_limit")
-            .send().await.map_err(GithubError::Requwest)?;
+            .send()
+            .await
+            .map_err(GithubError::Requwest)?;
         Self::wrap_response(response).await
     }
 
     /// list_repostory
-    /// 
+    ///
     pub async fn list_repository(&self) -> Result<Vec<Repository>, GithubError> {
-        let response: Response = self.client
+        let response: Response = self
+            .client
             .get("https://api.github.com/users/teknologi-umum/repos")
-            .query(&[
-                ("type", "public"),
-                ("sort", "updated"),
-                ("per_page", "100"),
-            ])
+            .query(&[("type", "public"), ("sort", "updated"), ("per_page", "100")])
             .send()
-            .await.map_err(GithubError::Requwest)?;
+            .await
+            .map_err(GithubError::Requwest)?;
         Self::wrap_response(response).await
     }
 
     /// list_issues
-    /// 
+    ///
     pub async fn list_issues(&self, repo: String) -> Result<Vec<Issue>, GithubError> {
         let uencoded_repo = urlencoding::encode(&repo[..]);
         let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/issues");
@@ -216,7 +228,8 @@ impl Github {
             .client
             .get(u)
             .send()
-            .await.map_err(GithubError::Requwest)?;
+            .await
+            .map_err(GithubError::Requwest)?;
         let resp = Self::wrap_response::<Vec<Issue>>(response).await;
         if let Ok(json_response) = resp {
             let clean_issues = json_response
@@ -230,7 +243,7 @@ impl Github {
     }
 
     /// list_languages
-    /// 
+    ///
     pub async fn list_languages(&self, repo: String) -> Result<Vec<String>, GithubError> {
         let uencoded_repo = urlencoding::encode(&repo[..]);
         let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/languages");
@@ -238,27 +251,27 @@ impl Github {
             .client
             .get(u)
             .send()
-            .await.map_err(GithubError::Requwest)?;
+            .await
+            .map_err(GithubError::Requwest)?;
         let resp = Self::wrap_response::<HashMap<String, i64>>(response).await;
         if let Ok(json_response) = resp {
-            let mut language_set: Vec<(String, i64)> = json_response.iter().map(|(key, value)| (key.into(), *value)).collect();
+            let mut language_set: Vec<(String, i64)> = json_response
+                .iter()
+                .map(|(key, value)| (key.into(), *value))
+                .collect();
             language_set.sort_by(|a, b| {
                 let (_, a_bytes) = a;
                 let (_, b_bytes) = b;
                 b_bytes.cmp(a_bytes)
             });
 
-            let languages = language_set
-                .into_iter()
-                .map(|(l, _)| l)
-                .collect();
+            let languages = language_set.into_iter().map(|(l, _)| l).collect();
             return Ok(languages);
         }
-        
+
         Err(resp.err().unwrap())
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -270,19 +283,22 @@ mod tests {
     fn test_url_encoding_sec() {
         let name = "aaaa/bb?type=private&_=";
         let p = format!("http://0/asdsdasdad/asaaaaa/{name}/ooookay");
-        assert_eq!(p, "http://0/asdsdasdad/asaaaaa/aaaa/bb?type=private&_=/ooookay");
+        assert_eq!(
+            p,
+            "http://0/asdsdasdad/asaaaaa/aaaa/bb?type=private&_=/ooookay"
+        );
 
         let uencoded_name = urlencoding::encode(&name[..]);
         let p2 = format!("http://0/asdsdasdad/asaaaaa/{uencoded_name}/ooookay");
-        assert_eq!(p2, "http://0/asdsdasdad/asaaaaa/aaaa%2Fbb%3Ftype%3Dprivate%26_%3D/ooookay");
+        assert_eq!(
+            p2,
+            "http://0/asdsdasdad/asaaaaa/aaaa%2Fbb%3Ftype%3Dprivate%26_%3D/ooookay"
+        );
     }
-    
+
     #[test]
     fn test_chrono_serde() -> Result<(), String> {
-        let tcs = vec![
-            r#""2022-09-21T05:52:31Z""#,
-            "null",
-        ];
+        let tcs = vec![r#""2022-09-21T05:52:31Z""#, "null"];
         for tc in tcs.iter() {
             match serde_json::from_str::<Option<DateTime<Utc>>>(*tc) {
                 Ok(dt) => println!("{:?}", dt),
@@ -292,7 +308,7 @@ mod tests {
         Ok(())
     }
 
-    #[tokio::test] 
+    #[tokio::test]
     async fn test_rate_limit() {
         let gh = Github::new();
         let rate_limit = gh.rate_limit().await.unwrap();
@@ -316,7 +332,7 @@ mod tests {
     #[tokio::test]
     async fn test_list_languages() {
         let gh = Github::new();
-        let repository =  gh.list_languages(String::from("blog")).await.unwrap();
+        let repository = gh.list_languages(String::from("blog")).await.unwrap();
         assert!(repository.len() > 0, "repositry len 0");
         assert_eq!(*repository.get(0).unwrap(), String::from("TypeScript"));
     }
