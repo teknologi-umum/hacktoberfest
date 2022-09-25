@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 use crate::github::{Github, Issue};
 
 #[derive(Serialize, Deserialize)]
@@ -25,8 +25,7 @@ pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>, github_cli
     for repo in repository.iter() {
         // Skip if there isn't any "hacktoberfest" topic on the repository
         if !repo.topics.contains(&"hacktoberfest".into()) {
-
-            continue
+            continue;
         }
 
         let issues = github_client.list_issues(repo.name.to_owned()).await.unwrap();
@@ -46,9 +45,13 @@ pub async fn scrape(global_map: &Arc<Mutex<HashMap<String, String>>>, github_cli
         })
     }
 
-    let json_collection = serde_json::to_string::<Vec<RepositoryCollection>>(&repository_collection).unwrap();
+    let json_collection =
+        serde_json::to_string::<Vec<RepositoryCollection>>(&repository_collection).unwrap();
 
-    global_map.lock().unwrap().insert("repo".into(), json_collection);
+    global_map
+        .lock()
+        .unwrap()
+        .insert("repo".into(), json_collection);
 
     println!("Scraped!");
 }
