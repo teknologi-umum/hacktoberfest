@@ -850,12 +850,9 @@ dependencies = [
  "clap",
  "color-backtrace",
  "lazy_static",
-<<<<<<< HEAD
  "log",
-=======
  "mime",
  "prometheus",
->>>>>>> 6f6bc40 (feat(backend): app metrics)
  "reqwest",
  "scopeguard",
  "serde",

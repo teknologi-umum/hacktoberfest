@@ -1,17 +1,56 @@
 use std::{sync::Mutex, collections::HashMap};
 
 use actix_web::{web::{Data, self}, Result, HttpResponse, Resource, http::header};
-use prometheus::{TextEncoder, Encoder};
+use lazy_static::lazy_static;
+use prometheus::{
+    TextEncoder, Encoder, IntCounterVec, IntGauge, HistogramVec,
+    register_int_counter_vec, opts,
+    register_int_gauge,
+    register_histogram_vec,
+};
+
+const CUSTOM_BUCKETS: &[f64; 14] = &[
+    0.0005, 0.0008, 0.00085, 0.0009, 0.00095, 0.001, 0.00105, 0.0011, 0.00115, 0.0012, 0.0015,
+    0.002, 0.003, 1.0,
+];
+lazy_static! {
+    pub static ref SCRAP_COUNT_TOTAL: IntCounterVec = register_int_counter_vec!(
+        opts!("scrap_count_total", "Scrap count total"),
+        &[],
+    )
+    .expect("Can't create a metric");
+    pub static ref SCRAP_REPO_COUNT_TOTAL: IntCounterVec = register_int_counter_vec!(
+        opts!("scrap_repo_count_total", "Scrap repository count total"),
+        &["repo_url"],
+    )
+    .expect("Can't create a metric");
+    pub static ref SCRAP_TIME_SECONDS: HistogramVec = register_histogram_vec!(
+        "scrap_time_seconds", "Scrap time seconds",
+        &[],
+        CUSTOM_BUCKETS.to_vec(),
+    )
+    .expect("Can't create a metric");
+}
+
+pub fn init_collector() {
+    lazy_static::initialize(&SCRAP_COUNT_TOTAL);
+    lazy_static::initialize(&SCRAP_REPO_COUNT_TOTAL);
+    lazy_static::initialize(&SCRAP_TIME_SECONDS);
+}
 
 async fn metrics(_global_map: Data<Mutex<HashMap<String, String>>>) -> Result<HttpResponse> {
-    let enc = TextEncoder::new();
-    let mut buf = vec![];
-    enc.encode(&prometheus::gather(), &mut buf).expect("failed to encode metrics");
+    let encoder = TextEncoder::new();
+    let mut buffer = vec![];
+    let fam = &prometheus::gather();
+    // println!("{:?}", fam);
+    encoder
+        .encode(fam, &mut buffer)
+        .expect("Failed to encode metrics");
 
-    let response = String::from_utf8(buf.clone()).expect("failed to copy buffer");
-    buf.clear();
+    let response = String::from_utf8(buffer.clone()).expect("Failed to convert bytes to string");
+    buffer.clear();
 
-        Ok(HttpResponse::Ok()
+    Ok(HttpResponse::Ok()
         .insert_header(header::ContentType(mime::TEXT_PLAIN))
         .body(response))
 }
@@ -22,10 +61,14 @@ pub fn handler() -> Resource {
 
 #[cfg(test)]
 mod tests {
+    use crate::handlers::{init_collector, SCRAP_COUNT_TOTAL, SCRAP_REPO_COUNT_TOTAL};
     use super::metrics;
 
     #[actix_web::test]
     async fn test_metrics() {
-
+        init_collector();
+        SCRAP_COUNT_TOTAL.with_label_values(&[]).inc();
+        SCRAP_REPO_COUNT_TOTAL.with_label_values(&["hey"]).inc();
+        println!("{:?}", prometheus::default_registry().gather());
     }
 }

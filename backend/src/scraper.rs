@@ -1,5 +1,7 @@
 use crate::github::{Github, Issue};
 use crate::github::{GithubError};
+use crate::handlers::{SCRAP_TIME_SECONDS, SCRAP_COUNT_TOTAL};
+use crate::handlers::metrics::SCRAP_REPO_COUNT_TOTAL;
 use crate::{RunContext};
 use chrono::{DateTime, Utc};
 use log::{debug, info};
@@ -49,7 +51,7 @@ pub async fn run_scrape<B>(
     println!("Run scrapper");
     loop {
         {
-            let _ = backoff::future::retry_notify(  
+            let _ = backoff::future::retry_notify(
                 backoff.clone(),
                 || async { Ok(scrape(global_map, github_client).await?) },
                 |err, dur| println!("scrape error {:?}: {}", dur, err),
@@ -67,11 +69,18 @@ pub async fn scrape(
     defer! {
         println!("scrapper stop");
     }
+    SCRAP_COUNT_TOTAL.with_label_values(&[]).inc();
+    let timer = SCRAP_TIME_SECONDS.with_label_values(&[]).start_timer();
+    defer! {
+        timer.observe_duration();
+    }
+
     let mut repository_collection: Vec<RepositoryCollection> = vec![];
     let repository = github_client
         .list_repository()
         .await
-        .map_err(ScrapError::Github)?;
+        .map_err(ScrapError::Github)?;    
+
     for repo in repository.iter() {
         // Skip if there isn't any "hacktoberfest" topic on the repository
         if !repo.topics.contains(&"hacktoberfest".into()) {
@@ -79,6 +88,10 @@ pub async fn scrape(
         }
 
         println!("Scraping issues for {}", repo.name);
+        SCRAP_REPO_COUNT_TOTAL
+            .with_label_values(&[&repo.html_url])
+            .inc();
+
         let issues = github_client
             .list_issues(repo.name.to_owned())
             .await

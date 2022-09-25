@@ -36,6 +36,8 @@ async fn run() -> Result<()> {
         color_backtrace::install()
     }
 
+    handlers::init();
+
     let app = clap_app!(hacktoberfestd =>
         (version: "")
         (about: "Hacktoberfest serverd")
