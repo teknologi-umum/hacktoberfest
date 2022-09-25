@@ -45,6 +45,7 @@ async fn run() -> Result<()> {
         (@arg wrk: --wrk +takes_value "Number of HTTP server workers")
         (@arg scrap_interval: --("scrap-interval") +takes_value "Scrap interval in second")
         (@arg github_token: --("github_token") +takes_value "Github API Token")
+        (@arg sentry_dsn: --("sentry-dsn") +takes_value "Sentry DSN")
     )
     .get_matches();
 
@@ -54,6 +55,7 @@ async fn run() -> Result<()> {
     let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or("3600".into());
     let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(3600);
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or("".into());
+    let fallback_sentry_dsn = env::var("SENTRY_DSN").unwrap_or("".into());
 
     let laddr: String = app.get_one("addr").unwrap_or(&falback_laddr).to_string();
     let github_token: String = app
@@ -64,6 +66,16 @@ async fn run() -> Result<()> {
     let scrap_interval: u64 = *app
         .get_one("scrap_interval")
         .unwrap_or(&fallback_scrap_interval);
+    let sentry_dsn: String = app.get_one("sentry_dsn").unwrap_or(&fallback_sentry_dsn).to_string();
+
+    // init sentry
+    if sentry_dsn.len() > 0 { 
+        let _ = sentry::init(sentry_dsn);
+        println!("notify app start");
+        scopeguard::defer! {
+            println!("notify app exit");
+        }
+    }
 
     let env = RunContext {
         listen_address: laddr.into(),
@@ -118,4 +130,13 @@ async fn run_server(
     .workers(env.num_workers)
     .run()
     .await
+}
+
+#[cfg(test)]
+mod tests {
+    #[tokio::test]
+    async fn test_sentry_panic() {
+        let _ = sentry::init("http://asdf:asd@127.0.0.1:9000/asdf");
+        // panic!("asdf");
+    }
 }
