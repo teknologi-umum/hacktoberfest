@@ -4,11 +4,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN user=root cargo init
-RUN cargo fetch
 RUN cargo build --release
 
 FROM debian:bullseye AS runtime
+
+RUN apt-get update && apt-get install -y curl
 
 WORKDIR /app
 
