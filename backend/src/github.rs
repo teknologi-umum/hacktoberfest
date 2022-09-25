@@ -320,21 +320,21 @@ mod tests {
     async fn test_list_repository() {
         let gh = Github::new();
         let repository = gh.list_repository().await.unwrap();
-        assert_eq!(repository.len(), 27);
+        assert!(repository.len() > 0, "repository len 0");
     }
 
     #[tokio::test]
     async fn test_list_issues() {
         let gh = Github::new();
-        let repository = gh.list_issues("blog".into()).await.unwrap();
-        assert!(repository.len() > 0, "repository len 0");
+        let issues = gh.list_issues("blog".into()).await.unwrap();
+        assert!(issues.len() > 0, "issues len 0");
     }
 
     #[tokio::test]
     async fn test_list_languages() {
         let gh = Github::new();
-        let repository = gh.list_languages(String::from("blog")).await.unwrap();
-        assert!(repository.len() > 0, "repositry len 0");
-        assert_eq!(*repository.get(0).unwrap(), String::from("TypeScript"));
+        let languages = gh.list_languages(String::from("blog")).await.unwrap();
+        assert!(languages.len() > 0, "languages len 0");
+        assert_eq!(*languages.get(0).unwrap(), String::from("TypeScript"));
     }
 }

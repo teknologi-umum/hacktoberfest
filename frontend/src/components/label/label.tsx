@@ -1,4 +1,4 @@
-import { component$, type QwikJSX, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import styles from "./label.css";
 
 export const COLOUR_MAP: Record<string, string> = {
