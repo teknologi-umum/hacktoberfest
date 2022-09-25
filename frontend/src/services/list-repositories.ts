@@ -31,7 +31,20 @@ export const getRepositoriesList = $(
             );
         return { ...repository, issues: filteredIssues };
       })
-      .filter((repository) => repository.issues.length > 0);
+      .filter((repository) => repository.issues.length > 0)
+      .map((repository) => {
+        // sort label prioritized by difficulty
+        return {
+          ...repository,
+          issues: repository.issues.map((issue) => ({
+            ...issue,
+            labels: issue.labels.sort((label) => {
+              if (label.name.startsWith("difficulty")) return -1;
+              return 0;
+            })
+          }))
+        }
+      });
 
     return filteredRepositories;
   }
