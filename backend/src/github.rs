@@ -6,7 +6,7 @@ use reqwest::{
     Client, Response, StatusCode,
 };
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap, fmt, io::Error};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RateLimitResponse {
@@ -140,6 +140,8 @@ pub enum GithubError {
     App(GithubErrorMetadata),
     StatusCode(http::StatusCode),
     Requwest(reqwest::Error),
+}
+impl std::error::Error for GithubError {
 }
 impl fmt::Display for GithubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

@@ -1,7 +1,9 @@
 use crate::github::DEFAULT_CLIENT;
+use crate::scraper::ScrapError;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, Result};
 use clap::{clap_app, value_t};
+use scraper::run_scrape;
 use std::collections::HashMap;
 use std::process::exit;
 use std::sync::{Arc, Mutex};
@@ -22,7 +24,8 @@ async fn main() {
     }
 }
 
-struct RunContext {
+#[derive(Clone)]
+pub struct RunContext {
     listen_address: String,
     num_workers: usize,
     scrap_interval: u64,
@@ -68,12 +71,11 @@ async fn run() -> Result<()> {
     let server_map = Arc::clone(&global_map);
     let scraper_map = Arc::clone(&global_map);
 
+    let bf = Box::new(backoff::ExponentialBackoffBuilder::new()
+        .build());
+    let a = env.clone();
     tokio::spawn(async move {
-        println!("run scrapper");
-        loop {
-            scraper::scrape(&scraper_map).await;
-            thread::sleep(Duration::new(scrap_interval, 0));
-        }
+        run_scrape(a, bf, &scraper_map).await;
     });
 
     if let Err(e) = run_server(env, Data::from(server_map)).await {
