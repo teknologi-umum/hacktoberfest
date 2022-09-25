@@ -1,5 +1,5 @@
 import { $ } from "@builder.io/qwik";
-import { API_BASE_URL } from "~/env";
+import { API_BASE_URL, BROWSER_API_BASE_URL } from "~/env";
 import type { Repository } from "~/models/repository";
 
 type RepositoriesListOptions = {
@@ -12,7 +12,14 @@ export const getRepositoriesList = $(
   async ({ filters, signal }: RepositoriesListOptions) => {
     let repositories: Repository[] = [];
     if (CACHE_MAP.has("repo") === undefined) {
-      const response = await fetch(`${API_BASE_URL}/repo`, { signal });
+      let fetchURL: URL;
+      if (import.meta.env.SSR) {
+        fetchURL = new URL("/repo", API_BASE_URL);
+      } else {
+        fetchURL = new URL("/repo", BROWSER_API_BASE_URL);
+      }
+
+      const response = await fetch(fetchURL, { signal });
       repositories = await response.json();
       CACHE_MAP.set("repo", repositories);
     } else {
