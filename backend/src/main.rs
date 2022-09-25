@@ -110,6 +110,7 @@ async fn run_server(
         App::new()
             .app_data(global_map.clone())
             .service(healthcheck::handler())
+            .service(metrics::handler())
             .service(repositories::handler())
     })
     .bind(env.listen_address)?

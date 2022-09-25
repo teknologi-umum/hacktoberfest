@@ -19,3 +19,5 @@ urlencoding = "2.1.2"
 backoff = { version = "0.4.0", features = ["async-std"] }
 scopeguard = "1.1.0"
 log = { version = "0.4.17", features = ["std", "serde"] }
+prometheus = "0.13.2"
+mime = "0.3.16"
