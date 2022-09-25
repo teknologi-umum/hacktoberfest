@@ -17,3 +17,6 @@ lazy_static = "1.4.0"
 color-backtrace = "0.5.1"
 urlencoding = "2.1.2"
 backoff = { version = "0.4.0", features = ["async-std"] }
+sentry = { version = "0.27.0", features = ["reqwest"] }
+scopeguard = "1.1.0"
+log = { version = "0.4.17", features = ["serde", "std"] }
