@@ -29,3 +29,29 @@
   margin: 0 auto;
   max-width: 80rem;
 }
+
+.loading-text,
+.error-text {
+  display: block;
+  margin: 8rem 0 2rem 0;
+  font-family: "Press Start 2p", sans-serif;
+  text-align: center;
+  font-size: 1.4rem;
+  color: #efefef;
+}
+
+.loading-text {
+  text-shadow: 0 0 0.5rem rgba(219, 210, 255, 0.5);
+}
+
+.error-text {
+  color: #ffecec;
+  text-shadow: 0 0 0.5rem rgba(253, 190, 190, 0.5);
+}
+
+.error-message {
+  font-family: "Cairo", sans-serif;
+  color: #efefef;
+  text-align: center;
+  opacity: 0.8;
+}

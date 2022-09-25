@@ -18,6 +18,7 @@ body {
   position: relative;
   font-size: 1.6rem;
   background-image: linear-gradient(to top, #1f0741 8%, #0c011b 40%);
+  overflow: hidden;
 }
 
 main {
