@@ -14,6 +14,8 @@ export const RouterHead = component$(() => {
 
       <link rel="canonical" href={loc.href} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+      <link rel="shortcut icon" href="/favicon.ico" />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
       <meta property="og:site_name" content="Teknologi Umum Hacktoberfest" />
@@ -68,7 +70,7 @@ export const RouterHead = component$(() => {
         property="og:image:alt"
         content="Website yang memuat semua issue untuk kebutuhan Hacktoberfest dari organisasi Teknologi Umum"
       />
-      <meta property="og:site_name" content="Graphene" />
+      <meta property="og:site_name" content="Hacktoberfest Teknologi Umum" />
       <meta property="og:locale" content="id-ID" />
       <meta
         property="og:description"
