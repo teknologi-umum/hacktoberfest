@@ -70,6 +70,7 @@ services:
       LISTEN_ADDR: 0.0.0.0:9090
       NUM_WORKERS: 1
       SCRAP_INTERVAL: 3600 
+      GITHUB_TOKEN: ""
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.entrypoints=web,websecure"
