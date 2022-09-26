@@ -15,16 +15,17 @@ import { RepositoryCard } from "~/components/repository-card";
 import { Repository } from "~/models/repository";
 import { getCategoriesList } from "~/services/list-categories";
 import { getRepositoriesList } from "~/services/list-repositories";
-import styles from "../styles/index.css";
+import styles from "~/styles/index.css";
 
 type State = {
   activeFilters: string[];
+  repositories: Repository[];
 };
 
 export default component$(() => {
   useStylesScoped$(styles);
 
-  const state = useStore<State>({ activeFilters: [] });
+  const state = useStore<State>({ activeFilters: [], repositories: [] });
 
   const repositoriesResource = useResource$<Repository[]>(
     async ({ track, cleanup }) => {
@@ -33,7 +34,7 @@ export default component$(() => {
       track(state, "activeFilters");
       return getRepositoriesList({
         signal: abortController.signal,
-        filters: state.activeFilters,
+        state,
       });
     }
   );
@@ -43,8 +44,8 @@ export default component$(() => {
     cleanup(() => abortController.abort());
     const repositories = await getRepositoriesList({
       signal: abortController.signal,
-      filters: []
-    })
+      state,
+    });
     return getCategoriesList(repositories);
   });
 

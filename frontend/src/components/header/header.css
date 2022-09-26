@@ -4,6 +4,7 @@
 }
 
 .header__text {
+  white-space: nowrap;
   text-align: center;
   font-size: clamp(2rem, 1rem + 4vw, 4.8rem);
   font-family: "Press Start 2P", sans-serif;
@@ -16,7 +17,7 @@
   text-align: center;
   color: #efefef;
   font-family: "Cairo", sans-serif;
-  font-size: clamp(1rem, 0.5rem + 4vw, 2.2rem);
+  font-size: clamp(0.5rem, 0.25rem + 4vw, 2.2rem);
   opacity: 0.625;
   line-height: 1.25em;
 }

@@ -38,7 +38,7 @@ export default component$((props: RepositoryProps) => {
         <div class="repository-card__right-content">
           {props.languages
             .sort()
-            .slice(0, 10)
+            .slice(0, 8)
             .map((language) => (
               <div class="repository-card__language">
                 {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}

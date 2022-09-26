@@ -1,38 +1,34 @@
 import { $ } from "@builder.io/qwik";
-import { API_BASE_URL, BROWSER_API_BASE_URL } from "~/env";
+import { API_BASE_URL } from "~/env";
 import type { Repository } from "~/models/repository";
 
 type RepositoriesListOptions = {
   signal: AbortSignal;
-  filters: string[];
+  state: {
+    activeFilters: string[];
+    repositories: Repository[];
+  };
 };
 
-export const CACHE_MAP = new Map();
 export const getRepositoriesList = $(
-  async ({ filters, signal }: RepositoriesListOptions) => {
+  async ({ state, signal }: RepositoriesListOptions) => {
     let repositories: Repository[] = [];
-    if (!CACHE_MAP.has("repo")) {
-      let fetchURL: URL;
-      if (import.meta.env.SSR) {
-        fetchURL = new URL("/repo", API_BASE_URL);
-      } else {
-        fetchURL = new URL("/repo", BROWSER_API_BASE_URL);
-      }
-      
-      const response = await fetch(fetchURL, { signal });
+    if (state.repositories.length < 1) {
+      let url = new URL("/repo", API_BASE_URL);
+      const response = await fetch(url, { signal });
       repositories = await response.json();
-      CACHE_MAP.set("repo", repositories);
+      state.repositories = repositories;
     } else {
-      repositories = CACHE_MAP.get("repo");
+      repositories = state.repositories;
     }
 
     const filteredRepositories = repositories
       .map((repository) => {
         const filteredIssues =
-          filters.length < 1
+          state.activeFilters.length < 1
             ? repository.issues
             : repository.issues.filter((issue) =>
-                issue.labels.some((label) => filters.includes(label.name))
+                issue.labels.some((label) => state.activeFilters.includes(label.name))
               );
         return { ...repository, issues: filteredIssues };
       })
