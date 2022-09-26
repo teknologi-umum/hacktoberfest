@@ -13,16 +13,9 @@ import { Header } from "~/components/header";
 import { Label } from "~/components/label";
 import { RepositoryCard } from "~/components/repository-card";
 import { Repository } from "~/models/repository";
+import { getCategoriesList } from "~/services/list-categories";
 import { getRepositoriesList } from "~/services/list-repositories";
 import styles from "../styles/index.css";
-
-export const FAKE_FILTERS = [
-  "difficulty: easy",
-  "difficulty: medium",
-  "difficulty: hard",
-  "good first issue",
-  "help wanted",
-];
 
 type State = {
   activeFilters: string[];
@@ -45,6 +38,16 @@ export default component$(() => {
     }
   );
 
+  const categoriesResource = useResource$<string[]>(async ({ cleanup }) => {
+    const abortController = new AbortController();
+    cleanup(() => abortController.abort());
+    const repositories = await getRepositoriesList({
+      signal: abortController.signal,
+      filters: []
+    })
+    return getCategoriesList(repositories);
+  });
+
   const toggleFilter$ = $((filter: string) => {
     const isFilterActive = state.activeFilters.includes(filter);
     state.activeFilters = isFilterActive
@@ -60,14 +63,30 @@ export default component$(() => {
         Kesusahan nyari issue? Klik aja filter di bawah biar gampang nyarinya!
       </p>
       <div class="filters">
-        {FAKE_FILTERS.map((filter) => {
-          const isFilterActive = state.activeFilters.includes(filter);
-          return (
-            <div onClick$={() => toggleFilter$(filter)}>
-              <Label text={filter} isGlowing={mutable(isFilterActive)} />
+        <Resource
+          value={categoriesResource}
+          onPending={() => (
+            <span class="loading-text">Loading Categories...</span>
+          )}
+          onRejected={(error) => (
+            <div>
+              <span class="error-text">Failed to load categories</span>
+              <p class="error-message">{error.message}</p>
             </div>
-          );
-        })}
+          )}
+          onResolved={(filters) => (
+            <>
+              {filters.map((filter) => {
+                const isFilterActive = state.activeFilters.includes(filter);
+                return (
+                  <div onClick$={() => toggleFilter$(filter)}>
+                    <Label text={filter} isGlowing={mutable(isFilterActive)} />
+                  </div>
+                );
+              })}
+            </>
+          )}
+        />
       </div>
       <div class="card-container">
         <Resource

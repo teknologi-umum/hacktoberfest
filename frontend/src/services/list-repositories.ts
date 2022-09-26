@@ -11,14 +11,14 @@ export const CACHE_MAP = new Map();
 export const getRepositoriesList = $(
   async ({ filters, signal }: RepositoriesListOptions) => {
     let repositories: Repository[] = [];
-    if (CACHE_MAP.has("repo") === undefined) {
+    if (!CACHE_MAP.has("repo")) {
       let fetchURL: URL;
       if (import.meta.env.SSR) {
         fetchURL = new URL("/repo", API_BASE_URL);
       } else {
         fetchURL = new URL("/repo", BROWSER_API_BASE_URL);
       }
-
+      
       const response = await fetch(fetchURL, { signal });
       repositories = await response.json();
       CACHE_MAP.set("repo", repositories);
@@ -32,8 +32,8 @@ export const getRepositoriesList = $(
           filters.length < 1
             ? repository.issues
             : repository.issues.filter((issue) =>
-              issue.labels.some((label) => filters.includes(label.name))
-            );
+                issue.labels.some((label) => filters.includes(label.name))
+              );
         return { ...repository, issues: filteredIssues };
       })
       .filter((repository) => repository.issues.length > 0)
@@ -46,9 +46,9 @@ export const getRepositoriesList = $(
             labels: issue.labels.sort((label) => {
               if (label.name.startsWith("difficulty")) return -1;
               return 0;
-            })
-          }))
-        }
+            }),
+          })),
+        };
       });
 
     return filteredRepositories;
