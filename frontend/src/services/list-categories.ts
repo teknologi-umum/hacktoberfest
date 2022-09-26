@@ -1,4 +1,4 @@
-import { Repository } from "~/models/repository";
+import type { Repository } from "~/models/repository";
 
 export function getCategoriesList(repositories: Repository[]): string[] {
   return [
