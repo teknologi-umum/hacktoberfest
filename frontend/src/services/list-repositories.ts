@@ -1,5 +1,5 @@
 import { $ } from "@builder.io/qwik";
-import { API_BASE_URL, BROWSER_API_BASE_URL } from "~/env";
+import { API_BASE_URL } from "~/env";
 import type { Repository } from "~/models/repository";
 
 type RepositoriesListOptions = {
