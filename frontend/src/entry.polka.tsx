@@ -19,7 +19,7 @@ const app = polka();
 
 // Static asset handlers
 // https://expressjs.com/en/starter/static-files.html
-app.use(`/build`, sirv(BUILD_DIR, { maxAge: ONE_YEAR, immutable: true }));
+app.use("/build", sirv(BUILD_DIR, { maxAge: ONE_YEAR, immutable: true }));
 app.use(sirv(DIST_DIR));
 
 // Use Qwik City's page and endpoint request handler
