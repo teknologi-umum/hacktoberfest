@@ -1,15 +1,11 @@
+use crate::github::GithubError;
 use crate::github::{Github, Issue};
-use crate::github::{GithubError};
-use crate::{RunContext};
+use crate::RunContext;
 use chrono::{DateTime, Utc};
-use log::{debug, info};
 use scopeguard::defer;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Display;
-use std::future::Future;
-use std::io::Error;
-use std::process::Output;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -49,11 +45,12 @@ pub async fn run_scrape<B>(
     println!("Run scrapper");
     loop {
         {
-            let _ = backoff::future::retry_notify(  
+            let _ = backoff::future::retry_notify(
                 backoff.clone(),
                 || async { Ok(scrape(global_map, github_client).await?) },
                 |err, dur| println!("scrape error {:?}: {}", dur, err),
-            ).await;
+            )
+            .await;
             thread::sleep(Duration::new(ctx.scrap_interval, 0));
         }
     }
@@ -82,7 +79,10 @@ pub async fn scrape(
         let issues = github_client
             .list_issues(repo.name.to_owned())
             .await
-            .map_err(ScrapError::Github)?;
+            .map_err(ScrapError::Github)?
+            .into_iter()
+            .filter(|issue| issue.labels.iter().any(|l| l.name == "hacktoberfest"))
+            .collect::<Vec<Issue>>();
 
         println!("Scraping languages for {}", repo.name);
         let languages = github_client
