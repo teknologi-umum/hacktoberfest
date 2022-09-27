@@ -1,12 +1,11 @@
 import { $ } from "@builder.io/qwik";
-import type { Label } from "~/models/label";
 import type { Repository } from "~/models/repository";
 
 export const sortIssuesByDifficulty = $((repositories: Repository[]) => {
-  function calculateScore(label: Label) {
-    if (label.name === "difficulty: easy") return 1;
-    if (label.name === "difficulty: medium") return 2;
-    if (label.name === "difficulty: hard") return 3;
+  function calculateScore(label: string) {
+    if (label === "difficulty: easy") return 1;
+    if (label === "difficulty: medium") return 2;
+    if (label === "difficulty: hard") return 3;
     return 0;
   }
 
@@ -16,20 +15,20 @@ export const sortIssuesByDifficulty = $((repositories: Repository[]) => {
       .map((issue) => ({
         ...issue,
         labels: issue.labels.sort((label) => {
-          return label.name.startsWith("difficulty") ? -1 : 0;
+          return label.name.toLowerCase().startsWith("difficulty") ? -1 : 0;
         }),
       }))
       .sort((a, b) => {
-        if (a.labels.every((label) => !label.name.startsWith("difficulty: "))) {
+        if (a.labels.every((label) => !label.name.toLowerCase().startsWith("difficulty: "))) {
           return 1;
         }
 
         const aScore = a.labels.reduce(
-          (acc, label) => acc + calculateScore(label),
+          (acc, label) => acc + calculateScore(label.name.toLowerCase()),
           0
         );
         const bScore = b.labels.reduce(
-          (acc, label) => acc + calculateScore(label),
+          (acc, label) => acc + calculateScore(label.name.toLowerCase()),
           0
         );
         return aScore > bScore ? 1 : -1;
