@@ -28,24 +28,14 @@ export default component$(() => {
   const state = useStore<State>({ activeFilters: [], repositories: [] });
 
   const repositoriesResource = useResource$<Repository[]>(
-    async ({ track, cleanup }) => {
-      const abortController = new AbortController();
-      cleanup(() => abortController.abort());
+    async ({ track }) => {
       track(state, "activeFilters");
-      return getRepositoriesList({
-        signal: abortController.signal,
-        state,
-      });
+      return getRepositoriesList({ state });
     }
   );
 
   const categoriesResource = useResource$<string[]>(async ({ cleanup }) => {
-    const abortController = new AbortController();
-    cleanup(() => abortController.abort());
-    const repositories = await getRepositoriesList({
-      signal: abortController.signal,
-      state,
-    });
+    const repositories = await getRepositoriesList({ state });
     return getCategoriesList(repositories);
   });
 

@@ -3,7 +3,6 @@ import { API_BASE_URL } from "~/env";
 import type { Repository } from "~/models/repository";
 
 type RepositoriesListOptions = {
-  signal: AbortSignal;
   state: {
     activeFilters: string[];
     repositories: Repository[];
@@ -11,11 +10,11 @@ type RepositoriesListOptions = {
 };
 
 export const getRepositoriesList = $(
-  async ({ state, signal }: RepositoriesListOptions) => {
+  async ({ state }: RepositoriesListOptions) => {
     let repositories: Repository[] = [];
     if (state.repositories.length < 1) {
       let url = new URL("/repo", API_BASE_URL);
-      const response = await fetch(url, { signal });
+      const response = await fetch(url);
       repositories = await response.json();
       state.repositories = repositories;
     } else {
@@ -28,7 +27,9 @@ export const getRepositoriesList = $(
           state.activeFilters.length < 1
             ? repository.issues
             : repository.issues.filter((issue) =>
-                issue.labels.some((label) => state.activeFilters.includes(label.name))
+                issue.labels.some((label) =>
+                  state.activeFilters.includes(label.name)
+                )
               );
         return { ...repository, issues: filteredIssues };
       })
