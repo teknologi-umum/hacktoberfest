@@ -8,7 +8,7 @@ import render from "./entry.ssr";
 // Directories where the static assets are located
 const DIST_DIR = join(fileURLToPath(import.meta.url), "..", "..", "dist");
 const BUILD_DIR = join(DIST_DIR, "build");
-const ONE_YEAR = 1000 * 60 * 60 * 24 * 365 // 1 year
+const ONE_YEAR = 1000 * 60 * 60 * 24 * 365; // 1 year
 
 // Create the Qwik City express middleware
 const { router, notFound } = qwikCity(render);

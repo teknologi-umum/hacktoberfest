@@ -27,12 +27,10 @@ export default component$(() => {
 
   const state = useStore<State>({ activeFilters: [], repositories: [] });
 
-  const repositoriesResource = useResource$<Repository[]>(
-    async ({ track }) => {
-      track(state, "activeFilters");
-      return getRepositoriesList({ state });
-    }
-  );
+  const repositoriesResource = useResource$<Repository[]>(async ({ track }) => {
+    track(state, "activeFilters");
+    return getRepositoriesList({ state });
+  });
 
   const categoriesResource = useResource$<string[]>(async ({ cleanup }) => {
     const repositories = await getRepositoriesList({ state });
