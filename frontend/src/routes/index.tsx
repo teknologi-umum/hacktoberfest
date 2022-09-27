@@ -19,6 +19,7 @@ import { Repository } from "~/models/repository";
 import { getFilteredRepositories } from "~/services/filter-repositories";
 import { getCategoriesList } from "~/services/list-categories";
 import { getRepositoriesList } from "~/services/list-repositories";
+import { sortIssuesByDifficulty } from "~/services/sort-issues";
 import styles from "~/styles/index.css";
 
 type State = {
@@ -39,9 +40,11 @@ export default component$(() => {
   });
 
   useServerMount$(async () => {
-    state.repositories = await getRepositoriesList();
-    state.filteredRepositories = state.repositories;
-    state.categories = getCategoriesList(state.repositories);
+    const repositories = await getRepositoriesList();
+    const sortedByDifficulty = await sortIssuesByDifficulty(repositories);
+    state.repositories = sortedByDifficulty;
+    state.filteredRepositories = sortedByDifficulty;
+    state.categories = getCategoriesList(repositories);
   });
 
   useClientEffect$(async ({ track }) => {
