@@ -10,7 +10,11 @@ import { IssueCard } from "../issue-card";
 import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
 import styles from "./repository-card.css";
 
-type RepositoryProps = Repository;
+type RepositoryProps = Pick<
+  Repository,
+  "full_name" | "html_url" | "issues" | "description" | "languages"
+>;
+
 export default component$((props: RepositoryProps) => {
   const state = useStore({
     isIssueVisible: true,
@@ -49,7 +53,6 @@ export default component$((props: RepositoryProps) => {
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>
         {props.issues.map((issue) => (
           <IssueCard
-            {...issue}
             title={mutable(issue.title)}
             html_url={mutable(issue.html_url)}
             labels={mutable(issue.labels)}

@@ -3,7 +3,7 @@ import { Issue } from "~/models/issue";
 import { Label } from "../label";
 import styles from "./issue-card.css";
 
-type IssueProps = Issue;
+type IssueProps = Pick<Issue, "html_url" | "title" | "labels">;
 
 export default component$((props: IssueProps) => {
   useStylesScoped$(styles);
