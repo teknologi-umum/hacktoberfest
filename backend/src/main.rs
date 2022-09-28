@@ -13,8 +13,10 @@ use std::{env, io, usize};
 mod github;
 mod handlers;
 mod scraper;
+mod defaults;
 
 use crate::handlers::*;
+use crate::defaults::*;
 
 #[tokio::main]
 async fn main() {
@@ -41,17 +43,17 @@ async fn run() -> Result<()> {
         (about: "Hacktoberfest serverd")
         (@arg addr: --addr +takes_value "Listen address for HTTP server")
         (@arg wrk: --wrk +takes_value "Number of HTTP server workers")
-        (@arg scrap_interval: --("scrap-interval") +takes_value "Scrap interval in second")
+        (@arg scrap_interval: --("scrap_interval") +takes_value "Scrap interval in second")
         (@arg github_token: --("github_token") +takes_value "Github API Token")
     )
     .get_matches();
 
-    let falback_laddr = env::var("LISTEN_ADDR").unwrap_or("127.0.0.1:8080".into());
-    let fallback_num_wrk_str = env::var("NUM_WORKERS").unwrap_or("1".into());
-    let fallback_num_wrk = fallback_num_wrk_str.parse::<usize>().unwrap_or(1);
-    let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or("3600".into());
-    let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(3600);
-    let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or("".into());
+    let falback_laddr = env::var("LISTEN_ADDR").unwrap_or(DEFAULT_LISTEN_ADDRESS.into());
+    let fallback_num_wrk_str = env::var("NUM_WORKERS").unwrap_or(DEFAULT_NUM_WORKERS_STR.into());
+    let fallback_num_wrk = fallback_num_wrk_str.parse::<usize>().unwrap_or(DEFAULT_NUM_WORKERS);
+    let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or(DEFAULT_SCRAP_INTERVAL_STR.into());
+    let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(DEFAULT_SCRAP_INTERVAL);
+    let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or(DEFAULT_GITHUB_TOKEN.into());
 
     let laddr: String = app.get_one("addr").unwrap_or(&falback_laddr).to_string();
     let github_token: String = app
