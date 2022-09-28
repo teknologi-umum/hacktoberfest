@@ -29,7 +29,11 @@ export const getFilteredRepositories = $(
             ),
           })),
         };
-      });
+      })
+      // sort by recency
+      .sort((a, b) =>
+        new Date(a.updated_at) > new Date(b.updated_at) ? -1 : 1
+      );
 
     return filteredRepositories;
   }
