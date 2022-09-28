@@ -55,7 +55,9 @@ export default component$((props: RepositoryProps) => {
           <IssueCard
             title={mutable(issue.title)}
             html_url={mutable(issue.html_url)}
-            labels={mutable(issue.labels)}
+            labels={mutable(
+              issue.labels.filter((label) => label.name !== "hacktoberfest")
+            )}
           />
         ))}
       </div>

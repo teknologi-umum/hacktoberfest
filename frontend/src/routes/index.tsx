@@ -2,13 +2,10 @@ import {
   $,
   component$,
   mutable,
-  useResource$,
   useStore,
   useStylesScoped$,
-  Resource,
   useClientEffect$,
   useServerMount$,
-  useWatch$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Countdown } from "~/components/countdown";
