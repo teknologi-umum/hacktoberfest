@@ -112,17 +112,22 @@ pub async fn scrape<'a>(
         println!("scrapper stop");
     }
 
-    let scrap_targets;
-    {
-        scrap_targets = ctx.lock().unwrap().config.borrow().scrap_target.clone();
-    }
-    let mut repository_collection: Vec<RepositoryCollection> = vec![];
+    let scrap_targets = {
+        ctx.lock().unwrap().config.borrow().scrap_target.clone()
+    };
+    let scrap_per_page_limit = {
+        ctx.lock().unwrap().scrap_per_page
+    };
+    let mut repository_collection: Vec<RepositoryCollection> = Vec::with_capacity(8);
 
-    for target in scrap_targets {
+    for target in scrap_targets
+        .into_iter()
+        .filter(|t| !t.ignore)
+    {
         let username = target.username.clone();
 
         let mut repository: Vec<Repository> = github_client
-            .list_repository(username.clone())
+            .list_repository(username.clone(), scrap_per_page_limit)
             .await
             .map_err(ScrapError::Github)?;
 

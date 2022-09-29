@@ -16,6 +16,9 @@ pub struct ScrapTarget {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub repo_names: Option<Vec<String>>,
     pub target_type: ScrapTargetType,
+    
+    // ignore scrap target without removing them from config file
+    pub ignore: bool,
 }
 impl ScrapTarget {
     pub fn user(username: String) -> Self {
@@ -23,6 +26,7 @@ impl ScrapTarget {
             username,
             repo_names: None,
             target_type: ScrapTargetType::User,
+            ignore: false,
         }
     }
     pub fn repos(username: String, repo_names: Vec<String>) -> Self {
@@ -30,9 +34,14 @@ impl ScrapTarget {
             username,
             repo_names: Some(repo_names),
             target_type: ScrapTargetType::Repo,
+            ignore: false
         }
     }
     
+    pub fn ignore(mut self) -> Self {
+        self.ignore = true;
+        self
+    }
     pub fn target_links(&self) -> Vec<String> {
         self.repo_names.as_ref()
             .unwrap_or(&Vec::with_capacity(8))
@@ -62,6 +71,9 @@ impl Config {
             cached_map: HashMap::<String, String>::new(),
         })
     }
+    pub fn validate(mut self) -> Result<Self> {
+        Ok(self)
+    }
     pub fn load_or_create(path: String) -> Result<Box<Self>> {
         match Self::from_file(&path) {
             Ok(parsed) => Ok(parsed),
@@ -71,7 +83,7 @@ impl Config {
         }
     }
     pub fn from_yaml(val: &String) -> Result<Self> {
-        Ok(serde_yaml::from_str::<Self>(val)?)
+        Ok(serde_yaml::from_str::<Self>(val)?.validate()?)
     }
     pub fn from_file(path: &String) -> Result<Box<Self>> {
         match File::open(path) {
@@ -103,6 +115,14 @@ mod tests {
     use super::Config;
 
     #[test]
+    fn test_scrap_target_ignore() {
+        let mut target = ScrapTarget::user("somebody".to_owned());
+        assert_eq!(target.ignore, false);
+        target = target.ignore();
+        assert_eq!(target.ignore, true);
+    }
+
+    #[test]
     fn test_scrap_target_links() {
         let targ = ScrapTarget::repos("somebody".to_owned(), vec![
             "a".to_owned(),
@@ -119,6 +139,7 @@ mod tests {
             "a".to_owned(),
             "b".to_owned(),
             "c".to_owned()]));
+        conf.scrap_target.push(ScrapTarget::user("somebody".to_owned()).ignore());
 
         let yaml_repr = conf.to_string()?;
         println!("# CHECK\n{yaml_repr}\n---");

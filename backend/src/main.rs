@@ -53,6 +53,8 @@ pub struct RunContext<'a> {
     pub config_path: String, 
     pub config: RefCell<Box<Config>>,
 
+    pub scrap_per_page: u8,
+
     // placeholder
     inner: RefCell<Box<&'a RunContextInner>>
 }
@@ -66,6 +68,8 @@ impl<'a> RunContext<'a> {
             github_token: "".to_owned(),
             config_path: "/tmp/data.yml".to_owned(),
             config: RefCell::new(Config::default()),
+
+            scrap_per_page: 100,
         }
     }
 
@@ -85,6 +89,7 @@ async fn run<'a>() -> Result<()> {
         (@arg scrap_interval: --("scrap_interval") +takes_value "Scrap interval in second")
         (@arg github_token: --("github_token") +takes_value "Github API Token")
         (@arg config_path: --("config-path") +takes_value "Config path")
+        (@arg scrap_per_page: --("scrap_per_page") +takes_value "Github scrap per_page limit")
     )
     .get_matches();
 
@@ -97,6 +102,8 @@ async fn run<'a>() -> Result<()> {
     let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(default_config.scrap_interval);
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or(default_config.github_token);
     let fallback_config_path = env::var("CONFIG_PATH").unwrap_or(default_config.config_path);
+    let fallback_scrap_per_page_str = env::var("SCRAP_PER_PAGE").unwrap_or(default_config.scrap_per_page.to_string());
+    let fallback_scrap_per_page = fallback_scrap_per_page_str.parse::<u8>().unwrap_or(default_config.scrap_per_page);
 
     let laddr: String = app.get_one("addr").unwrap_or(&fallback_laddr).to_string();
     let github_token: String = app
@@ -108,7 +115,9 @@ async fn run<'a>() -> Result<()> {
         .get_one("scrap_interval")
         .unwrap_or(&fallback_scrap_interval);
     let config_path = app.get_one("config_path").unwrap_or(&fallback_config_path).to_string();
-
+    let scrap_per_page: u8 = *app
+        .get_one("scrap_per_page")
+        .unwrap_or(&fallback_scrap_per_page);
 
     let conf = RefCell::new(Config::load_or_create(config_path.clone()).unwrap());
     let write_back_conf_path = config_path.clone();
@@ -121,6 +130,8 @@ async fn run<'a>() -> Result<()> {
         config_path,
         github_token: github_token.clone(),
         config: RefCell::clone(&conf),
+
+        scrap_per_page: scrap_per_page,
     }));
     
     let defer_ctx = env.clone();

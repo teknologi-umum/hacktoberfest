@@ -209,14 +209,14 @@ impl Github {
 
     /// list_repostory
     ///
-    pub async fn list_repository(&self, user: String) -> Result<Vec<Repository>, GithubError> {
-        let uencoded_user = urlencoding::encode(&user[..]);
-        let u = format!("https://api.github.com/users/{uencoded_user}/repos");
+    pub async fn list_repository(&self, user: String, per_page: u8) -> Result<Vec<Repository>, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
         let response: Response = self
             .client
             .get(u)
             // Figure out what to do with `per_page`? hard coded for now..
-            .query(&[("type", "public"), ("sort", "updated"), ("per_page", "300")])
+            .query(&[("type", "public"), ("sort", "updated"), ("per_page", &per_page.to_string()[..])])
             .send()
             .await
             .map_err(GithubError::Requwest)?;
@@ -226,9 +226,9 @@ impl Github {
     /// list_issues
     ///
     pub async fn list_issues(&self, user: String, repo: String) -> Result<Vec<Issue>, GithubError> {
-        let uencoded_user = urlencoding::encode(&user[..]);
-        let uencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{uencoded_user}/{uencoded_repo}/issues");
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/issues");
         let response = self
             .client
             .get(u)
@@ -250,9 +250,9 @@ impl Github {
     /// list_languages
     ///
     pub async fn list_languages(&self, user: String, repo: String) -> Result<Vec<String>, GithubError> {
-        let uencoded_user = urlencoding::encode(&user[..]);
-        let uencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{uencoded_user}/{uencoded_repo}/languages");
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
         let response = self
             .client
             .get(u)
@@ -303,8 +303,8 @@ mod tests {
             "http://0/asdsdasdad/asaaaaa/aaaa/bb?type=private&_=/ooookay"
         );
 
-        let uencoded_name = urlencoding::encode(&name[..]);
-        let p2 = format!("http://0/asdsdasdad/asaaaaa/{uencoded_name}/ooookay");
+        let urlencoded_name = urlencoding::encode(&name[..]);
+        let p2 = format!("http://0/asdsdasdad/asaaaaa/{urlencoded_name}/ooookay");
         assert_eq!(
             p2,
             "http://0/asdsdasdad/asaaaaa/aaaa%2Fbb%3Ftype%3Dprivate%26_%3D/ooookay"
@@ -333,7 +333,7 @@ mod tests {
     #[tokio::test]
     async fn test_list_repository() {
         let gh = gh_test();
-        let repository = gh.list_repository("teknologi-umum".to_owned()).await.unwrap();
+        let repository = gh.list_repository("teknologi-umum".to_owned(), 100).await.unwrap();
         assert!(repository.len() > 0, "repository len 0");
     }
 
@@ -341,7 +341,7 @@ mod tests {
     async fn test_list_repository_user() {
         let gh = gh_test();
         // or just change to anything
-        let repo = gh.list_repository("ii64".to_owned()).await.unwrap();
+        let repo = gh.list_repository("ii64".to_owned(), 100).await.unwrap();
 
         println!("{:?}", repo);
     }

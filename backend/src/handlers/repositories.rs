@@ -25,7 +25,6 @@ pub struct RepositoriesResponse {
 }
 
 async fn repositories(
-    // global_map: Data<Mutex<HashMap<String, String>>>,
     ctx: Data<Mutex<RunContext<'_>>>,
     _req: HttpRequest,
 ) -> Result<HttpResponse> {
