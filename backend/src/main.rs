@@ -7,14 +7,8 @@ use clap::clap_app;
 use config::Config;
 use scopeguard::defer;
 use scraper::run_scrape;
-use tokio::sync::mpsc;
-use std::borrow::{BorrowMut, Borrow};
 use std::cell::RefCell;
-use std::collections::HashMap;
-use std::marker::PhantomData;
 use std::process::exit;
-use std::rc::Rc;
-use tokio::sync::mpsc::{Sender, Receiver};
 use std::sync::{Arc, Mutex};
 use std::{env, io, usize};
 
@@ -154,7 +148,7 @@ async fn run<'a>() -> Result<()> {
             Box::new(backoff::ExponentialBackoffBuilder::new().build());
 
         tokio::select! {
-            ret = run_scrape(
+            _ret = run_scrape(
                 &scrap_thread_ctx,
                 exponential_backoff_box,
                 // &scraper_map,

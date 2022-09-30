@@ -5,7 +5,6 @@ use actix_web::{
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, borrow::Borrow};
 use std::sync::Mutex;
 
 use crate::{github::Issue, RunContext};
@@ -46,7 +45,6 @@ pub fn handler() -> Resource {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use std::sync::Mutex;
 
     use actix_web::{http, test::TestRequest, web::Data};

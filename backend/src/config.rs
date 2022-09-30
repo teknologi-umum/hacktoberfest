@@ -1,4 +1,4 @@
-use std::{fs::File, io::{Read, Write}, sync::{Mutex, Arc}, collections::HashMap, hash::Hash};
+use std::{fs::File, io::{Read, Write}, collections::HashMap};
 use core::result::Result::Ok;
 use anyhow::{Result};
 use chrono::DateTime;
@@ -71,13 +71,13 @@ impl Config {
             cached_map: HashMap::<String, String>::new(),
         })
     }
-    pub fn validate(mut self) -> Result<Self> {
+    pub fn validate(self) -> Result<Self> {
         Ok(self)
     }
     pub fn load_or_create(path: String) -> Result<Box<Self>> {
         match Self::from_file(&path) {
             Ok(parsed) => Ok(parsed),
-            Err(e) => {
+            Err(_) => {
                 Ok(Self::default().save_yaml_to(&path)?)
             },
         }

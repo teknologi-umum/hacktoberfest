@@ -4,19 +4,11 @@ use crate::github::{GithubError};
 use crate::{RunContext};
 use chrono::prelude::Local;
 use chrono::{DateTime, Utc};
-use log::{debug, info, trace};
+use log::{trace};
 use scopeguard::defer;
 use serde::{Deserialize, Serialize};
-use std::cell::{RefCell, Ref};
-use std::collections::HashMap;
-use std::fmt::Display;
-use std::future::Future;
-use std::io::Error;
-use std::ops::Deref;
-use std::process::Output;
-use std::sync::{Arc, Mutex, MutexGuard};
-use std::thread;
-use std::time::{Duration, Instant};
+use std::sync::{Arc, Mutex};
+use std::time::{Duration};
 
 #[derive(Serialize, Deserialize)]
 pub struct RepositoryCollection {
