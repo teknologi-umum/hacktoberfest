@@ -69,7 +69,7 @@ pub struct Repository {
     pub name: String,
     pub full_name: String,
     pub html_url: String,
-    pub description: String,
+    pub description: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: i64,
     pub forks_count: i64,
@@ -209,11 +209,14 @@ impl Github {
 
     /// list_repostory
     ///
-    pub async fn list_repository(&self) -> Result<Vec<Repository>, GithubError> {
+    pub async fn list_repository(&self, user: String, per_page: u8) -> Result<Vec<Repository>, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
         let response: Response = self
             .client
-            .get("https://api.github.com/users/teknologi-umum/repos")
-            .query(&[("type", "public"), ("sort", "updated"), ("per_page", "100")])
+            .get(u)
+            // Figure out what to do with `per_page`? hard coded for now..
+            .query(&[("type", "public"), ("sort", "updated"), ("per_page", &per_page.to_string()[..])])
             .send()
             .await
             .map_err(GithubError::Requwest)?;
@@ -222,9 +225,10 @@ impl Github {
 
     /// list_issues
     ///
-    pub async fn list_issues(&self, repo: String) -> Result<Vec<Issue>, GithubError> {
-        let uencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/issues");
+    pub async fn list_issues(&self, user: String, repo: String) -> Result<Vec<Issue>, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/issues");
         let response = self
             .client
             .get(u)
@@ -245,9 +249,10 @@ impl Github {
 
     /// list_languages
     ///
-    pub async fn list_languages(&self, repo: String) -> Result<Vec<String>, GithubError> {
-        let uencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/teknologi-umum/{uencoded_repo}/languages");
+    pub async fn list_languages(&self, user: String, repo: String) -> Result<Vec<String>, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
         let response = self
             .client
             .get(u)
@@ -278,7 +283,16 @@ impl Github {
 mod tests {
     use chrono::{DateTime, Utc};
 
-    use crate::github::Github;
+    use crate::{github::Github, RunContext};
+
+    fn gh_test() -> Github {
+        let github_token = RunContext::default().github_token;
+        if github_token.is_empty() {
+            Github::new()
+        } else {
+            Github::new_with_token(Some(String::from(github_token)))
+        }
+    }
 
     #[test]
     fn test_url_encoding_sec() {
@@ -289,8 +303,8 @@ mod tests {
             "http://0/asdsdasdad/asaaaaa/aaaa/bb?type=private&_=/ooookay"
         );
 
-        let uencoded_name = urlencoding::encode(&name[..]);
-        let p2 = format!("http://0/asdsdasdad/asaaaaa/{uencoded_name}/ooookay");
+        let urlencoded_name = urlencoding::encode(&name[..]);
+        let p2 = format!("http://0/asdsdasdad/asaaaaa/{urlencoded_name}/ooookay");
         assert_eq!(
             p2,
             "http://0/asdsdasdad/asaaaaa/aaaa%2Fbb%3Ftype%3Dprivate%26_%3D/ooookay"
@@ -311,29 +325,38 @@ mod tests {
 
     #[tokio::test]
     async fn test_rate_limit() {
-        let gh = Github::new();
+        let gh = gh_test();
         let rate_limit = gh.rate_limit().await.unwrap();
         println!("{:?}", rate_limit);
     }
 
     #[tokio::test]
     async fn test_list_repository() {
-        let gh = Github::new();
-        let repository = gh.list_repository().await.unwrap();
+        let gh = gh_test();
+        let repository = gh.list_repository("teknologi-umum".to_owned(), 100).await.unwrap();
         assert!(repository.len() > 0, "repository len 0");
     }
 
     #[tokio::test]
+    async fn test_list_repository_user() {
+        let gh = gh_test();
+        // or just change to anything
+        let repo = gh.list_repository("ii64".to_owned(), 100).await.unwrap();
+
+        println!("{:?}", repo);
+    }
+
+    #[tokio::test]
     async fn test_list_issues() {
-        let gh = Github::new();
-        let issues = gh.list_issues("blog".into()).await.unwrap();
+        let gh = gh_test();
+        let issues = gh.list_issues("teknologi-umum".to_owned(), "blog".into()).await.unwrap();
         assert!(issues.len() > 0, "issues len 0");
     }
 
     #[tokio::test]
     async fn test_list_languages() {
-        let gh = Github::new();
-        let languages = gh.list_languages(String::from("blog")).await.unwrap();
+        let gh = gh_test();
+        let languages = gh.list_languages("teknologi-umum".to_owned(), String::from("blog")).await.unwrap();
         assert!(languages.len() > 0, "languages len 0");
         assert_eq!(*languages.get(0).unwrap(), String::from("TypeScript"));
     }

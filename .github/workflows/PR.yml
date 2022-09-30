@@ -8,7 +8,7 @@ jobs:
     name: Backend CI
     runs-on: ubuntu-latest
     container: rust:1.63.0-bullseye
-    timeout-minutes: 10
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: ./backend

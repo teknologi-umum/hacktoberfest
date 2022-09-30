@@ -5,10 +5,10 @@ use actix_web::{
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, borrow::Borrow};
 use std::sync::Mutex;
 
-use crate::github::Issue;
+use crate::{github::Issue, RunContext};
 
 #[derive(Serialize, Deserialize)]
 pub struct RepositoriesResponse {
@@ -25,10 +25,11 @@ pub struct RepositoriesResponse {
 }
 
 async fn repositories(
-    global_map: Data<Mutex<HashMap<String, String>>>,
+    ctx: Data<Mutex<RunContext<'_>>>,
     _req: HttpRequest,
 ) -> Result<HttpResponse> {
-    let unlocked_map = global_map.lock().unwrap();
+    let unlocked_ctx = ctx.lock().unwrap();
+    let unlocked_map = &unlocked_ctx.config.borrow().cached_map;
     let cached: String = match unlocked_map.get("repo") {
         Some(cached_repo) => cached_repo.into(),
         _ => "[]".into(),
@@ -50,13 +51,15 @@ mod tests {
 
     use actix_web::{http, test::TestRequest, web::Data};
 
+    use crate::RunContext;
+
     use super::repositories;
 
     #[actix_web::test]
     async fn test_repositories() {
-        let local_map = Data::new(Mutex::new(HashMap::<String, String>::new()));
+        let ctx = Data::new(Mutex::new(RunContext::default()));
         let req = TestRequest::default().to_http_request();
-        let resp = repositories(local_map, req).await;
+        let resp = repositories(ctx, req).await;
         assert_eq!(
             resp.expect("an error occurred").status(),
             http::StatusCode::OK
