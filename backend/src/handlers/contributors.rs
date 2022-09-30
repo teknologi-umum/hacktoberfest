@@ -3,33 +3,23 @@ use actix_web::{
     web::{self, Data},
     HttpRequest, HttpResponse, Resource, Result,
 };
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 
-use crate::{github::Issue, RunContext};
+use crate::RunContext;
 
 #[derive(Serialize, Deserialize)]
-pub struct RepositoriesResponse {
+pub struct ContributorResponse {
     pub full_name: String,
-    pub html_url: String,
-    pub description: String,
-    pub languages: Vec<String>,
-    pub stars_count: i64,
-    pub forks_count: i64,
-    pub topics: Vec<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-    pub issues: Vec<Issue>,
+    pub profile_url: String,
+    pub merged_pulls: i64,
+    pub pending_pulls: i64,
 }
 
-async fn repositories(
-    ctx: Data<Mutex<RunContext<'_>>>,
-    _req: HttpRequest,
-) -> Result<HttpResponse> {
+async fn contributors(ctx: Data<Mutex<RunContext<'_>>>, _req: HttpRequest) -> Result<HttpResponse> {
     let unlocked_ctx = ctx.lock().unwrap();
     let unlocked_map = &unlocked_ctx.config.borrow().cached_map;
-    let cached: String = match unlocked_map.get("repo") {
+    let cached: String = match unlocked_map.get("contributors") {
         Some(cached_repo) => cached_repo.into(),
         _ => "[]".into(),
     };
@@ -40,7 +30,7 @@ async fn repositories(
 }
 
 pub fn handler() -> Resource {
-    web::resource("/repo").route(web::get().to(repositories))
+    web::resource("/contrib").route(web::get().to(contributors))
 }
 
 #[cfg(test)]
@@ -51,13 +41,13 @@ mod tests {
 
     use crate::RunContext;
 
-    use super::repositories;
+    use super::contributors;
 
     #[actix_web::test]
-    async fn test_repositories() {
+    async fn test_contributors() {
         let ctx = Data::new(Mutex::new(RunContext::default()));
         let req = TestRequest::default().to_http_request();
-        let resp = repositories(ctx, req).await;
+        let resp = contributors(ctx, req).await;
         assert_eq!(
             resp.expect("an error occurred").status(),
             http::StatusCode::OK

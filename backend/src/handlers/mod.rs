@@ -1,3 +1,4 @@
+pub mod contributors;
 pub mod healthcheck;
 pub mod repositories;
 

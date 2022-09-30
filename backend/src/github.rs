@@ -13,6 +13,7 @@ pub struct RateLimitResponse {
     resources: Resources,
     rate: Rate,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Rate {
     pub limit: i64,
@@ -21,6 +22,7 @@ pub struct Rate {
     pub used: i64,
     pub resource: String,
 }
+
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
         let _rate = Rate {
@@ -105,6 +107,16 @@ pub struct Label {
     pub description: String,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct PullRequest {
+    pub html_url: String,
+    pub state: String,
+    pub locked: bool,
+    pub user: User,
+    pub merged_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
+}
+
 pub struct Github {
     client: Client,
 }
@@ -124,6 +136,7 @@ pub struct GithubErrorMetadata {
     pub response: GithubErrorResponse,
     pub rate: Rate,
 }
+
 impl GithubErrorMetadata {
     async fn from_http_response(resp: Response) -> Self {
         let rate = Rate::from_headers(resp.headers());
@@ -141,7 +154,9 @@ pub enum GithubError {
     StatusCode(http::StatusCode),
     Requwest(reqwest::Error),
 }
+
 impl std::error::Error for GithubError {}
+
 impl fmt::Display for GithubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -152,9 +167,14 @@ impl fmt::Display for GithubError {
 }
 
 impl Github {
+    /// Creates a new Github client with no token (limited to 60 requests/hour).
+    /// To increase the limit, provide a token and use `new_with_token` instead.
     pub fn new() -> Self {
         Self::new_with_token(None)
     }
+
+    /// Creates a new Github client with an optional
+    /// Authorization token (approx. 5000 requests/hour)
     pub fn new_with_token(token: Option<String>) -> Self {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -174,10 +194,12 @@ impl Github {
                     .expect("failed to set Authorization header"),
             );
         }
+
         let client = Client::builder()
             .default_headers(headers)
             .build()
             .expect("Failed to build reqwest::Client");
+
         Github { client }
     }
 
@@ -194,9 +216,9 @@ impl Github {
         }
     }
 
-    /// rate_limit
+    /// Get the rate limit state of the current request client.
     ///
-    /// rate limit info
+    /// API documentation: https://docs.github.com/en/rest/rate-limit#get-rate-limit-status-for-the-authenticated-user
     pub async fn rate_limit(&self) -> Result<RateLimitResponse, GithubError> {
         let response = self
             .client
@@ -207,24 +229,41 @@ impl Github {
         Self::wrap_response(response).await
     }
 
-    /// list_repostory
+    /// Lists public repositories for the specified user.
+    /// Only shows public repository, sorted by updated, with configurable `per_page` number
+    /// of results.
     ///
-    pub async fn list_repository(&self, user: String, per_page: u8) -> Result<Vec<Repository>, GithubError> {
+    /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repositories-for-a-user
+    pub async fn list_repository(
+        &self,
+        user: String,
+        per_page: u8,
+    ) -> Result<Vec<Repository>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
         let response: Response = self
             .client
             .get(u)
             // Figure out what to do with `per_page`? hard coded for now..
-            .query(&[("type", "public"), ("sort", "updated"), ("per_page", &per_page.to_string()[..])])
+            .query(&[
+                ("type", "public"),
+                ("sort", "updated"),
+                ("per_page", &per_page.to_string()[..]),
+            ])
             .send()
             .await
             .map_err(GithubError::Requwest)?;
         Self::wrap_response(response).await
     }
 
-    /// list_issues
+    /// List issues in a repository.
+    /// Only returns issues that are considered as an issue (not PRs) by checking their `node_id`
+    /// to not be prefixed with "PR_".
     ///
+    /// Limited to 30 issues, because it would be too much if we actually show 100 (per the
+    /// maximum limit on the documentation).
+    ///
+    /// API documentation: https://docs.github.com/en/rest/issues/issues#list-repository-issues
     pub async fn list_issues(&self, user: String, repo: String) -> Result<Vec<Issue>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
@@ -247,12 +286,19 @@ impl Github {
         resp
     }
 
-    /// list_languages
+    /// Lists languages for the specified repository. The value shown for each language
+    /// is the number of bytes of code written in that language.
     ///
-    pub async fn list_languages(&self, user: String, repo: String) -> Result<Vec<String>, GithubError> {
+    /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repository-languages
+    pub async fn list_languages(
+        &self,
+        user: String,
+        repo: String,
+    ) -> Result<Vec<String>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
+        let u =
+            format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
         let response = self
             .client
             .get(u)
@@ -276,6 +322,30 @@ impl Github {
         }
 
         Err(resp.err().unwrap())
+    }
+
+    /// Lists pull request of a specified repository.
+    ///
+    /// API documentation: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests
+    pub async fn list_pull_request(
+        &self,
+        user: String,
+        repo: String,
+    ) -> Result<Vec<PullRequest>, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls");
+
+        let response = self
+            .client
+            .get(u)
+            .query(&[("per_page", "100"), ("state", "all")])
+            .send()
+            .await
+            .map_err(GithubError::Requwest)?;
+        let resp = Self::wrap_response::<Vec<PullRequest>>(response).await;
+
+        resp
     }
 }
 
@@ -333,7 +403,10 @@ mod tests {
     #[tokio::test]
     async fn test_list_repository() {
         let gh = gh_test();
-        let repository = gh.list_repository("teknologi-umum".to_owned(), 100).await.unwrap();
+        let repository = gh
+            .list_repository("teknologi-umum".to_owned(), 100)
+            .await
+            .unwrap();
         assert!(repository.len() > 0, "repository len 0");
     }
 
@@ -349,15 +422,31 @@ mod tests {
     #[tokio::test]
     async fn test_list_issues() {
         let gh = gh_test();
-        let issues = gh.list_issues("teknologi-umum".to_owned(), "blog".into()).await.unwrap();
+        let issues = gh
+            .list_issues("teknologi-umum".to_owned(), "blog".into())
+            .await
+            .unwrap();
         assert!(issues.len() > 0, "issues len 0");
     }
 
     #[tokio::test]
     async fn test_list_languages() {
         let gh = gh_test();
-        let languages = gh.list_languages("teknologi-umum".to_owned(), String::from("blog")).await.unwrap();
+        let languages = gh
+            .list_languages("teknologi-umum".to_owned(), String::from("blog"))
+            .await
+            .unwrap();
         assert!(languages.len() > 0, "languages len 0");
         assert_eq!(*languages.get(0).unwrap(), String::from("TypeScript"));
+    }
+
+    #[tokio::test]
+    async fn test_list_pull_request() {
+        let gh = gh_test();
+        let pulls = gh
+            .list_pull_request("teknologi-umum".to_owned(), "pehape".to_owned())
+            .await
+            .unwrap();
+        assert!(pulls.len() > 0, "pulls len 0");
     }
 }
