@@ -12,10 +12,10 @@ use std::process::exit;
 use std::sync::{Arc, Mutex};
 use std::{env, io, usize};
 
+mod config;
 mod github;
 mod handlers;
 mod scraper;
-mod config;
 
 use crate::handlers::*;
 
@@ -32,10 +32,8 @@ async fn main() {
     }
 }
 
-pub struct RunContextInner {
-}
-impl RunContextInner {
-}
+pub struct RunContextInner {}
+impl RunContextInner {}
 
 #[derive(Clone)]
 pub struct RunContext<'a> {
@@ -44,13 +42,13 @@ pub struct RunContext<'a> {
     pub scrap_interval: u64,
     pub github_token: String,
 
-    pub config_path: String, 
+    pub config_path: String,
     pub config: RefCell<Box<Config>>,
 
     pub scrap_per_page: u8,
 
     // placeholder
-    inner: RefCell<Box<&'a RunContextInner>>
+    inner: RefCell<Box<&'a RunContextInner>>,
 }
 impl<'a> RunContext<'a> {
     pub fn default() -> Self {
@@ -90,14 +88,23 @@ async fn run<'a>() -> Result<()> {
     let default_config = RunContext::default();
 
     let fallback_laddr = env::var("LISTEN_ADDR").unwrap_or(default_config.listen_address);
-    let fallback_num_wrk_str = env::var("NUM_WORKERS").unwrap_or(default_config.num_workers.to_string());
-    let fallback_num_wrk = fallback_num_wrk_str.parse::<usize>().unwrap_or(default_config.num_workers);
-    let fallback_scrap_interval_str = env::var("SCRAP_INTERVAL").unwrap_or(default_config.scrap_interval.to_string());
-    let fallback_scrap_interval = fallback_scrap_interval_str.parse::<u64>().unwrap_or(default_config.scrap_interval);
+    let fallback_num_wrk_str =
+        env::var("NUM_WORKERS").unwrap_or(default_config.num_workers.to_string());
+    let fallback_num_wrk = fallback_num_wrk_str
+        .parse::<usize>()
+        .unwrap_or(default_config.num_workers);
+    let fallback_scrap_interval_str =
+        env::var("SCRAP_INTERVAL").unwrap_or(default_config.scrap_interval.to_string());
+    let fallback_scrap_interval = fallback_scrap_interval_str
+        .parse::<u64>()
+        .unwrap_or(default_config.scrap_interval);
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or(default_config.github_token);
     let fallback_config_path = env::var("CONFIG_PATH").unwrap_or(default_config.config_path);
-    let fallback_scrap_per_page_str = env::var("SCRAP_PER_PAGE").unwrap_or(default_config.scrap_per_page.to_string());
-    let fallback_scrap_per_page = fallback_scrap_per_page_str.parse::<u8>().unwrap_or(default_config.scrap_per_page);
+    let fallback_scrap_per_page_str =
+        env::var("SCRAP_PER_PAGE").unwrap_or(default_config.scrap_per_page.to_string());
+    let fallback_scrap_per_page = fallback_scrap_per_page_str
+        .parse::<u8>()
+        .unwrap_or(default_config.scrap_per_page);
 
     let laddr: String = app.get_one("addr").unwrap_or(&fallback_laddr).to_string();
     let github_token: String = app
@@ -108,7 +115,10 @@ async fn run<'a>() -> Result<()> {
     let scrap_interval: u64 = *app
         .get_one("scrap_interval")
         .unwrap_or(&fallback_scrap_interval);
-    let config_path = app.get_one("config_path").unwrap_or(&fallback_config_path).to_string();
+    let config_path = app
+        .get_one("config_path")
+        .unwrap_or(&fallback_config_path)
+        .to_string();
     let scrap_per_page: u8 = *app
         .get_one("scrap_per_page")
         .unwrap_or(&fallback_scrap_per_page);
@@ -127,7 +137,7 @@ async fn run<'a>() -> Result<()> {
 
         scrap_per_page: scrap_per_page,
     }));
-    
+
     let defer_ctx = env.clone();
     defer! {
         let local_env = defer_ctx.lock().unwrap();
@@ -177,9 +187,7 @@ async fn run<'a>() -> Result<()> {
     }
 }
 
-async fn run_server<'a>(
-    env: &'a RRunContext<'static>,
-) -> Result<(), io::Error> {
+async fn run_server<'a>(env: &'a RRunContext<'static>) -> Result<(), io::Error> {
     let data = Data::from(env.clone());
     let local_env = env.lock().unwrap().clone(); // don't hold lock!
 
@@ -189,13 +197,13 @@ async fn run_server<'a>(
             .app_data(data.clone())
             .service(healthcheck::handler())
             .service(repositories::handler())
+            .service(contributors::handler())
     })
     .bind(local_env.listen_address.clone())?
     .workers(local_env.num_workers)
     .run()
     .await
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -213,10 +221,11 @@ mod tests {
             let yaml_repr = ctx.config.borrow().clone().to_string().unwrap();
             println!("CHECK\n{yaml_repr}");
         }
-        ctx.config.borrow_mut().cached_map
+        ctx.config
+            .borrow_mut()
+            .cached_map
             .insert("todo".to_owned(), "asdaf".to_owned());
     }
-
 
     #[tokio::test]
     async fn test_thread_park() -> anyhow::Result<()> {
@@ -224,8 +233,8 @@ mod tests {
             println!("aa");
             thread::park_timeout(Duration::from_secs(5));
             println!("bb");
-        }).await?;
+        })
+        .await?;
         Ok(())
     }
-
 }

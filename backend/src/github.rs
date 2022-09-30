@@ -174,7 +174,7 @@ impl Github {
     }
 
     /// Creates a new Github client with an optional
-    /// Authorization token (approx. 50000 requests/hour)
+    /// Authorization token (approx. 5000 requests/hour)
     pub fn new_with_token(token: Option<String>) -> Self {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -234,14 +234,22 @@ impl Github {
     /// of results.
     ///
     /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repositories-for-a-user
-    pub async fn list_repository(&self, user: String, per_page: u8) -> Result<Vec<Repository>, GithubError> {
+    pub async fn list_repository(
+        &self,
+        user: String,
+        per_page: u8,
+    ) -> Result<Vec<Repository>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
         let response: Response = self
             .client
             .get(u)
             // Figure out what to do with `per_page`? hard coded for now..
-            .query(&[("type", "public"), ("sort", "updated"), ("per_page", &per_page.to_string()[..])])
+            .query(&[
+                ("type", "public"),
+                ("sort", "updated"),
+                ("per_page", &per_page.to_string()[..]),
+            ])
             .send()
             .await
             .map_err(GithubError::Requwest)?;
@@ -282,10 +290,15 @@ impl Github {
     /// is the number of bytes of code written in that language.
     ///
     /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repository-languages
-    pub async fn list_languages(&self, user: String, repo: String) -> Result<Vec<String>, GithubError> {
+    pub async fn list_languages(
+        &self,
+        user: String,
+        repo: String,
+    ) -> Result<Vec<String>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
+        let u =
+            format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
         let response = self
             .client
             .get(u)
@@ -314,7 +327,11 @@ impl Github {
     /// Lists pull request of a specified repository.
     ///
     /// API documentation: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests
-    pub async fn list_pull_request(&self, user: String, repo: String) -> Result<Vec<PullRequest>, GithubError> {
+    pub async fn list_pull_request(
+        &self,
+        user: String,
+        repo: String,
+    ) -> Result<Vec<PullRequest>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
         let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls");
@@ -386,7 +403,10 @@ mod tests {
     #[tokio::test]
     async fn test_list_repository() {
         let gh = gh_test();
-        let repository = gh.list_repository("teknologi-umum".to_owned(), 100).await.unwrap();
+        let repository = gh
+            .list_repository("teknologi-umum".to_owned(), 100)
+            .await
+            .unwrap();
         assert!(repository.len() > 0, "repository len 0");
     }
 
@@ -402,14 +422,20 @@ mod tests {
     #[tokio::test]
     async fn test_list_issues() {
         let gh = gh_test();
-        let issues = gh.list_issues("teknologi-umum".to_owned(), "blog".into()).await.unwrap();
+        let issues = gh
+            .list_issues("teknologi-umum".to_owned(), "blog".into())
+            .await
+            .unwrap();
         assert!(issues.len() > 0, "issues len 0");
     }
 
     #[tokio::test]
     async fn test_list_languages() {
         let gh = gh_test();
-        let languages = gh.list_languages("teknologi-umum".to_owned(), String::from("blog")).await.unwrap();
+        let languages = gh
+            .list_languages("teknologi-umum".to_owned(), String::from("blog"))
+            .await
+            .unwrap();
         assert!(languages.len() > 0, "languages len 0");
         assert_eq!(*languages.get(0).unwrap(), String::from("TypeScript"));
     }
@@ -417,7 +443,10 @@ mod tests {
     #[tokio::test]
     async fn test_list_pull_request() {
         let gh = gh_test();
-        let pulls = gh.list_pull_request("teknologi-umum".to_owned(), "pehape".to_owned()).await.unwrap();
+        let pulls = gh
+            .list_pull_request("teknologi-umum".to_owned(), "pehape".to_owned())
+            .await
+            .unwrap();
         assert!(pulls.len() > 0, "pulls len 0");
     }
 }
