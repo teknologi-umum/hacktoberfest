@@ -118,7 +118,7 @@ pub async fn scrape<'a>(
     let scrap_per_page_limit = {
         ctx.lock().unwrap().scrap_per_page
     };
-    let mut repository_collection: Vec<RepositoryCollection> = Vec::with_capacity(8);
+    let mut repository_collection: Vec<RepositoryCollection> = Vec::with_capacity(8*8);
 
     for target in scrap_targets
         .into_iter()

@@ -44,7 +44,7 @@ impl ScrapTarget {
     }
     pub fn target_links(&self) -> Vec<String> {
         self.repo_names.as_ref()
-            .unwrap_or(&Vec::with_capacity(8))
+            .unwrap_or(&Vec::with_capacity(0))
             .into_iter()
             .map(|repo_name| {
                 format!("https://github.com/{}/{}", self.username, repo_name)
