@@ -13,6 +13,7 @@ pub struct RateLimitResponse {
     resources: Resources,
     rate: Rate,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Rate {
     pub limit: i64,
@@ -21,6 +22,7 @@ pub struct Rate {
     pub used: i64,
     pub resource: String,
 }
+
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
         let _rate = Rate {
@@ -152,7 +154,9 @@ pub enum GithubError {
     StatusCode(http::StatusCode),
     Requwest(reqwest::Error),
 }
+
 impl std::error::Error for GithubError {}
+
 impl fmt::Display for GithubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -163,9 +167,14 @@ impl fmt::Display for GithubError {
 }
 
 impl Github {
+    /// Creates a new Github client with no token (limited to 60 requests/hour).
+    /// To increase the limit, provide a token and use `new_with_token` instead.
     pub fn new() -> Self {
         Self::new_with_token(None)
     }
+
+    /// Creates a new Github client with an optional
+    /// Authorization token (approx. 50000 requests/hour)
     pub fn new_with_token(token: Option<String>) -> Self {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -185,10 +194,12 @@ impl Github {
                     .expect("failed to set Authorization header"),
             );
         }
+
         let client = Client::builder()
             .default_headers(headers)
             .build()
             .expect("Failed to build reqwest::Client");
+
         Github { client }
     }
 
@@ -205,9 +216,9 @@ impl Github {
         }
     }
 
-    /// rate_limit
+    /// Get the rate limit state of the current request client.
     ///
-    /// rate limit info
+    /// API documentation: https://docs.github.com/en/rest/rate-limit#get-rate-limit-status-for-the-authenticated-user
     pub async fn rate_limit(&self) -> Result<RateLimitResponse, GithubError> {
         let response = self
             .client
@@ -218,8 +229,11 @@ impl Github {
         Self::wrap_response(response).await
     }
 
-    /// list_repostory
+    /// Lists public repositories for the specified user.
+    /// Only shows public repository, sorted by updated, with configurable `per_page` number
+    /// of results.
     ///
+    /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repositories-for-a-user
     pub async fn list_repository(&self, user: String, per_page: u8) -> Result<Vec<Repository>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
@@ -234,8 +248,14 @@ impl Github {
         Self::wrap_response(response).await
     }
 
-    /// list_issues
+    /// List issues in a repository.
+    /// Only returns issues that are considered as an issue (not PRs) by checking their `node_id`
+    /// to not be prefixed with "PR_".
     ///
+    /// Limited to 30 issues, because it would be too much if we actually show 100 (per the
+    /// maximum limit on the documentation).
+    ///
+    /// API documentation: https://docs.github.com/en/rest/issues/issues#list-repository-issues
     pub async fn list_issues(&self, user: String, repo: String) -> Result<Vec<Issue>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
@@ -258,8 +278,10 @@ impl Github {
         resp
     }
 
-    /// list_languages
+    /// Lists languages for the specified repository. The value shown for each language
+    /// is the number of bytes of code written in that language.
     ///
+    /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repository-languages
     pub async fn list_languages(&self, user: String, repo: String) -> Result<Vec<String>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
@@ -289,6 +311,9 @@ impl Github {
         Err(resp.err().unwrap())
     }
 
+    /// Lists pull request of a specified repository.
+    ///
+    /// API documentation: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests
     pub async fn list_pull_request(&self, user: String, repo: String) -> Result<Vec<PullRequest>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
@@ -297,6 +322,7 @@ impl Github {
         let response = self
             .client
             .get(u)
+            .query(&[("per_page", "100"), ("state", "all")])
             .send()
             .await
             .map_err(GithubError::Requwest)?;
