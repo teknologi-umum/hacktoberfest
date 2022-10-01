@@ -20,6 +20,7 @@ import { getCategoriesList } from "~/services/list-categories";
 import { getContributorsList } from "~/services/list-contributors";
 import { getRepositoriesList } from "~/services/list-repositories";
 import { sortIssuesByDifficulty } from "~/services/sort-issues";
+import { sortContributorByPRs } from "~/services/sort-contributors";
 import styles from "~/styles/index.css?inline";
 
 type State = {
@@ -48,7 +49,9 @@ export default component$(() => {
     state.filteredRepositories = sortedByDifficulty;
     state.categories = getCategoriesList(repositories);
 
-    state.contributors = await getContributorsList();
+    const contributors = await getContributorsList();
+    const sortedByPRs = await sortContributorByPRs(contributors);
+    state.contributors = sortedByPRs;
   });
 
   useClientEffect$(async ({ track }) => {
@@ -96,7 +99,7 @@ export default component$(() => {
         ))}
       </div>
 
-      <p class="contributor-section-title">Contributors</p>
+      <p class="contributor-section-title">Top Contributors</p>
       <div class="contributor-card-container">
         {state.contributors.map((contrib) => (
           <ContributorCard
