@@ -1,7 +1,4 @@
 .contributor-card {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
   padding: 1rem;
   gap: 1rem;
   border: 0.2rem #efefef solid;
@@ -15,6 +12,15 @@
   box-shadow: 0 0 1rem rgba(156, 95, 236, 0.25);
   transition: box-shadow ease-out 0.1s;
   width: calc(50% - 1rem);
+}
+
+.contributor-card > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.contributor-card.completed {
+  border-image: linear-gradient(to top right, green, lightgreen) 30%;
 }
 
 .contributor-card:hover {
@@ -34,45 +40,38 @@
 
 .contributor-card__stats-wrapper {
   width: 100%;
+}
+
+.contributor-card__stats-bar {
+  font-family: "Cairo", sans-serif;
+  width: 100%;
   display: flex;
   gap: 0.3rem;
 }
 
-.contributor-card__stats.merged {
+.contributor-card__stats-bar.completed {
+  background-color: #377d71;
+}
+
+.contributor-card__stats-bar.merged {
   background-color: #6f38c5;
 }
 
-.contributor-card__stats.pending {
+.contributor-card__stats-bar.pending {
   background-color: #937dc2;
 }
 
-.contributor-card__stats {
+.contributor-card__stats-bar {
   height: 3rem;
   width: 100%;
   border-radius: 0.4rem;
   position: relative;
 }
 
-.contributor-card__stats.pending:hover::after {
-  content: "Pending Pull Request";
-}
-
-.contributor-card__stats.merged:hover::after {
-  content: "Merged Pull Request";
-}
-
-.contributor-card__stats:hover::after {
-  position: absolute;
-  z-index: 1;
-  background: #222;
-  padding: 0.5rem;
-  border-radius: 0.4rem;
-  color: white;
-  width: max-content;
-  animation: fade-in 0.2s;
-  top: -100%;
-  left: 50%;
-  transform: translateX(-50%);
+.contributor-card__stats-detail {
+  font-family: "Cairo", sans-serif;
+  color: #eee;
+  font-size: 1.25rem;
 }
 
 @keyframes fade-in {
@@ -86,7 +85,7 @@
 }
 
 @media only screen and (max-width: 860px) {
-  .contributor-card {
+  .contributor-card > div {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -96,4 +95,11 @@
   .contributor-card {
     width: 100%;
   }
+}
+
+.contributor-card__completed-description {
+  font-family: "Cairo", sans-serif;
+  width: 100%;
+  color: white;
+  font-size: 1.25rem;
 }
