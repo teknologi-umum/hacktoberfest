@@ -23,9 +23,26 @@
   cursor: pointer;
 }
 
-.card-container {
+.repository-card-container {
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  max-width: 80rem;
+}
+
+.contributor-section-title {
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: white;
+  font-family: "Cairo", sans-serif;
+  opacity: 0.625;
+  font-size: 2.5rem;
+}
+.contributor-card-container {
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   margin: 0 auto;
   max-width: 80rem;
