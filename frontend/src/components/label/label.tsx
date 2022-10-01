@@ -1,5 +1,5 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import styles from "./label.css";
+import styles from "./label.css?inline";
 
 export const COLOUR_MAP: Record<string, string> = {
   easy: "green",

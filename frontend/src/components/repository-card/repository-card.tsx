@@ -8,7 +8,7 @@ import type { Repository } from "~/models/repository";
 import { GithubIcon } from "../icons/ic_github";
 import { IssueCard } from "../issue-card";
 import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
-import styles from "./repository-card.css";
+import styles from "./repository-card.css?inline";
 
 type RepositoryProps = Pick<
   Repository,
