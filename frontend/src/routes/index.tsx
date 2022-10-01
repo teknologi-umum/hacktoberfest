@@ -14,7 +14,6 @@ import { Label } from "~/components/label";
 import { RepositoryCard } from "~/components/repository-card";
 import { ContributorCard } from "~/components/contributor-card";
 import { Repository } from "~/models/repository";
-import { Contributor } from "~/models/contributor";
 import { getFilteredRepositories } from "~/services/filter-repositories";
 import { getCategoriesList } from "~/services/list-categories";
 import { getContributorsList } from "~/services/list-contributors";

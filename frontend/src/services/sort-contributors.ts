@@ -22,7 +22,8 @@ export const sortAndTagContributorByPRs = $(
      * any contributor after the 10th with same total PRs AND same merged PRs
      * is still considered top contributor
      */
-    const lastTopContributor = sorted[TOP_CONTRIBUTOR_THRESHOLD - 1];
+    const lastTopIndex = Math.min(TOP_CONTRIBUTOR_THRESHOLD, sorted.length);
+    const lastTopContributor = sorted[lastTopIndex - 1];
 
     let sortedAndTagged = sorted.map((contributor) => {
       const isTopContributor =
