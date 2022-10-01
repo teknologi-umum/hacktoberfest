@@ -11,6 +11,21 @@ export default component$((props: SortedContributor) => {
 
   useStylesScoped$(styles);
 
+  let mergedPRs = props.merged_pulls;
+  let pendingPRs = props.pending_pulls;
+
+  /**
+   * beyond 30, the UI for the grid will be broken
+   * but still need to be in proportion
+   */
+  const MAX_VISIBLE_PR = 30;
+  const totalPRs = mergedPRs + pendingPRs;
+
+  if (totalPRs > MAX_VISIBLE_PR) {
+    mergedPRs = Math.ceil((mergedPRs / totalPRs) * MAX_VISIBLE_PR);
+    pendingPRs = Math.floor((pendingPRs / totalPRs) * MAX_VISIBLE_PR);
+  }
+
   return (
     <div
       class={`contributor-card ${hasCompletedHacktoberfest ? "completed" : ""}`}
@@ -26,7 +41,7 @@ export default component$((props: SortedContributor) => {
         </a>
         <div class="contributor-card__stats-wrapper">
           <div class="contributor-card__stats-bar">
-            {Array(props.merged_pulls)
+            {Array(mergedPRs)
               .fill(null)
               .map(() => (
                 <div
@@ -35,7 +50,7 @@ export default component$((props: SortedContributor) => {
                   }`}
                 />
               ))}
-            {Array(props.pending_pulls)
+            {Array(pendingPRs)
               .fill(null)
               .map(() => (
                 <div class="contributor-card__stats-bar pending" />
