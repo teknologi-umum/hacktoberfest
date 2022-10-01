@@ -1,9 +1,4 @@
-import {
-  component$,
-  mutable,
-  useStore,
-  useStylesScoped$,
-} from "@builder.io/qwik";
+import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import { Contributor } from "~/models/contributor";
 import styles from "./contributor-card.css";
 
