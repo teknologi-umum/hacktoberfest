@@ -21,7 +21,7 @@ import { getContributorsList } from "~/services/list-contributors";
 import { getRepositoriesList } from "~/services/list-repositories";
 import { sortIssuesByDifficulty } from "~/services/sort-issues";
 import {
-  sortContributorByPRs,
+  sortAndTagContributorByPRs,
   SortedContributor,
 } from "~/services/sort-contributors";
 import styles from "~/styles/index.css?inline";
@@ -53,7 +53,7 @@ export default component$(() => {
     state.categories = getCategoriesList(repositories);
 
     const contributors = await getContributorsList();
-    const sortedByPRs = await sortContributorByPRs(contributors);
+    const sortedByPRs = await sortAndTagContributorByPRs(contributors);
     state.contributors = sortedByPRs;
   });
 
