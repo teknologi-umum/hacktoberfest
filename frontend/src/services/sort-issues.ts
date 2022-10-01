@@ -19,7 +19,11 @@ export const sortIssuesByDifficulty = $((repositories: Repository[]) => {
         }),
       }))
       .sort((a, b) => {
-        if (a.labels.every((label) => !label.name.toLowerCase().startsWith("difficulty: "))) {
+        if (
+          a.labels.every(
+            (label) => !label.name.toLowerCase().startsWith("difficulty: ")
+          )
+        ) {
           return 1;
         }
 
