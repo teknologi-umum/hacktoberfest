@@ -76,7 +76,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.hacktoberfest_backend.entrypoints=web,websecure"
-      - "traefik.http.routers.hacktoberfest_backend.rule=Host(`hacktoberfest.teknologiumum.com`) && Path(`/repo`)"
+      - "traefik.http.routers.hacktoberfest_backend.rule=Host(`hacktoberfest.teknologiumum.com`) && (Path(`/repo`) || Path(`/contrib`))"
       - "traefik.http.routers.hacktoberfest_backend.priority=2"
       - "traefik.http.routers.hacktoberfest_backend.tls.certresolver=tlsresolver"
       - "traefik.http.routers.hacktoberfest_backend.middlewares=hacktoberfest_backend-error,hacktoberfest_backend-header,hacktoberfest_backend-rate,hacktoberfest_backend-redirectscheme"
