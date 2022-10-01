@@ -21,6 +21,7 @@ services:
       - "traefik.http.services.hacktoberfest_frontend.loadbalancer.server.scheme=http"
       - "traefik.http.services.hacktoberfest_frontend.loadbalancer.healthcheck.interval=30s"
       - "traefik.http.services.hacktoberfest_frontend.loadbalancer.healthcheck.path=/"
+      - "traefik.http.middlewares.hacktoberfest_frontend-compress.compress=true"
       - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.status=500-599"
       - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.service=hacktoberfest_frontend@docker"
       - "traefik.http.middlewares.hacktoberfest_frontend-error.errors.query=/error"
