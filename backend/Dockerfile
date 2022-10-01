@@ -16,4 +16,6 @@ COPY --from=builder /app/target/release/hacktoberfest hacktoberfest
 
 EXPOSE 8080
 
+ENV CONFIG_PATH=target.yml
+
 CMD ["/app/hacktoberfest"]
