@@ -23,12 +23,12 @@ export default component$((props: Contributor) => {
         {Array(props.merged_pulls)
           .fill(null)
           .map(() => (
-            <div class="contributor-card__stats-merged" />
+            <div class="contributor-card__stats merged" />
           ))}
         {Array(props.pending_pulls)
           .fill(null)
           .map(() => (
-            <div class="contributor-card__stats-pending" />
+            <div class="contributor-card__stats pending" />
           ))}
       </div>
     </div>
