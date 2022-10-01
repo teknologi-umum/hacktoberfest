@@ -1,12 +1,12 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import { Contributor } from "~/models/contributor";
+import { SortedContributor } from "~/services/sort-contributors";
 import styles from "./contributor-card.css";
 
 export function formatPRUnit(count: number) {
   return count === 1 ? "PR" : "PRs";
 }
 
-export default component$((props: Contributor) => {
+export default component$((props: SortedContributor) => {
   const hasCompletedHacktoberfest = props.merged_pulls >= 4;
 
   useStylesScoped$(styles);
@@ -49,7 +49,7 @@ export default component$((props: Contributor) => {
         </div>
       </div>
 
-      {hasCompletedHacktoberfest && (
+      {hasCompletedHacktoberfest && !props.isTopContributor && (
         <p class="contributor-card__completed-description">
           Ayo. Terus kirimkan PR terbaikmu untuk jadi Top Contributor!
         </p>

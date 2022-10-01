@@ -20,7 +20,10 @@ import { getCategoriesList } from "~/services/list-categories";
 import { getContributorsList } from "~/services/list-contributors";
 import { getRepositoriesList } from "~/services/list-repositories";
 import { sortIssuesByDifficulty } from "~/services/sort-issues";
-import { sortContributorByPRs } from "~/services/sort-contributors";
+import {
+  sortContributorByPRs,
+  SortedContributor,
+} from "~/services/sort-contributors";
 import styles from "~/styles/index.css?inline";
 
 type State = {
@@ -28,7 +31,7 @@ type State = {
   categories: string[];
   repositories: Repository[];
   filteredRepositories: Repository[];
-  contributors: Contributor[];
+  contributors: SortedContributor[];
 };
 
 export default component$(() => {
@@ -105,8 +108,9 @@ export default component$(() => {
           <ContributorCard
             full_name={mutable(contrib.full_name)}
             profile_url={mutable(contrib.profile_url)}
-            merged_pulls={contrib.merged_pulls}
-            pending_pulls={contrib.pending_pulls}
+            merged_pulls={mutable(contrib.merged_pulls)}
+            pending_pulls={mutable(contrib.pending_pulls)}
+            isTopContributor={mutable(contrib.isTopContributor)}
           />
         ))}
       </div>
