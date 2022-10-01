@@ -1,7 +1,7 @@
 import { component$, mutable, useStylesScoped$ } from "@builder.io/qwik";
 import { Issue } from "~/models/issue";
 import { Label } from "../label";
-import styles from "./issue-card.css";
+import styles from "./issue-card.css?inline";
 
 type IssueProps = Pick<Issue, "html_url" | "title" | "labels">;
 

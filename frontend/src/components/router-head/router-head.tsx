@@ -50,7 +50,6 @@ export const RouterHead = component$(() => {
         content="https://hacktoberfest.teknologiumum.com/"
       />
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <link rel="canonical" href="https://hacktoberfest.teknologiumum.com/" />
 
       <meta property="og:title" content="Hacktoberfest Teknologi Umum" />
       <meta property="og:type" content="website" />

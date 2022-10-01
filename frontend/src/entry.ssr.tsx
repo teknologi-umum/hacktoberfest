@@ -25,5 +25,8 @@ export default function (opts: RenderToStreamOptions) {
         prefetchEvent: "always",
       },
     },
+    containerAttributes: {
+      lang: "en"
+    }
   });
 }

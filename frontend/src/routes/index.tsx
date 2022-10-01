@@ -17,7 +17,7 @@ import { getFilteredRepositories } from "~/services/filter-repositories";
 import { getCategoriesList } from "~/services/list-categories";
 import { getRepositoriesList } from "~/services/list-repositories";
 import { sortIssuesByDifficulty } from "~/services/sort-issues";
-import styles from "~/styles/index.css";
+import styles from "~/styles/index.css?inline";
 
 type State = {
   activeFilters: string[];

@@ -16,6 +16,7 @@
   margin: 0 auto;
   gap: 1rem;
   margin-bottom: 3.2rem;
+  min-height: 3.2rem;
 }
 
 .filters div {
