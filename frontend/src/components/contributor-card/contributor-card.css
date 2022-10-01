@@ -36,6 +36,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left: 0.5rem;
 }
 
 .contributor-card__stats-wrapper {
