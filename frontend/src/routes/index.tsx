@@ -12,11 +12,17 @@ import { Countdown } from "~/components/countdown";
 import { Header } from "~/components/header";
 import { Label } from "~/components/label";
 import { RepositoryCard } from "~/components/repository-card";
+import { ContributorCard } from "~/components/contributor-card";
 import { Repository } from "~/models/repository";
 import { getFilteredRepositories } from "~/services/filter-repositories";
 import { getCategoriesList } from "~/services/list-categories";
+import { getContributorsList } from "~/services/list-contributors";
 import { getRepositoriesList } from "~/services/list-repositories";
 import { sortIssuesByDifficulty } from "~/services/sort-issues";
+import {
+  sortAndTagContributorByPRs,
+  SortedContributor,
+} from "~/services/sort-contributors";
 import styles from "~/styles/index.css?inline";
 
 type State = {
@@ -24,6 +30,7 @@ type State = {
   categories: string[];
   repositories: Repository[];
   filteredRepositories: Repository[];
+  contributors: SortedContributor[];
 };
 
 export default component$(() => {
@@ -34,6 +41,7 @@ export default component$(() => {
     categories: [],
     repositories: [],
     filteredRepositories: [],
+    contributors: [],
   });
 
   useServerMount$(async () => {
@@ -42,6 +50,10 @@ export default component$(() => {
     state.repositories = sortedByDifficulty;
     state.filteredRepositories = sortedByDifficulty;
     state.categories = getCategoriesList(repositories);
+
+    const contributors = await getContributorsList();
+    const sortedByPRs = await sortAndTagContributorByPRs(contributors);
+    state.contributors = sortedByPRs;
   });
 
   useClientEffect$(async ({ track }) => {
@@ -77,7 +89,7 @@ export default component$(() => {
           );
         })}
       </div>
-      <div class="card-container">
+      <div class="repository-card-container">
         {state.filteredRepositories.map((repo) => (
           <RepositoryCard
             full_name={mutable(repo.full_name)}
@@ -85,6 +97,19 @@ export default component$(() => {
             description={mutable(repo.description)}
             languages={mutable(repo.languages)}
             issues={mutable(repo.issues)}
+          />
+        ))}
+      </div>
+
+      <p class="contributor-section-title">Top Contributors</p>
+      <div class="contributor-card-container">
+        {state.contributors.map((contrib) => (
+          <ContributorCard
+            full_name={mutable(contrib.full_name)}
+            profile_url={mutable(contrib.profile_url)}
+            merged_pulls={mutable(contrib.merged_pulls)}
+            pending_pulls={mutable(contrib.pending_pulls)}
+            isTopContributor={mutable(contrib.isTopContributor)}
           />
         ))}
       </div>
