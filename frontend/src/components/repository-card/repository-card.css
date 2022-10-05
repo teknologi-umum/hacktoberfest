@@ -52,6 +52,7 @@
 
 .repository-card__right-content {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
 }
