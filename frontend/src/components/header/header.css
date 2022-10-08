@@ -4,7 +4,6 @@
 }
 
 .header__text {
-  white-space: nowrap;
   text-align: center;
   font-size: clamp(2rem, 1rem + 4vw, 4.8rem);
   font-family: "Press Start 2P", sans-serif;
