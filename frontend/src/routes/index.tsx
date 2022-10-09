@@ -90,15 +90,17 @@ export default component$(() => {
         })}
       </div>
       <div class="repository-card-container">
-        {state.filteredRepositories.map((repo) => (
-          <RepositoryCard
-            full_name={mutable(repo.full_name)}
-            html_url={mutable(repo.html_url)}
-            description={mutable(repo.description)}
-            languages={mutable(repo.languages)}
-            issues={mutable(repo.issues)}
-          />
-        ))}
+        {state.filteredRepositories
+          .filter(({ issues }) => issues.length > 0)
+          .map((repo) => (
+            <RepositoryCard
+              full_name={mutable(repo.full_name)}
+              html_url={mutable(repo.html_url)}
+              description={mutable(repo.description)}
+              languages={mutable(repo.languages)}
+              issues={mutable(repo.issues)}
+            />
+          ))}
       </div>
 
       <p class="contributor-section-title">Top Contributors</p>
