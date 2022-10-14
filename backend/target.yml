@@ -1,4 +1,4 @@
-scrap_target:
+scrape_target:
   - username: teknologi-umum
     target_type: User
     ignore: false
@@ -9,5 +9,5 @@ scrap_target:
       - App_disabilitas_PPK_Mobile
     target_type: Repo
     ignore: false
-scrap_last: null
+scrape_last: null
 cached_map: {}

@@ -166,7 +166,7 @@ impl GithubErrorMetadata {
 pub enum GithubError {
     App(GithubErrorMetadata),
     StatusCode(http::StatusCode),
-    Requwest(reqwest::Error),
+    Request(reqwest::Error),
 }
 
 impl std::error::Error for GithubError {}
@@ -174,7 +174,7 @@ impl std::error::Error for GithubError {}
 impl fmt::Display for GithubError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::Requwest(err) => err.fmt(f),
+            Self::Request(err) => err.fmt(f),
             def => write!(f, "{}", def),
         }
     }
@@ -222,7 +222,7 @@ impl Github {
         T: DeserializeOwned + 'static,
     {
         match response.status() {
-            StatusCode::OK => response.json::<T>().await.map_err(GithubError::Requwest),
+            StatusCode::OK => response.json::<T>().await.map_err(GithubError::Request),
             StatusCode::FORBIDDEN => Err(GithubError::App(
                 GithubErrorMetadata::from_http_response(response).await,
             )),
@@ -239,7 +239,7 @@ impl Github {
             .get("https://api.github.com/rate_limit")
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
+            .map_err(GithubError::Request)?;
         Self::wrap_response(response).await
     }
 
@@ -250,14 +250,14 @@ impl Github {
     /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repositories-for-a-user
     pub async fn list_repository(
         &self,
-        user: String,
+        user: &String,
         per_page: u8,
     ) -> Result<Vec<Repository>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
-        let u = format!("https://api.github.com/users/{urlencoded_user}/repos");
+        let request_url = format!("https://api.github.com/users/{urlencoded_user}/repos");
         let response: Response = self
             .client
-            .get(u)
+            .get(request_url)
             // Figure out what to do with `per_page`? hard coded for now..
             .query(&[
                 ("type", "public"),
@@ -266,7 +266,7 @@ impl Github {
             ])
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
+            .map_err(GithubError::Request)?;
         Self::wrap_response(response).await
     }
 
@@ -278,16 +278,21 @@ impl Github {
     /// maximum limit on the documentation).
     ///
     /// API documentation: https://docs.github.com/en/rest/issues/issues#list-repository-issues
-    pub async fn list_issues(&self, user: String, repo: String) -> Result<Vec<Issue>, GithubError> {
+    pub async fn list_issues(
+        &self,
+        user: &String,
+        repo: &String,
+    ) -> Result<Vec<Issue>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/issues");
+        let request_url =
+            format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/issues");
         let response = self
             .client
-            .get(u)
+            .get(request_url)
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
+            .map_err(GithubError::Request)?;
         let resp = Self::wrap_response::<Vec<Issue>>(response).await;
         if let Ok(json_response) = resp {
             let clean_issues = json_response
@@ -306,25 +311,22 @@ impl Github {
     /// API documentation: https://docs.github.com/en/rest/repos/repos#list-repository-languages
     pub async fn list_languages(
         &self,
-        user: String,
-        repo: String,
+        user: &String,
+        repo: &String,
     ) -> Result<Vec<String>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u =
+        let request_url =
             format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/languages");
         let response = self
             .client
-            .get(u)
+            .get(request_url)
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
+            .map_err(GithubError::Request)?;
         let resp = Self::wrap_response::<HashMap<String, i64>>(response).await;
         if let Ok(json_response) = resp {
-            let mut language_set: Vec<(String, i64)> = json_response
-                .iter()
-                .map(|(key, value)| (key.into(), *value))
-                .collect();
+            let mut language_set: Vec<(String, i64)> = json_response.into_iter().collect();
             language_set.sort_by(|a, b| {
                 let (_, a_bytes) = a;
                 let (_, b_bytes) = b;
@@ -343,23 +345,23 @@ impl Github {
     /// API documentation: https://docs.github.com/en/rest/pulls/pulls#list-pull-requests
     pub async fn list_pull_request(
         &self,
-        user: String,
-        repo: String,
+        user: &String,
+        repo: &String,
     ) -> Result<Vec<PullRequest>, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls");
+        let request_url =
+            format!("https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls");
 
         let response = self
             .client
-            .get(u)
+            .get(request_url)
             .query(&[("per_page", "100"), ("state", "all")])
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
-        let resp = Self::wrap_response::<Vec<PullRequest>>(response).await;
+            .map_err(GithubError::Request)?;
 
-        resp
+        Self::wrap_response::<Vec<PullRequest>>(response).await
     }
 
     /// Lists details of a pull request by providing its number.
@@ -373,25 +375,24 @@ impl Github {
     /// API documentation: https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
     pub async fn pull_request(
         &self,
-        user: String,
-        repo: String,
+        user: &String,
+        repo: &String,
         number: i64,
     ) -> Result<PullRequest, GithubError> {
         let urlencoded_user = urlencoding::encode(&user[..]);
         let urlencoded_repo = urlencoding::encode(&repo[..]);
-        let u = format!(
+        let request_url = format!(
             "https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls/{number}"
         );
 
         let response = self
             .client
-            .get(u)
+            .get(request_url)
             .send()
             .await
-            .map_err(GithubError::Requwest)?;
-        let resp = Self::wrap_response::<PullRequest>(response).await;
+            .map_err(GithubError::Request)?;
 
-        resp
+        Self::wrap_response::<PullRequest>(response).await
     }
 }
 
@@ -450,7 +451,7 @@ mod tests {
     async fn test_list_repository() {
         let gh = gh_test();
         let repository = gh
-            .list_repository("teknologi-umum".to_owned(), 100)
+            .list_repository(&"teknologi-umum".into(), 100)
             .await
             .unwrap();
         assert!(!repository.is_empty(), "repository len 0");
@@ -460,7 +461,7 @@ mod tests {
     async fn test_list_repository_user() {
         let gh = gh_test();
         // or just change to anything
-        let repo = gh.list_repository("ii64".to_owned(), 100).await.unwrap();
+        let repo = gh.list_repository(&"ii64".into(), 100).await.unwrap();
 
         assert!(!repo.is_empty(), "repo len 0");
         println!("{:?}", repo);
@@ -470,7 +471,7 @@ mod tests {
     async fn test_list_issues() {
         let gh = gh_test();
         let issues = gh
-            .list_issues("teknologi-umum".to_owned(), "blog".into())
+            .list_issues(&"teknologi-umum".into(), &"blog".into())
             .await
             .unwrap();
         assert!(!issues.is_empty(), "issues len 0");
@@ -480,7 +481,7 @@ mod tests {
     async fn test_list_languages() {
         let gh = gh_test();
         let languages = gh
-            .list_languages("teknologi-umum".to_owned(), String::from("blog"))
+            .list_languages(&"teknologi-umum".into(), &"blog".into())
             .await
             .unwrap();
         assert!(!languages.is_empty(), "languages len 0");
@@ -491,7 +492,7 @@ mod tests {
     async fn test_list_pull_request() {
         let gh = gh_test();
         let pulls = gh
-            .list_pull_request("teknologi-umum".to_owned(), "pehape".to_owned())
+            .list_pull_request(&"teknologi-umum".into(), &"pehape".into())
             .await
             .unwrap();
         assert!(!pulls.is_empty(), "pulls len 0");
@@ -501,7 +502,7 @@ mod tests {
     async fn test_pull_request() {
         let gh = gh_test();
         let pull = gh
-            .pull_request("teknologi-umum".into(), "pehape".into(), 1)
+            .pull_request(&"teknologi-umum".into(), &"pehape".into(), 1)
             .await
             .unwrap();
 
