@@ -26,7 +26,11 @@ pub struct Rate {
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
         let mut rate = Rate {
-            limit: 0, remaining: 0, reset: 0, used: 0, resource: "".to_owned(),
+            limit: 0,
+            remaining: 0,
+            reset: 0,
+            used: 0,
+            resource: "".to_owned(),
         };
         let mut mpairs = vec![
             ("x-ratelimit-limit", &mut rate.limit),

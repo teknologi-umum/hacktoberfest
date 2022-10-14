@@ -1,8 +1,12 @@
-use std::{fs::File, io::{Read, Write}, collections::HashMap};
-use core::result::Result::Ok;
-use anyhow::{Result};
+use anyhow::Result;
 use chrono::DateTime;
+use core::result::Result::Ok;
 use serde::{Deserialize, Serialize};
+use std::{
+    collections::HashMap,
+    fs::File,
+    io::{Read, Write},
+};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub enum ScrapTargetType {
@@ -16,10 +20,11 @@ pub struct ScrapTarget {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub repo_names: Option<Vec<String>>,
     pub target_type: ScrapTargetType,
-    
+
     // ignore scrap target without removing them from config file
     pub ignore: bool,
 }
+
 impl ScrapTarget {
     pub fn user(username: String) -> Self {
         Self {
@@ -34,21 +39,20 @@ impl ScrapTarget {
             username,
             repo_names: Some(repo_names),
             target_type: ScrapTargetType::Repo,
-            ignore: false
+            ignore: false,
         }
     }
-    
+
     pub fn ignore(mut self) -> Self {
         self.ignore = true;
         self
     }
     pub fn target_links(&self) -> Vec<String> {
-        self.repo_names.as_ref()
+        self.repo_names
+            .as_ref()
             .unwrap_or(&Vec::with_capacity(0))
             .into_iter()
-            .map(|repo_name| {
-                format!("https://github.com/{}/{}", self.username, repo_name)
-            })
+            .map(|repo_name| format!("https://github.com/{}/{}", self.username, repo_name))
             .collect::<Vec<String>>()
     }
 }
@@ -60,13 +64,10 @@ pub struct Config {
     pub cached_map: HashMap<String, String>,
 }
 
-
 impl Config {
     pub fn default() -> Box<Self> {
         Box::new(Self {
-            scrap_target: vec![
-                ScrapTarget::user("teknologi-umum".to_owned()),
-            ],
+            scrap_target: vec![ScrapTarget::user("teknologi-umum".to_owned())],
             scrap_last: None,
             cached_map: HashMap::<String, String>::new(),
         })
@@ -77,9 +78,7 @@ impl Config {
     pub fn load_or_create(path: String) -> Result<Box<Self>> {
         match Self::from_file(&path) {
             Ok(parsed) => Ok(parsed),
-            Err(_) => {
-                Ok(Self::default().save_yaml_to(&path)?)
-            },
+            Err(_) => Ok(Self::default().save_yaml_to(&path)?),
         }
     }
     pub fn from_yaml(val: &String) -> Result<Self> {
@@ -93,7 +92,7 @@ impl Config {
                 let parsed = Self::from_yaml(&contents)?;
                 contents.clear();
                 Ok(Box::new(parsed))
-            },
+            }
             Err(e) => Err(e.into()),
         }
     }
@@ -124,10 +123,10 @@ mod tests {
 
     #[test]
     fn test_scrap_target_links() {
-        let targ = ScrapTarget::repos("somebody".to_owned(), vec![
-            "a".to_owned(),
-            "b".to_owned(),
-            "c".to_owned()]);
+        let targ = ScrapTarget::repos(
+            "somebody".to_owned(),
+            vec!["a".to_owned(), "b".to_owned(), "c".to_owned()],
+        );
         let links = targ.target_links();
         println!("{:?}", links);
     }
@@ -135,24 +134,29 @@ mod tests {
     #[test]
     fn test_serde_config() -> anyhow::Result<()> {
         let mut conf = Config::default();
-        conf.scrap_target.push(ScrapTarget::repos("somebody".to_owned(), vec![
-            "a".to_owned(),
-            "b".to_owned(),
-            "c".to_owned()]));
-        conf.scrap_target.push(ScrapTarget::user("somebody".to_owned()).ignore());
+        conf.scrap_target.push(ScrapTarget::repos(
+            "somebody".to_owned(),
+            vec!["a".to_owned(), "b".to_owned(), "c".to_owned()],
+        ));
+        conf.scrap_target
+            .push(ScrapTarget::user("somebody".to_owned()).ignore());
 
         let yaml_repr = conf.to_string()?;
         println!("# CHECK\n{yaml_repr}\n---");
         let conf2 = Config::from_yaml(&yaml_repr)?;
-        
-        assert!( conf.cached_map.eq(&conf2.cached_map) == true );
-        assert!( conf.scrap_last == conf2.scrap_last );
 
-        assert!( conf.scrap_target.len() == conf.scrap_target
-            .iter()
-            .zip(conf2.scrap_target.iter())
-            .filter(|&(a,b)| a == b)
-            .count() );
+        assert!(conf.cached_map.eq(&conf2.cached_map) == true);
+        assert!(conf.scrap_last == conf2.scrap_last);
+
+        assert!(
+            conf.scrap_target.len()
+                == conf
+                    .scrap_target
+                    .iter()
+                    .zip(conf2.scrap_target.iter())
+                    .filter(|&(a, b)| a == b)
+                    .count()
+        );
 
         Ok(())
     }

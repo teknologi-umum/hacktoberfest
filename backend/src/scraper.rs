@@ -52,14 +52,14 @@ pub enum PullRequestAuthorAssociation {
     Contributor,
     Member,
     Owner,
-    Unknown
+    Unknown,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct PullRequestDiff {
     pub additions: i64,
     pub deletions: i64,
-    pub changed_files: i64
+    pub changed_files: i64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -157,7 +157,9 @@ pub async fn scrape_repository_collection(
     })
 }
 
-pub async fn scrape_contributor_collection(pulls: &[PullRequest]) -> Result<Vec<ContributorCollection>, ScrapError> {
+pub async fn scrape_contributor_collection(
+    pulls: &[PullRequest],
+) -> Result<Vec<ContributorCollection>, ScrapError> {
     let mut contributor_map = HashMap::<String, ContributorCollection>::new();
 
     let first_october =
@@ -211,11 +213,16 @@ pub async fn scrape_contributor_collection(pulls: &[PullRequest]) -> Result<Vec<
     Ok(contributors)
 }
 
-pub async fn scrape_pull_request(github_client: &Github, username: String, repo: &Repository, number: i64) -> Result<PullRequestCollection, ScrapError> {
-    let pr: PullRequest = github_client.pull_request(username.clone(), repo.name.to_owned(), number)
+pub async fn scrape_pull_request(
+    github_client: &Github,
+    username: String,
+    repo: &Repository,
+    number: i64,
+) -> Result<PullRequestCollection, ScrapError> {
+    let pr: PullRequest = github_client
+        .pull_request(username.clone(), repo.name.to_owned(), number)
         .await
         .map_err(ScrapError::Github)?;
-
 
     let pull_request = PullRequestCollection {
         number: pr.number,
@@ -223,15 +230,13 @@ pub async fn scrape_pull_request(github_client: &Github, username: String, repo:
         title: pr.title,
         state: match pr.state.as_str() {
             "open" => PullRequestState::Open,
-            _ => PullRequestState::Closed
+            _ => PullRequestState::Closed,
         },
         mergeable_state: match pr.mergeable_state {
-            Some(state) => {
-                match state.as_str() {
-                    "clean" => PullRequestMergeableState::Clean,
-                    "dirty" => PullRequestMergeableState::Dirty,
-                    _ => PullRequestMergeableState::Unknown,
-                }
+            Some(state) => match state.as_str() {
+                "clean" => PullRequestMergeableState::Clean,
+                "dirty" => PullRequestMergeableState::Dirty,
+                _ => PullRequestMergeableState::Unknown,
             },
             None => PullRequestMergeableState::Unknown,
         },
@@ -241,7 +246,7 @@ pub async fn scrape_pull_request(github_client: &Github, username: String, repo:
         updated_at: pr.updated_at,
         merged_at: pr.merged_at.unwrap_or(DateTime::<Utc>::MIN_UTC),
         closed_at: pr.closed_at.unwrap_or(DateTime::<Utc>::MIN_UTC),
-        merged: pr.merged.unwrap_or(false) ,
+        merged: pr.merged.unwrap_or(false),
         draft: pr.draft.unwrap_or(false),
         requested_reviewers: match pr.requested_reviewers {
             Some(requested_reviewers) => requested_reviewers,
@@ -283,7 +288,8 @@ pub async fn scrape<'a>(
     let mut repository_collection: Vec<RepositoryCollection> = Vec::with_capacity(8);
     let mut contributor_map: HashMap<String, ContributorCollection> =
         HashMap::<String, ContributorCollection>::new();
-    let mut pull_request_collection: Vec<PullRequestCollection> = Vec::<PullRequestCollection>::new();
+    let mut pull_request_collection: Vec<PullRequestCollection> =
+        Vec::<PullRequestCollection>::new();
 
     for target in scrap_targets.into_iter().filter(|t| !t.ignore) {
         let username = target.username.clone();
@@ -364,19 +370,22 @@ pub async fn scrape<'a>(
             }
 
             for pull in pulls.iter() {
-                let first_october =
-                    DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 1)
-                                                  .and_hms(0, 0, 0), Utc);
-                let last_october =
-                    DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 31)
-                                                  .and_hms(23, 59, 59), Utc);
+                let first_october = DateTime::<Utc>::from_utc(
+                    NaiveDate::from_ymd(2022, 10, 1).and_hms(0, 0, 0),
+                    Utc,
+                );
+                let last_october = DateTime::<Utc>::from_utc(
+                    NaiveDate::from_ymd(2022, 10, 31).and_hms(23, 59, 59),
+                    Utc,
+                );
 
                 // Skip if pull request was created before 1 Oct 2022
                 if pull.created_at.lt(&first_october) || pull.created_at.gt(&last_october) {
                     continue;
                 }
 
-                match scrape_pull_request(github_client, username.clone(), repo, pull.number).await {
+                match scrape_pull_request(github_client, username.clone(), repo, pull.number).await
+                {
                     Ok(pr) => pull_request_collection.push(pr),
                     Err(ScrapError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
                     Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
@@ -406,7 +415,8 @@ pub async fn scrape<'a>(
             .insert("repo".to_owned(), repository_json_collection);
         _cfg.cached_map
             .insert("contributors".to_owned(), contributor_json_collection);
-        _cfg.cached_map.insert("pull_request".to_owned(), pull_request_json_collection);
+        _cfg.cached_map
+            .insert("pull_request".to_owned(), pull_request_json_collection);
     }
     Ok(())
 }
