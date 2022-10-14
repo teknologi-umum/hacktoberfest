@@ -3,8 +3,10 @@ use actix_web::web::Data;
 use actix_web::{App, HttpServer, Result};
 use backoff::exponential::ExponentialBackoff;
 use backoff::SystemClock;
+use chrono::{DateTime, NaiveDate, Utc};
 use clap::clap_app;
 use config::Config;
+use lazy_static::lazy_static;
 use scopeguard::defer;
 use scraper::run_scrape;
 use std::cell::RefCell;
@@ -18,6 +20,13 @@ mod handlers;
 mod scraper;
 
 use crate::handlers::*;
+
+lazy_static! {
+    pub static ref FIRST_OCTOBER: DateTime<Utc> =
+        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 1).and_hms(0, 0, 0), Utc);
+    pub static ref LAST_OCTOBER: DateTime<Utc> =
+        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 31).and_hms(23, 59, 59), Utc);
+}
 
 #[tokio::main]
 async fn main() {
@@ -39,29 +48,29 @@ impl RunContextInner {}
 pub struct RunContext<'a> {
     pub listen_address: String,
     pub num_workers: usize,
-    pub scrap_interval: u64,
+    pub scrape_interval: u64,
     pub github_token: String,
 
     pub config_path: String,
     pub config: RefCell<Box<Config>>,
 
-    pub scrap_per_page: u8,
+    pub scrape_per_page: u8,
 
     // placeholder
     inner: RefCell<Box<&'a RunContextInner>>,
 }
+
 impl<'a> RunContext<'a> {
     pub fn default() -> Self {
         Self {
             inner: RefCell::new(Box::new(&RunContextInner {})),
             listen_address: "127.0.0.1:8080".to_owned(),
             num_workers: 1,
-            scrap_interval: 3600,
+            scrape_interval: 3600,
             github_token: "".to_owned(),
             config_path: "/tmp/data.yml".to_owned(),
             config: RefCell::new(Config::default()),
-
-            scrap_per_page: 100,
+            scrape_per_page: 100,
         }
     }
 
@@ -78,10 +87,10 @@ async fn run<'a>() -> Result<()> {
         (about: "Hacktoberfest serverd")
         (@arg addr: --addr +takes_value "Listen address for HTTP server")
         (@arg wrk: --wrk +takes_value "Number of HTTP server workers")
-        (@arg scrap_interval: --("scrap_interval") +takes_value "Scrap interval in second")
+        (@arg scrape_interval: --("scrape_interval") +takes_value "Scrap interval in second")
         (@arg github_token: --("github_token") +takes_value "Github API Token")
-        (@arg config_path: --("config-path") +takes_value "Config path")
-        (@arg scrap_per_page: --("scrap_per_page") +takes_value "Github scrap per_page limit")
+        (@arg config_path: --("config_path") +takes_value "Config path")
+        (@arg scrape_per_page: --("scrape_per_page") +takes_value "Github scrap per_page limit")
     )
     .get_matches();
 
@@ -93,49 +102,49 @@ async fn run<'a>() -> Result<()> {
     let fallback_num_wrk = fallback_num_wrk_str
         .parse::<usize>()
         .unwrap_or(default_config.num_workers);
-    let fallback_scrap_interval_str =
-        env::var("SCRAP_INTERVAL").unwrap_or(default_config.scrap_interval.to_string());
-    let fallback_scrap_interval = fallback_scrap_interval_str
+    let fallback_scrape_interval_str =
+        env::var("scrape_interval").unwrap_or(default_config.scrape_interval.to_string());
+    let fallback_scrape_interval = fallback_scrape_interval_str
         .parse::<u64>()
-        .unwrap_or(default_config.scrap_interval);
+        .unwrap_or(default_config.scrape_interval);
     let fallback_github_token = env::var("GITHUB_TOKEN").unwrap_or(default_config.github_token);
     let fallback_config_path = env::var("CONFIG_PATH").unwrap_or(default_config.config_path);
-    let fallback_scrap_per_page_str =
-        env::var("SCRAP_PER_PAGE").unwrap_or(default_config.scrap_per_page.to_string());
-    let fallback_scrap_per_page = fallback_scrap_per_page_str
+    let fallback_scrape_per_page_str =
+        env::var("scrape_per_page").unwrap_or(default_config.scrape_per_page.to_string());
+    let fallback_scrape_per_page = fallback_scrape_per_page_str
         .parse::<u8>()
-        .unwrap_or(default_config.scrap_per_page);
+        .unwrap_or(default_config.scrape_per_page);
 
     let laddr: String = app.get_one("addr").unwrap_or(&fallback_laddr).to_string();
     let github_token: String = app
         .get_one("github_token")
         .unwrap_or(&fallback_github_token)
         .to_string();
-    let num_wrk: usize = *app.get_one("wrk").unwrap_or(&fallback_num_wrk);
-    let scrap_interval: u64 = *app
-        .get_one("scrap_interval")
-        .unwrap_or(&fallback_scrap_interval);
+    let num_workers: usize = *app.get_one("wrk").unwrap_or(&fallback_num_wrk);
+    let scrape_interval: u64 = *app
+        .get_one("scrape_interval")
+        .unwrap_or(&fallback_scrape_interval);
     let config_path = app
         .get_one("config_path")
         .unwrap_or(&fallback_config_path)
         .to_string();
-    let scrap_per_page: u8 = *app
-        .get_one("scrap_per_page")
-        .unwrap_or(&fallback_scrap_per_page);
+    let scrape_per_page: u8 = *app
+        .get_one("scrape_per_page")
+        .unwrap_or(&fallback_scrape_per_page);
 
-    let conf = RefCell::new(Config::load_or_create(config_path.clone()).unwrap());
+    let conf = RefCell::new(Config::load_or_create(&config_path).unwrap());
     let write_back_conf_path = config_path.clone();
 
     let env = Arc::new(Mutex::new(RunContext {
         inner: default_config.inner,
         listen_address: laddr.into(),
-        num_workers: num_wrk,
-        scrap_interval,
+        num_workers,
+        scrape_interval,
         config_path,
         github_token: github_token.clone(),
         config: RefCell::clone(&conf),
 
-        scrap_per_page: scrap_per_page,
+        scrape_per_page: scrape_per_page,
     }));
 
     let defer_ctx = env.clone();
@@ -146,7 +155,7 @@ async fn run<'a>() -> Result<()> {
         println!("> OK");
     }
 
-    let scrap_thread_ctx = env.clone();
+    let scrape_thread_ctx = env.clone();
     tokio::spawn(async move {
         let github_client = if github_token.is_empty() {
             Github::new()
@@ -159,13 +168,10 @@ async fn run<'a>() -> Result<()> {
 
         tokio::select! {
             _ret = run_scrape(
-                &scrap_thread_ctx,
+                &scrape_thread_ctx,
                 exponential_backoff_box,
-                // &scraper_map,
                 &github_client,
             ) => {
-                // Err("scrap thread stopped unexpectedly".to_owned())
-                // ret
                 println!("scrap thread stopped unexpectedly");
                 return
             }
@@ -174,16 +180,11 @@ async fn run<'a>() -> Result<()> {
                 return
             }
         }
-        // Ok(())
     });
 
     tokio::select! {
-        Err(e) = run_server(&env) => {
-            Err(e.into())
-        }
-        _ = tokio::signal::ctrl_c() => {
-            Ok(())
-        }
+        Err(e) = run_server(&env) => Err(e.into()),
+        _ = tokio::signal::ctrl_c() => Ok(())
     }
 }
 

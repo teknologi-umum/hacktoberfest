@@ -23,10 +23,7 @@ pub struct RepositoriesResponse {
     pub issues: Vec<Issue>,
 }
 
-async fn repositories(
-    ctx: Data<Mutex<RunContext<'_>>>,
-    _req: HttpRequest,
-) -> Result<HttpResponse> {
+async fn repositories(ctx: Data<Mutex<RunContext<'_>>>, _req: HttpRequest) -> Result<HttpResponse> {
     let unlocked_ctx = ctx.lock().unwrap();
     let unlocked_map = &unlocked_ctx.config.borrow().cached_map;
     let cached: String = match unlocked_map.get("repo") {

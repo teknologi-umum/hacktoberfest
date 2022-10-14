@@ -1,7 +1,7 @@
-use std::sync::Mutex;
-use actix_web::{http, HttpRequest, HttpResponse, Resource, web, Result};
-use actix_web::web::Data;
 use crate::RunContext;
+use actix_web::web::Data;
+use actix_web::{http, web, HttpRequest, HttpResponse, Resource, Result};
+use std::sync::Mutex;
 
 async fn pullrequest(ctx: Data<Mutex<RunContext<'_>>>, _req: HttpRequest) -> Result<HttpResponse> {
     let unlocked_ctx = ctx.lock().unwrap();
@@ -22,19 +22,21 @@ pub fn handler() -> Resource {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Mutex;
+    use crate::pullrequest::pullrequest;
+    use crate::RunContext;
     use actix_web::http;
     use actix_web::test::TestRequest;
     use actix_web::web::Data;
-    use crate::pullrequest::pullrequest;
-    use crate::RunContext;
+    use std::sync::Mutex;
 
     #[actix_web::test]
     async fn test_pullrequest() {
         let ctx = Data::new(Mutex::new(RunContext::default()));
         let req = TestRequest::default().to_http_request();
         let resp = pullrequest(ctx, req).await;
-        assert_eq!(resp.expect("an error occured").status(),
-        http::StatusCode::OK);
+        assert_eq!(
+            resp.expect("an error occured").status(),
+            http::StatusCode::OK
+        );
     }
 }
