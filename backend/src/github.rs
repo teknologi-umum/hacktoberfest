@@ -25,25 +25,21 @@ pub struct Rate {
 
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
-        let _rate = Rate {
-            limit: todo!(),
-            remaining: todo!(),
-            reset: todo!(),
-            used: todo!(),
-            resource: todo!(),
+        let mut rate = Rate {
+            limit: 0, remaining: 0, reset: 0, used: 0, resource: "".to_owned(),
         };
-        let mpairs = vec![
-            ("x-ratelimit-limit", &_rate.limit),
-            ("x-ratelimit-remaining", &_rate.remaining),
-            ("x-ratelimit-reset", &_rate.reset),
-            ("x-ratelimit-used", &_rate.used),
+        let mut mpairs = vec![
+            ("x-ratelimit-limit", &mut rate.limit),
+            ("x-ratelimit-remaining", &mut rate.remaining),
+            ("x-ratelimit-reset", &mut rate.reset),
+            ("x-ratelimit-used", &mut rate.used),
         ];
 
-        for (header_key, mut v_dst) in mpairs.iter() {
+        for (header_key, v_dst) in mpairs.iter_mut() {
             if let Some(hval_limit) = headers.get(*header_key) {
                 let val = hval_limit.to_str().unwrap_or("0");
                 if let Ok(v) = val.parse::<i64>() {
-                    *v_dst = v;
+                    **v_dst = v;
                 }
             }
         }
@@ -51,10 +47,10 @@ impl Rate {
         // parse resource
         if let Some(hval_resource) = headers.get("x-ratelimit-resource") {
             let val = hval_resource.to_str().unwrap_or("");
-            _rate.resource = val.into();
+            rate.resource = val.into();
         }
 
-        _rate
+        rate
     }
 }
 
