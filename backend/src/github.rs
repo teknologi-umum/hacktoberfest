@@ -25,25 +25,21 @@ pub struct Rate {
 
 impl Rate {
     fn from_headers(headers: &HeaderMap) -> Self {
-        let _rate = Rate {
-            limit: todo!(),
-            remaining: todo!(),
-            reset: todo!(),
-            used: todo!(),
-            resource: todo!(),
+        let mut rate = Rate {
+            limit: 0, remaining: 0, reset: 0, used: 0, resource: "".to_owned(),
         };
-        let mpairs = vec![
-            ("x-ratelimit-limit", &_rate.limit),
-            ("x-ratelimit-remaining", &_rate.remaining),
-            ("x-ratelimit-reset", &_rate.reset),
-            ("x-ratelimit-used", &_rate.used),
+        let mut mpairs = vec![
+            ("x-ratelimit-limit", &mut rate.limit),
+            ("x-ratelimit-remaining", &mut rate.remaining),
+            ("x-ratelimit-reset", &mut rate.reset),
+            ("x-ratelimit-used", &mut rate.used),
         ];
 
-        for (header_key, mut v_dst) in mpairs.iter() {
+        for (header_key, v_dst) in mpairs.iter_mut() {
             if let Some(hval_limit) = headers.get(*header_key) {
                 let val = hval_limit.to_str().unwrap_or("0");
                 if let Ok(v) = val.parse::<i64>() {
-                    *v_dst = v;
+                    **v_dst = v;
                 }
             }
         }
@@ -51,10 +47,10 @@ impl Rate {
         // parse resource
         if let Some(hval_resource) = headers.get("x-ratelimit-resource") {
             let val = hval_resource.to_str().unwrap_or("");
-            _rate.resource = val.into();
+            rate.resource = val.into();
         }
 
-        _rate
+        rate
     }
 }
 
@@ -111,10 +107,24 @@ pub struct Label {
 pub struct PullRequest {
     pub html_url: String,
     pub state: String,
+    pub title: String,
+    pub number: i64,
     pub locked: bool,
     pub user: User,
     pub merged_at: Option<DateTime<Utc>>,
+    pub closed_at: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub merged: Option<bool>,
+    pub mergeable_state: Option<String>,
+    pub draft: Option<bool>,
+    pub requested_reviewers: Option<Vec<User>>,
+    pub author_association: Option<String>,
+    pub comments: Option<i64>,
+    pub review_comments: Option<i64>,
+    pub additions: Option<i64>,
+    pub deletions: Option<i64>,
+    pub changed_files: Option<i64>,
 }
 
 pub struct Github {
@@ -347,6 +357,38 @@ impl Github {
 
         resp
     }
+
+    /// Lists details of a pull request by providing its number.
+    ///
+    /// The value of the mergeable attribute can be true, false, or null. If the value is null,
+    /// then GitHub has started a background job to compute the mergeability. After giving the job
+    /// time to complete, resubmit the request. When the job finishes, you will see a non-null
+    /// value for the mergeable attribute in the response. If mergeable is true, then
+    /// merge_commit_sha will be the SHA of the test merge commit.
+    ///
+    /// API documentation: https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
+    pub async fn pull_request(
+        &self,
+        user: String,
+        repo: String,
+        number: i64,
+    ) -> Result<PullRequest, GithubError> {
+        let urlencoded_user = urlencoding::encode(&user[..]);
+        let urlencoded_repo = urlencoding::encode(&repo[..]);
+        let u = format!(
+            "https://api.github.com/repos/{urlencoded_user}/{urlencoded_repo}/pulls/{number}"
+        );
+
+        let response = self
+            .client
+            .get(u)
+            .send()
+            .await
+            .map_err(GithubError::Requwest)?;
+        let resp = Self::wrap_response::<PullRequest>(response).await;
+
+        resp
+    }
 }
 
 #[cfg(test)]
@@ -407,7 +449,7 @@ mod tests {
             .list_repository("teknologi-umum".to_owned(), 100)
             .await
             .unwrap();
-        assert!(repository.len() > 0, "repository len 0");
+        assert!(!repository.is_empty(), "repository len 0");
     }
 
     #[tokio::test]
@@ -416,6 +458,7 @@ mod tests {
         // or just change to anything
         let repo = gh.list_repository("ii64".to_owned(), 100).await.unwrap();
 
+        assert!(!repo.is_empty(), "repo len 0");
         println!("{:?}", repo);
     }
 
@@ -426,7 +469,7 @@ mod tests {
             .list_issues("teknologi-umum".to_owned(), "blog".into())
             .await
             .unwrap();
-        assert!(issues.len() > 0, "issues len 0");
+        assert!(!issues.is_empty(), "issues len 0");
     }
 
     #[tokio::test]
@@ -436,7 +479,7 @@ mod tests {
             .list_languages("teknologi-umum".to_owned(), String::from("blog"))
             .await
             .unwrap();
-        assert!(languages.len() > 0, "languages len 0");
+        assert!(!languages.is_empty(), "languages len 0");
         assert_eq!(*languages.get(0).unwrap(), String::from("TypeScript"));
     }
 
@@ -447,6 +490,27 @@ mod tests {
             .list_pull_request("teknologi-umum".to_owned(), "pehape".to_owned())
             .await
             .unwrap();
-        assert!(pulls.len() > 0, "pulls len 0");
+        assert!(!pulls.is_empty(), "pulls len 0");
+    }
+
+    #[tokio::test]
+    async fn test_pull_request() {
+        let gh = gh_test();
+        let pull = gh
+            .pull_request("teknologi-umum".into(), "pehape".into(), 1)
+            .await
+            .unwrap();
+
+        assert_eq!(pull.number, 1);
+        assert_eq!(
+            pull.html_url,
+            "https://github.com/teknologi-umum/pehape/pull/1".to_owned()
+        );
+        assert_eq!(pull.title, "docs: initialize deadme".to_owned());
+        assert!(!pull.draft.unwrap(), "a draft, should not be a draft");
+        assert_eq!(pull.mergeable_state.unwrap(), "unknown".to_owned());
+        assert!(pull.merged.unwrap(), "not merged, should be merged");
+        assert!(!pull.locked, "should not be locked");
+        assert_eq!(pull.state, "closed".to_owned());
     }
 }

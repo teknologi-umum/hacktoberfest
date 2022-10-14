@@ -198,6 +198,7 @@ async fn run_server<'a>(env: &'a RRunContext<'static>) -> Result<(), io::Error> 
             .service(healthcheck::handler())
             .service(repositories::handler())
             .service(contributors::handler())
+            .service(pullrequest::handler())
     })
     .bind(local_env.listen_address.clone())?
     .workers(local_env.num_workers)
