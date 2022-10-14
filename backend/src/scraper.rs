@@ -292,7 +292,7 @@ pub async fn scrape<'a>(
         for repo in repository.iter() {
             // Skip if there isn't any "hacktoberfest" topic on the repository
             if !repo.topics.contains(&"hacktoberfest".into()) {
-                return Err(ScrapeError::InvalidRepo);
+                continue;
             }
 
             match scrape_repository_collection(github_client, &username, repo).await {
