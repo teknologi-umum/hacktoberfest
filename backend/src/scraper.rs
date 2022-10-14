@@ -249,7 +249,7 @@ pub async fn scrape_pull_request(github_client: &Github, username: String, repo:
         },
         author_association: match pr.author_association {
             Some(author_association) => match author_association.as_str() {
-                "FIRST_TIME_CONTRIBUTOR" => PullRequestAuthorAssociation::FirstTimeContributor
+                "FIRST_TIME_CONTRIBUTOR" => PullRequestAuthorAssociation::FirstTimeContributor,
                 "CONTRIBUTOR" => PullRequestAuthorAssociation::Contributor,
                 "MEMBER" => PullRequestAuthorAssociation::Member,
                 "OWNER" => PullRequestAuthorAssociation::Owner,
@@ -377,17 +377,9 @@ pub async fn scrape<'a>(
                 }
 
                 match scrape_pull_request(github_client, username.clone(), repo, pull.number).await {
-                    Ok(pr) => {
-                        pull_request_collection.push(pr);
-                    },
-                    Err(e) => {
-                        if let ScrapError::InvalidRepo = e {
-                            trace!("ignoring {}", repo.full_name);
-                            continue;
-                        }
-
-                        log::debug!("err {:?} -> {:?}", e, repo);
-                    }
+                    Ok(pr) => pull_request_collection.push(pr),
+                    Err(ScrapError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
+                    Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
                 };
             }
         }
