@@ -164,7 +164,7 @@ pub async fn scrape_contributor_collection(
         .iter()
         .filter(|pull| pull.created_at.ge(&FIRST_OCTOBER) && pull.created_at.le(&LAST_OCTOBER))
         .fold(HashMap::<String, ContributorCollection>::new(), |mut contributors_map, pull| {
-            let merged: bool = matches!(pull.merged_at, Some(date) if date.gt(&FIRST_OCTOBER) && date.lt(&LAST_OCTOBER));            
+            let merged: bool = matches!(pull.merged_at, Some(date) if date.gt(&FIRST_OCTOBER) && date.lt(&LAST_OCTOBER));
             match contributors_map.get_mut(&pull.user.login) {
                 Some(contributor) => {
                     if merged { contributor.merged_pulls += 1 }
@@ -176,8 +176,8 @@ pub async fn scrape_contributor_collection(
                         ContributorCollection {
                             full_name: pull.user.login.clone(),
                             profile_url: pull.user.html_url.clone(),
-                            pending_pulls: merged.into(),
-                            merged_pulls: (!merged).into(),
+                            pending_pulls: (!merged).into(),
+                            merged_pulls: merged.into(),
                         },
                     );
                 }
