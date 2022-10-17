@@ -2,48 +2,68 @@ import {
   $,
   component$,
   mutable,
-  useResource$,
   useStore,
   useStylesScoped$,
-  Resource,
+  useClientEffect$,
+  useServerMount$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Countdown } from "~/components/countdown";
 import { Header } from "~/components/header";
 import { Label } from "~/components/label";
 import { RepositoryCard } from "~/components/repository-card";
+import { ContributorCard } from "~/components/contributor-card";
 import { Repository } from "~/models/repository";
+import { getFilteredRepositories } from "~/services/filter-repositories";
+import { getCategoriesList } from "~/services/list-categories";
+import { getContributorsList } from "~/services/list-contributors";
 import { getRepositoriesList } from "~/services/list-repositories";
-import styles from "../styles/index.css";
-
-export const FAKE_FILTERS = [
-  "difficulty: easy",
-  "difficulty: medium",
-  "difficulty: hard",
-  "good first issue",
-  "help wanted",
-];
+import { sortIssuesByDifficulty } from "~/services/sort-issues";
+import {
+  sortAndTagContributorByPRs,
+  SortedContributor,
+} from "~/services/sort-contributors";
+import styles from "~/styles/index.css?inline";
 
 type State = {
   activeFilters: string[];
+  categories: string[];
+  repositories: Repository[];
+  filteredRepositories: Repository[];
+  contributors: SortedContributor[];
 };
 
 export default component$(() => {
   useStylesScoped$(styles);
 
-  const state = useStore<State>({ activeFilters: [] });
+  const state = useStore<State>({
+    activeFilters: [],
+    categories: [],
+    repositories: [],
+    filteredRepositories: [],
+    contributors: [],
+  });
 
-  const repositoriesResource = useResource$<Repository[]>(
-    async ({ track, cleanup }) => {
-      const abortController = new AbortController();
-      cleanup(() => abortController.abort());
-      track(state, "activeFilters");
-      return getRepositoriesList({
-        signal: abortController.signal,
-        filters: state.activeFilters,
-      });
-    }
-  );
+  useServerMount$(async () => {
+    const repositories = await getRepositoriesList();
+    const sortedByDifficulty = await sortIssuesByDifficulty(repositories);
+    state.repositories = sortedByDifficulty;
+    state.filteredRepositories = sortedByDifficulty;
+    state.categories = getCategoriesList(repositories);
+
+    const contributors = await getContributorsList();
+    const sortedByPRs = await sortAndTagContributorByPRs(contributors);
+    state.contributors = sortedByPRs;
+  });
+
+  useClientEffect$(async ({ track }) => {
+    const filters = track(state, "activeFilters");
+    const repositories = track(state, "repositories");
+    state.filteredRepositories = await getFilteredRepositories(
+      repositories,
+      filters
+    );
+  });
 
   const toggleFilter$ = $((filter: string) => {
     const isFilterActive = state.activeFilters.includes(filter);
@@ -60,46 +80,38 @@ export default component$(() => {
         Kesusahan nyari issue? Klik aja filter di bawah biar gampang nyarinya!
       </p>
       <div class="filters">
-        {FAKE_FILTERS.map((filter) => {
-          const isFilterActive = state.activeFilters.includes(filter);
+        {state.categories.map((category) => {
+          const isFilterActive = state.activeFilters.includes(category);
           return (
-            <div onClick$={() => toggleFilter$(filter)}>
-              <Label text={filter} isGlowing={mutable(isFilterActive)} />
+            <div onClick$={() => toggleFilter$(category)}>
+              <Label text={category} isGlowing={mutable(isFilterActive)} />
             </div>
           );
         })}
       </div>
-      <div class="card-container">
-        <Resource
-          value={repositoriesResource}
-          onPending={() => (
-            <span class="loading-text">Loading Repositories...</span>
-          )}
-          onRejected={(error) => (
-            <div>
-              <span class="error-text">Failed to load repositories</span>
-              <p class="error-message">{error.message}</p>
-            </div>
-          )}
-          onResolved={(repositoriesData: Repository[]) => (
-            <>
-              {repositoriesData.map((repo) => (
-                <RepositoryCard
-                  full_name={mutable(repo.full_name)}
-                  html_url={mutable(repo.html_url)}
-                  description={mutable(repo.description)}
-                  languages={mutable(repo.languages)}
-                  stars_count={mutable(repo.stars_count)}
-                  forks_count={mutable(repo.forks_count)}
-                  topics={mutable(repo.topics)}
-                  created_at={mutable(repo.created_at)}
-                  updated_at={mutable(repo.updated_at)}
-                  issues={mutable(repo.issues)}
-                />
-              ))}
-            </>
-          )}
-        />
+      <div class="repository-card-container">
+        {state.filteredRepositories.map((repo) => (
+          <RepositoryCard
+            full_name={mutable(repo.full_name)}
+            html_url={mutable(repo.html_url)}
+            description={mutable(repo.description)}
+            languages={mutable(repo.languages)}
+            issues={mutable(repo.issues)}
+          />
+        ))}
+      </div>
+
+      <p class="contributor-section-title">Top Contributors</p>
+      <div class="contributor-card-container">
+        {state.contributors.map((contrib) => (
+          <ContributorCard
+            full_name={mutable(contrib.full_name)}
+            profile_url={mutable(contrib.profile_url)}
+            merged_pulls={mutable(contrib.merged_pulls)}
+            pending_pulls={mutable(contrib.pending_pulls)}
+            isTopContributor={mutable(contrib.isTopContributor)}
+          />
+        ))}
       </div>
     </div>
   );

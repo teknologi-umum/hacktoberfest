@@ -16,7 +16,7 @@
   text-align: center;
   color: #efefef;
   font-family: "Cairo", sans-serif;
-  font-size: clamp(1rem, 0.5rem + 4vw, 2.2rem);
+  font-size: clamp(0.5rem, 0.25rem + 4vw, 2.2rem);
   opacity: 0.625;
   line-height: 1.25em;
 }

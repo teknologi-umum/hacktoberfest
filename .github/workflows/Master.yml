@@ -10,7 +10,7 @@ jobs:
     name: Backend CI
     runs-on: ubuntu-latest
     container: rust:1.63.0-bullseye
-    timeout-minutes: 10
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: ./backend
@@ -118,9 +118,9 @@ jobs:
           -i /root/.ssh/id_ed25519 
           -p ${{ secrets.SSH_PORT }} 
           -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 
-          'ssh hacktoberfest \'tmux -d -s cd "echo ${{ secrets.SSH_PASSWORD }} | sudo -S sh -c \"cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest &&
+          "ssh hacktoberfest 'echo ${{ secrets.SSH_PASSWORD }} | sudo -S bash -c '\"'cd ${{ secrets.SSH_WORKDIR }}/hacktoberfest && 
           docker compose up -d --build frontend backend &&
           docker container prune -f && 
           docker image prune -f && 
           docker builder prune -f &&
-          exit\""\''
+          exit'\"' ' "

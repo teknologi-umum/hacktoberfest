@@ -5,6 +5,17 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+opt-level = 3
+debug = 1
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'unwind'
+incremental = false
+codegen-units = 1
+rpath = false
+
 [dependencies]
 actix-web = "4"
 reqwest = { version = "0.11", features = ["json", "blocking"] }
@@ -19,5 +30,8 @@ urlencoding = "2.1.2"
 backoff = { version = "0.4.0", features = ["async-std"] }
 scopeguard = "1.1.0"
 log = { version = "0.4.17", features = ["std", "serde"] }
+serde_yaml = "0.9.13"
+anyhow = "1.0.65"
+env_logger = "0.9.1"
 prometheus = "0.13.2"
 mime = "0.3.16"

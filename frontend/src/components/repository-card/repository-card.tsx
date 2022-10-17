@@ -8,9 +8,13 @@ import type { Repository } from "~/models/repository";
 import { GithubIcon } from "../icons/ic_github";
 import { IssueCard } from "../issue-card";
 import { LANGUAGE_ICON_MAPPING } from "./language-icon-mapping";
-import styles from "./repository-card.css";
+import styles from "./repository-card.css?inline";
 
-type RepositoryProps = Repository;
+type RepositoryProps = Pick<
+  Repository,
+  "full_name" | "html_url" | "issues" | "description" | "languages"
+>;
+
 export default component$((props: RepositoryProps) => {
   const state = useStore({
     isIssueVisible: true,
@@ -38,7 +42,7 @@ export default component$((props: RepositoryProps) => {
         <div class="repository-card__right-content">
           {props.languages
             .sort()
-            .slice(0, 10)
+            .slice(0, 8)
             .map((language) => (
               <div class="repository-card__language">
                 {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}
@@ -49,10 +53,11 @@ export default component$((props: RepositoryProps) => {
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>
         {props.issues.map((issue) => (
           <IssueCard
-            {...issue}
             title={mutable(issue.title)}
             html_url={mutable(issue.html_url)}
-            labels={mutable(issue.labels)}
+            labels={mutable(
+              issue.labels.filter((label) => label.name !== "hacktoberfest")
+            )}
           />
         ))}
       </div>

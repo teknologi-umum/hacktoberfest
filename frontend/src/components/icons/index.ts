@@ -18,6 +18,7 @@ export * from "./ic_java";
 export * from "./ic_javascript";
 export * from "./ic_kotlin";
 export * from "./ic_mathematica";
+export * from "./ic_makefile";
 export * from "./ic_mint";
 export * from "./ic_ruby";
 export * from "./ic_rust";

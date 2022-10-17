@@ -1,0 +1,106 @@
+.contributor-card {
+  padding: 1rem;
+  gap: 1rem;
+  border: 0.2rem #efefef solid;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(1rem);
+  border-image: linear-gradient(to top right, #937dc2, #6f38c5) 30%;
+  box-shadow: 0 0 1rem rgba(156, 95, 236, 0.25);
+  transition: box-shadow ease-out 0.1s;
+  width: calc(50% - 1rem);
+}
+
+.contributor-card > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.contributor-card.completed {
+  border-image: linear-gradient(to top right, green, lightgreen) 30%;
+}
+
+.contributor-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 1.5rem rgba(168, 112, 241, 0.65);
+}
+
+.contributor-card__username {
+  color: #eee;
+  font-family: "Cairo", sans-serif;
+  text-decoration: none;
+  width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 0.5rem;
+}
+
+.contributor-card__stats-wrapper {
+  width: 100%;
+}
+
+.contributor-card__stats-bar {
+  font-family: "Cairo", sans-serif;
+  width: 100%;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.contributor-card__stats-bar.completed {
+  background-color: #377d71;
+}
+
+.contributor-card__stats-bar.merged {
+  background-color: #6f38c5;
+}
+
+.contributor-card__stats-bar.pending {
+  background-color: #937dc2;
+}
+
+.contributor-card__stats-bar {
+  height: 3rem;
+  width: 100%;
+  border-radius: 0.4rem;
+  position: relative;
+}
+
+.contributor-card__stats-detail {
+  font-family: "Cairo", sans-serif;
+  color: #eee;
+  font-size: 1.25rem;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 860px) {
+  .contributor-card > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media only screen and (max-width: 680px) {
+  .contributor-card {
+    width: 100%;
+  }
+}
+
+.contributor-card__completed-description {
+  font-family: "Cairo", sans-serif;
+  width: 100%;
+  color: white;
+  font-size: 1.25rem;
+}

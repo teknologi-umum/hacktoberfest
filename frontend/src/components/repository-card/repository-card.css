@@ -35,6 +35,7 @@
 .repository-card__title {
   font-size: 2.4rem;
   font-weight: 600;
+  word-break: break-all;
   text-decoration: none;
   color: #efefef;
   line-height: 1em;
@@ -52,6 +53,7 @@
 
 .repository-card__right-content {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
 }
