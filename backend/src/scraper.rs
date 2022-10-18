@@ -1,7 +1,7 @@
 use crate::config::ScrapeTargetType;
 use crate::github::{Github, Issue, Repository, User};
 use crate::github::{GithubError, PullRequest};
-use crate::handlers::{SCRAPE_COUNT_TOTAL, SCRAPE_REPO_COUNT_TOTAL, SCRAPE_HISTOGRAM_DUR_SECONDS};
+use crate::handlers::{SCRAPE_COUNT_TOTAL, SCRAPE_HISTOGRAM_DUR_SECONDS, SCRAPE_REPO_COUNT_TOTAL};
 use crate::{RunContext, FIRST_OCTOBER, LAST_OCTOBER};
 use chrono::prelude::Local;
 use chrono::{DateTime, Utc};
@@ -297,10 +297,14 @@ pub async fn scrape<'a>(
             if !repo.topics.contains(&"hacktoberfest".into()) {
                 continue;
             }
-            SCRAPE_REPO_COUNT_TOTAL.with_label_values(&[username, &repo.name]).inc();
-            let m_dur = SCRAPE_HISTOGRAM_DUR_SECONDS.with_label_values(&[username, &repo.name]).start_timer();
+            SCRAPE_REPO_COUNT_TOTAL
+                .with_label_values(&[username, &repo.name])
+                .inc();
+            let m_dur = SCRAPE_HISTOGRAM_DUR_SECONDS
+                .with_label_values(&[username, &repo.name])
+                .start_timer();
             {
-                defer! { 
+                defer! {
                     m_dur.stop_and_record();
                 }
 

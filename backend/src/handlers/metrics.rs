@@ -1,12 +1,14 @@
-use std::{sync::Mutex, collections::HashMap};
+use std::{collections::HashMap, sync::Mutex};
 
-use actix_web::{web::{Data, self}, Result, HttpResponse, Resource, http::header};
+use actix_web::{
+    http::header,
+    web::{self, Data},
+    HttpResponse, Resource, Result,
+};
 use lazy_static::lazy_static;
 use prometheus::{
-    TextEncoder, Encoder, IntCounterVec, IntGauge, HistogramVec,
-    register_int_counter_vec, opts,
-    register_int_gauge,
-    register_histogram_vec,
+    opts, register_histogram_vec, register_int_counter_vec, register_int_gauge, Encoder,
+    HistogramVec, IntCounterVec, IntGauge, TextEncoder,
 };
 
 use crate::RunContext;
@@ -23,12 +25,16 @@ lazy_static! {
     )
     .expect("Can't create a metric");
     pub static ref SCRAPE_REPO_COUNT_TOTAL: IntCounterVec = register_int_counter_vec!(
-        opts!("scrape_github_repo_count_total", "Scrape repository count total"),
+        opts!(
+            "scrape_github_repo_count_total",
+            "Scrape repository count total"
+        ),
         &["repo_username", "repo_name"],
     )
     .expect("Can't create a metric");
     pub static ref SCRAPE_HISTOGRAM_DUR_SECONDS: HistogramVec = register_histogram_vec!(
-        "scrape_github_time_seconds", "Scrape duration in seconds",
+        "scrape_github_time_seconds",
+        "Scrape duration in seconds",
         &["repo_username", "repo_name"],
         CUSTOM_BUCKETS.to_vec(),
     )
@@ -62,7 +68,9 @@ mod tests {
     #[actix_web::test]
     async fn test_metrics() {
         SCRAPE_COUNT_TOTAL.with_label_values(&[]).inc();
-        SCRAPE_REPO_COUNT_TOTAL.with_label_values(&["username", "repo"]).inc();
+        SCRAPE_REPO_COUNT_TOTAL
+            .with_label_values(&["username", "repo"])
+            .inc();
         println!("{:?}", prometheus::default_registry().gather());
     }
 }
