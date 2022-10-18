@@ -39,7 +39,6 @@ async fn metrics(_ctx: Data<Mutex<RunContext<'_>>>) -> Result<HttpResponse> {
     let encoder = TextEncoder::new();
     let mut buffer = vec![];
     let fam = &prometheus::gather();
-    // println!("{:?}", fam);
     encoder
         .encode(fam, &mut buffer)
         .expect("Failed to encode metrics");
