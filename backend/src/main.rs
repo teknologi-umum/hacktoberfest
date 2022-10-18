@@ -197,6 +197,7 @@ async fn run_server<'a>(env: &'a RRunContext<'static>) -> Result<(), io::Error> 
         App::new()
             .app_data(data.clone())
             .service(healthcheck::handler())
+            .service(metrics::handler())
             .service(repositories::handler())
             .service(contributors::handler())
             .service(pullrequest::handler())

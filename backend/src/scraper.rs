@@ -1,6 +1,7 @@
 use crate::config::ScrapeTargetType;
 use crate::github::{Github, Issue, Repository, User};
 use crate::github::{GithubError, PullRequest};
+use crate::handlers::{SCRAPE_COUNT_TOTAL, SCRAPE_HISTOGRAM_DUR_SECONDS, SCRAPE_REPO_COUNT_TOTAL};
 use crate::{RunContext, FIRST_OCTOBER, LAST_OCTOBER};
 use chrono::prelude::Local;
 use chrono::{DateTime, Utc};
@@ -260,6 +261,8 @@ pub async fn scrape<'a>(
         println!("scraper stop");
     }
 
+    SCRAPE_COUNT_TOTAL.with_label_values(&[]).inc();
+
     let scrape_targets = { ctx.lock().unwrap().config.borrow().scrape_target.clone() };
     let scrape_per_page_limit = { ctx.lock().unwrap().scrape_per_page };
     let mut repository_collection: Vec<RepositoryCollection> = Vec::new();
@@ -294,52 +297,63 @@ pub async fn scrape<'a>(
             if !repo.topics.contains(&"hacktoberfest".into()) {
                 continue;
             }
-
-            match scrape_repository_collection(github_client, &username, repo).await {
-                Ok(collection) => repository_collection.push(collection),
-                Err(ScrapeError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
-                Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
-            };
-
-            let pulls: Vec<PullRequest> = github_client
-                .list_pull_request(&username, &repo.name)
-                .await
-                .map_err(ScrapeError::Github)?;
-
-            match scrape_contributor_collection(&pulls).await {
-                Ok(collections) => {
-                    for contributor in collections.iter() {
-                        match contributor_map.get_mut(&contributor.full_name) {
-                            Some(c) => {
-                                c.merged_pulls += contributor.merged_pulls;
-                                c.pending_pulls += contributor.pending_pulls;
-                            }
-                            _ => {
-                                contributor_map.insert(
-                                    contributor.full_name.clone(),
-                                    ContributorCollection {
-                                        full_name: contributor.full_name.clone(),
-                                        profile_url: contributor.profile_url.clone(),
-                                        merged_pulls: contributor.merged_pulls,
-                                        pending_pulls: contributor.pending_pulls,
-                                    },
-                                );
-                            }
-                        }
-                    }
+            SCRAPE_REPO_COUNT_TOTAL
+                .with_label_values(&[username, &repo.name])
+                .inc();
+            let m_dur = SCRAPE_HISTOGRAM_DUR_SECONDS
+                .with_label_values(&[username, &repo.name])
+                .start_timer();
+            {
+                defer! {
+                    m_dur.stop_and_record();
                 }
-                Err(ScrapeError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
-                Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
-            };
 
-            for pull in pulls.iter().filter(|pull| {
-                pull.created_at.ge(&FIRST_OCTOBER) && pull.created_at.le(&LAST_OCTOBER)
-            }) {
-                match scrape_pull_request(github_client, &username, repo, pull.number).await {
-                    Ok(pr) => pull_request_collection.push(pr),
+                match scrape_repository_collection(github_client, &username, repo).await {
+                    Ok(collection) => repository_collection.push(collection),
                     Err(ScrapeError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
                     Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
                 };
+
+                let pulls: Vec<PullRequest> = github_client
+                    .list_pull_request(&username, &repo.name)
+                    .await
+                    .map_err(ScrapeError::Github)?;
+
+                match scrape_contributor_collection(&pulls).await {
+                    Ok(collections) => {
+                        for contributor in collections.iter() {
+                            match contributor_map.get_mut(&contributor.full_name) {
+                                Some(c) => {
+                                    c.merged_pulls += contributor.merged_pulls;
+                                    c.pending_pulls += contributor.pending_pulls;
+                                }
+                                _ => {
+                                    contributor_map.insert(
+                                        contributor.full_name.clone(),
+                                        ContributorCollection {
+                                            full_name: contributor.full_name.clone(),
+                                            profile_url: contributor.profile_url.clone(),
+                                            merged_pulls: contributor.merged_pulls,
+                                            pending_pulls: contributor.pending_pulls,
+                                        },
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    Err(ScrapeError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
+                    Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
+                };
+
+                for pull in pulls.iter().filter(|pull| {
+                    pull.created_at.ge(&FIRST_OCTOBER) && pull.created_at.le(&LAST_OCTOBER)
+                }) {
+                    match scrape_pull_request(github_client, &username, repo, pull.number).await {
+                        Ok(pr) => pull_request_collection.push(pr),
+                        Err(ScrapeError::InvalidRepo) => trace!("ignoring {}", repo.full_name),
+                        Err(e) => log::debug!("err {:?} -> {:?}", e, repo),
+                    };
+                }
             }
         }
     }
