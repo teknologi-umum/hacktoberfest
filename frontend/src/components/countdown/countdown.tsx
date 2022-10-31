@@ -11,6 +11,7 @@ import styles from "./countdown.css?inline";
 
 export const START_DATE = new Date("2022-10-01T00:00:00+07:00").getTime(); // 1st of October 2022 UTC+7
 export const END_DATE = new Date("2022-10-31T00:00:00+07:00").getTime(); // 31st of October 2022 UTC+7
+export const DAY = 24 * 60 * 60 * 1000; // a single day
 
 type CountdownState = {
   days: string;
@@ -35,7 +36,7 @@ export default component$(() => {
     const now = Date.now();
     const { days, hours, minutes, seconds } = intervalToDuration({
       start: new Date(),
-      end: now < START_DATE ? START_DATE : END_DATE,
+      end: now < START_DATE ? START_DATE : END_DATE + DAY, // it's inclusive so we need to add a day
     });
 
     // hide countdown when we're over with the event
@@ -76,7 +77,8 @@ export default component$(() => {
         </div>
       </div>
       <p class="countdown__title">
-        sampai Hacktoberfest {Date.now() < START_DATE ? "dimulai" : "berakhir"}
+        {Date.now() > END_DATE ? "sejak" : "sampai"} Hacktoberfest{" "}
+        {Date.now() < START_DATE ? "dimulai" : "berakhir"}
       </p>
     </div>
   );
