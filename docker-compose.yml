@@ -42,12 +42,12 @@ services:
     platform: linux/amd64
     healthcheck:
       test: curl -f http://localhost:3000/ || exit 1
-      interval: 15s
-      timeout: 10s
+      interval: 30s
+      timeout: 20s
       retries: 5
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -58,14 +58,14 @@ services:
           memory: 500MB
           cpus: '0.75'
         reservations:
-          memory: 100MB
+          memory: 10MB
           cpus: '0.10'
     networks:
       - hacktoberfest
     logging:
       driver: json-file
       options:
-        max-size: 100M
+        max-size: 10M
         max-file: 3
   backend:
     build: ./backend
@@ -73,7 +73,7 @@ services:
       <<: [ *defaults ]
       LISTEN_ADDR: 0.0.0.0:9090
       NUM_WORKERS: 1
-      SCRAPE_INTERVAL: 3600
+      SCRAPE_INTERVAL: 7200
       GITHUB_TOKEN: ${GITHUB_TOKEN}
     labels:
       - "traefik.enable=true"
@@ -106,8 +106,8 @@ services:
     platform: linux/amd64
     healthcheck:
       test: curl -f http://localhost:9090/healthz || exit 1
-      interval: 15s
-      timeout: 10s
+      interval: 30s
+      timeout: 20s
       retries: 5
     deploy:
       mode: replicated
@@ -119,17 +119,17 @@ services:
         window: 120s
       resources:
         limits:
-          memory: 1GB
-          cpus: '3'
-        reservations:
           memory: 500MB
+          cpus: '1'
+        reservations:
+          memory: 10MB
           cpus: '0.10'
     networks:
       - hacktoberfest
     logging:
       driver: json-file
       options:
-        max-size: 100M
+        max-size: 10M
         max-file: 3
 
 networks:
