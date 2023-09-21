@@ -23,9 +23,9 @@ use crate::handlers::*;
 
 lazy_static! {
     pub static ref FIRST_OCTOBER: DateTime<Utc> =
-        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 1).and_hms(0, 0, 0), Utc);
+        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2023, 10, 1).and_hms(0, 0, 0), Utc);
     pub static ref LAST_OCTOBER: DateTime<Utc> =
-        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 10, 31).and_hms(23, 59, 59), Utc);
+        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2023, 10, 31).and_hms(23, 59, 59), Utc);
 }
 
 #[tokio::main]

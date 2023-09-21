@@ -13,21 +13,17 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Secrets scan
-        run: >
-          apt update && apt install -y curl tar gzip &&
-          curl -LO https://github.com/trufflesecurity/trufflehog/releases/download/v3.12.0/trufflehog_3.12.0_linux_amd64.tar.gz &&
-          tar -zxf trufflehog_3.12.0_linux_amd64.tar.gz &&
-          mv -v trufflehog /usr/bin/trufflehog &&
-          rm -rf README.md LICENSE trufflehog_3.12.0_linux_amd64.tar.gz &&
-          trufflehog git --concurrency=$(nproc) --no-update --since-commit=$(echo $BASE_COMMIT) file://./
-        continue-on-error: true
-        env:
-          BASE_COMMIT: ${{ github.sha }}
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
       - name: Prerequisite
         run: apt-get install -y make
       - name: Build
@@ -46,21 +42,17 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Secrets scan
-        run: >
-          apt update && apt install -y curl tar gzip &&
-          curl -LO https://github.com/trufflesecurity/trufflehog/releases/download/v3.12.0/trufflehog_3.12.0_linux_amd64.tar.gz &&
-          tar -zxf trufflehog_3.12.0_linux_amd64.tar.gz &&
-          mv -v trufflehog /usr/bin/trufflehog &&
-          rm -rf README.md LICENSE trufflehog_3.12.0_linux_amd64.tar.gz &&
-          trufflehog git --concurrency=$(nproc) --no-update --since-commit=$(echo $BASE_COMMIT) file://./
-        continue-on-error: true
-        env:
-          BASE_COMMIT: ${{ github.sha }}
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
