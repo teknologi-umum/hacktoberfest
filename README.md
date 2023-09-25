@@ -21,7 +21,7 @@ pada proyek-proyek open source lokal.
 Source code untuk website hacktoberfest.teknologiumum.com berada dibawah lisensi Apache 2.0
 
 ```
-Copyright 2022 Teknologi Umum
+Copyright 2023 Teknologi Umum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

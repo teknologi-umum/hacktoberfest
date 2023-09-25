@@ -9,8 +9,8 @@ import {
 import { intervalToDuration } from "date-fns";
 import styles from "./countdown.css?inline";
 
-export const START_DATE = new Date("2022-10-01T00:00:00+07:00").getTime(); // 1st of October 2022 UTC+7
-export const END_DATE = new Date("2022-10-31T00:00:00+07:00").getTime(); // 31st of October 2022 UTC+7
+export const START_DATE = new Date("2023-10-01T00:00:00+07:00").getTime(); // 1st of October 2023 UTC+7
+export const END_DATE = new Date("2023-10-31T00:00:00+07:00").getTime(); // 31st of October 2023 UTC+7
 export const DAY = 24 * 60 * 60 * 1000; // a single day
 
 type CountdownState = {

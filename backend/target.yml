@@ -2,12 +2,8 @@ scrape_target:
   - username: teknologi-umum
     target_type: User
     ignore: false
-  - username: bryanwahyu
-    repo_names:
-      - app_disabilitasku_PPK_backend
-      - app_disabilitas_mata_ai
-      - App_disabilitas_PPK_Mobile
-    target_type: Repo
-    ignore: false
+  # Add an entry here if you want to add your user or repository
+  # into Teknologi Umum's Hacktoberfest website.
+
 scrape_last: null
 cached_map: {}
