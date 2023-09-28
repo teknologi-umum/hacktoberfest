@@ -7,7 +7,7 @@ jobs:
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
-    container: rust:1.63.0-bullseye
+    container: rust:1.72.1-bookworm
     timeout-minutes: 20
     defaults:
       run:
@@ -36,7 +36,7 @@ jobs:
   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
-    container: node:18.9.0-bullseye
+    container: node:20.7.0-bookworm
     timeout-minutes: 10
     defaults:
       run:
@@ -57,19 +57,8 @@ jobs:
         uses: pnpm/action-setup@v2.2.2
         id: pnpm-install
         with:
-          version: 7
+          version: latest
           run_install: false
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
       - name: Build
