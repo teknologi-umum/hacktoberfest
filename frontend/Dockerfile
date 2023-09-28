@@ -1,4 +1,4 @@
-FROM node:18.9.0-bullseye
+FROM node:20.7.0-bookworm
 
 RUN apt-get update && apt-get install -y curl && \
     apt-get clean autoclean && rm -rf /var/lib/apt/lists/*

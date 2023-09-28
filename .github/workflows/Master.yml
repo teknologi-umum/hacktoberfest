@@ -9,7 +9,7 @@ jobs:
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
-    container: rust:1.63.0-bullseye
+    container: rust:1.72.1-bookworm
     timeout-minutes: 20
     defaults:
       run:
@@ -38,7 +38,7 @@ jobs:
   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
-    container: node:18.9.0-bullseye
+    container: node:20.7.0-bookworm
     timeout-minutes: 10
     defaults:
       run:

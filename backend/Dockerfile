@@ -1,4 +1,4 @@
-FROM rust:1.63.0-bullseye AS builder
+FROM rust:1.72.1-bookworm AS builder
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY . .
 
 RUN cargo build --release
 
-FROM debian:bullseye AS runtime
+FROM debian:bookworm-slim AS runtime
 
 RUN apt-get update && apt-get install -y curl
 
