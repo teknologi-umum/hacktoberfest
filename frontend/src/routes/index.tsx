@@ -1,11 +1,10 @@
 import {
   $,
   component$,
-  mutable,
   useStore,
   useStylesScoped$,
-  useClientEffect$,
-  useServerMount$,
+  useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Countdown } from "~/components/countdown";
@@ -44,7 +43,7 @@ export default component$(() => {
     contributors: [],
   });
 
-  useServerMount$(async () => {
+  useTask$(async () => {
     const repositories = await getRepositoriesList();
     const sortedByDifficulty = await sortIssuesByDifficulty(repositories);
     state.repositories = sortedByDifficulty;
@@ -56,9 +55,9 @@ export default component$(() => {
     state.contributors = sortedByPRs;
   });
 
-  useClientEffect$(async ({ track }) => {
-    const filters = track(state, "activeFilters");
-    const repositories = track(state, "repositories");
+  useVisibleTask$(async ({ track }) => {
+    const filters = track(() => state.activeFilters);
+    const repositories = track(() => state.repositories);
     state.filteredRepositories = await getFilteredRepositories(
       repositories,
       filters
@@ -83,8 +82,8 @@ export default component$(() => {
         {state.categories.map((category) => {
           const isFilterActive = state.activeFilters.includes(category);
           return (
-            <div onClick$={() => toggleFilter$(category)}>
-              <Label text={category} isGlowing={mutable(isFilterActive)} />
+            <div key={category} onClick$={() => toggleFilter$(category)}>
+              <Label text={category} isGlowing={isFilterActive} />
             </div>
           );
         })}
@@ -92,11 +91,12 @@ export default component$(() => {
       <div class="repository-card-container">
         {state.filteredRepositories.map((repo) => (
           <RepositoryCard
-            full_name={mutable(repo.full_name)}
-            html_url={mutable(repo.html_url)}
-            description={mutable(repo.description)}
-            languages={mutable(repo.languages)}
-            issues={mutable(repo.issues)}
+            key={repo.html_url}
+            full_name={repo.full_name}
+            html_url={repo.html_url}
+            description={repo.description}
+            languages={repo.languages}
+            issues={repo.issues}
           />
         ))}
       </div>
@@ -105,11 +105,12 @@ export default component$(() => {
       <div class="contributor-card-container">
         {state.contributors.map((contrib) => (
           <ContributorCard
-            full_name={mutable(contrib.full_name)}
-            profile_url={mutable(contrib.profile_url)}
-            merged_pulls={mutable(contrib.merged_pulls)}
-            pending_pulls={mutable(contrib.pending_pulls)}
-            isTopContributor={mutable(contrib.isTopContributor)}
+            key={contrib.full_name}
+            full_name={contrib.full_name}
+            profile_url={contrib.profile_url}
+            merged_pulls={contrib.merged_pulls}
+            pending_pulls={contrib.pending_pulls}
+            isTopContributor={contrib.isTopContributor}
           />
         ))}
       </div>

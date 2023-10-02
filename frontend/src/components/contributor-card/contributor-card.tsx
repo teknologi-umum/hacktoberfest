@@ -1,6 +1,6 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import { SortedContributor } from "~/services/sort-contributors";
-import styles from "./contributor-card.css";
+import styles from "./contributor-card.css?inline";
 
 export function formatPRUnit(count: number) {
   return count === 1 ? "PR" : "PRs";
@@ -32,7 +32,7 @@ export default component$((props: SortedContributor) => {
     >
       <div>
         <a
-          className="contributor-card__username"
+          class="contributor-card__username"
           href={props.profile_url}
           rel="noopener noreferrer"
           target="__blank"
@@ -43,8 +43,9 @@ export default component$((props: SortedContributor) => {
           <div class="contributor-card__stats-bar">
             {Array(mergedPRs)
               .fill(null)
-              .map(() => (
+              .map((_, index) => (
                 <div
+                  key={index}
                   class={`contributor-card__stats-bar ${
                     hasCompletedHacktoberfest ? "completed" : "merged"
                   }`}
@@ -52,8 +53,8 @@ export default component$((props: SortedContributor) => {
               ))}
             {Array(pendingPRs)
               .fill(null)
-              .map(() => (
-                <div class="contributor-card__stats-bar pending" />
+              .map((_, index) => (
+                <div key={index} class="contributor-card__stats-bar pending" />
               ))}
           </div>
           <div class="contributor-card__stats-detail">

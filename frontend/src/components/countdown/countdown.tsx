@@ -1,10 +1,10 @@
 import {
   $,
   component$,
-  useClientEffect$,
-  useMount$,
   useStore,
   useStylesScoped$,
+  useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import { intervalToDuration } from "date-fns";
 import styles from "./countdown.css?inline";
@@ -52,9 +52,9 @@ export default component$(() => {
   });
 
   // set initial date value from the server so we don't get 0 as our initial value
-  useMount$(() => updateCountdown$());
+  useTask$(() => updateCountdown$());
 
-  useClientEffect$(() => {
+  useVisibleTask$(() => {
     const interval = setInterval(() => updateCountdown$(), 1000);
 
     return () => clearInterval(interval);
