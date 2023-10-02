@@ -25,7 +25,7 @@ export const sortAndTagContributorByPRs = $(
     const lastTopIndex = Math.min(TOP_CONTRIBUTOR_THRESHOLD, sorted.length);
     const lastTopContributor = sorted[lastTopIndex - 1];
 
-    let sortedAndTagged = sorted.map((contributor) => {
+    return sorted.map((contributor) => {
       const isTopContributor =
         contributor.merged_pulls + contributor.pending_pulls >=
           lastTopContributor.merged_pulls + lastTopContributor.pending_pulls &&
@@ -33,7 +33,5 @@ export const sortAndTagContributorByPRs = $(
 
       return { ...contributor, isTopContributor };
     });
-
-    return sortedAndTagged;
   }
 );

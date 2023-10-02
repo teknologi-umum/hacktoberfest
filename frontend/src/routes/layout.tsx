@@ -13,7 +13,7 @@ export default component$(() => {
       {Array(4)
         .fill(0)
         .map((_, i) => (
-          <div class={`line-${i}`} />
+          <div key={i} class={`line-${i}`} />
         ))}
       <main>
         <Slot />
