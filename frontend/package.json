@@ -22,25 +22,25 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@types/eslint": "8.4.6",
+    "@types/eslint": "8.44.3",
     "@types/node": "latest",
-    "@typescript-eslint/eslint-plugin": "5.38.1",
-    "@typescript-eslint/parser": "5.38.1",
-    "eslint": "8.24.0",
-    "eslint-plugin-qwik": "0.9.0",
-    "prettier": "2.7.1",
-    "typescript": "4.8.4",
-    "vite": "3.1.4",
-    "vite-tsconfig-paths": "3.5.1"
+    "@typescript-eslint/eslint-plugin": "6.7.3",
+    "@typescript-eslint/parser": "6.7.3",
+    "eslint": "8.50.0",
+    "eslint-plugin-qwik": "1.2.12",
+    "prettier": "3.0.3",
+    "typescript": "5.2.2",
+    "vite": "4.4.9",
+    "vite-tsconfig-paths": "4.2.1"
   },
   "dependencies": {
-    "@builder.io/qwik": "0.9.0",
-    "@builder.io/qwik-city": "0.0.111",
-    "@fontsource/cairo": "^4.5.10",
-    "@fontsource/press-start-2p": "^4.5.10",
-    "date-fns": "^2.29.3",
-    "node-fetch": "3.2.10",
-    "polka": "1.0.0-next.22",
-    "sirv": "^2.0.2"
+    "@builder.io/qwik": "1.2.12",
+    "@builder.io/qwik-city": "1.2.12",
+    "@fontsource/cairo": "^5.0.13",
+    "@fontsource/press-start-2p": "^5.0.13",
+    "date-fns": "^2.30.0",
+    "node-fetch": "3.3.2",
+    "polka": "1.0.0-next.23",
+    "sirv": "^2.0.3"
   }
 }
