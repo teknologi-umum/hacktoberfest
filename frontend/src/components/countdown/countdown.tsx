@@ -9,8 +9,16 @@ import {
 import { intervalToDuration } from "date-fns";
 import styles from "./countdown.css?inline";
 
-export const START_DATE = new Date("2023-10-01T00:00:00+07:00").getTime(); // 1st of October 2023 UTC+7
-export const END_DATE = new Date("2023-10-31T00:00:00+07:00").getTime(); // 31st of October 2023 UTC+7
+export const CURRENT_YEAR = new Date().getFullYear();
+
+export const START_DATE = new Date(
+  `1 Oct ${CURRENT_YEAR} 00:00:00+07:00`
+).getTime(); // in UTC+7
+
+export const END_DATE = new Date(
+  `1 Nov ${CURRENT_YEAR} 00:00:00+07:00`
+).getTime(); // in UTC+7
+
 export const DAY = 24 * 60 * 60 * 1000; // a single day
 
 type CountdownState = {
@@ -36,7 +44,7 @@ export default component$(() => {
     const now = Date.now();
     const { days, hours, minutes, seconds } = intervalToDuration({
       start: new Date(),
-      end: now < START_DATE ? START_DATE : END_DATE + DAY, // it's inclusive so we need to add a day
+      end: now < START_DATE ? START_DATE : END_DATE,
     });
 
     // hide countdown when we're over with the event
