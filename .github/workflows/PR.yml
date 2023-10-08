@@ -14,7 +14,7 @@ jobs:
         working-directory: ./backend
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: TruffleHog OSS
@@ -43,7 +43,7 @@ jobs:
         working-directory: ./frontend
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: TruffleHog OSS
@@ -54,10 +54,9 @@ jobs:
           head: HEAD
           extra_args: --debug --only-verified
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.2.2
-        id: pnpm-install
+        uses: pnpm/action-setup@v2
         with:
-          version: latest
+          version: 8
           run_install: false
       - name: Install dependencies
         run: pnpm install
