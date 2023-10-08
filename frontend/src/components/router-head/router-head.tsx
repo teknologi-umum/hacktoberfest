@@ -6,19 +6,33 @@ import { useDocumentHead, useLocation } from "@builder.io/qwik-city";
  */
 export const RouterHead = component$(() => {
   const head = useDocumentHead();
-  const loc = useLocation();
+  const location = useLocation();
 
   return (
     <>
       <title>{head.title}</title>
 
-      <link rel="canonical" href={loc.href} />
+      <link rel="canonical" href={location.url.href} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-      <link rel='shortcut icon' type="image/x-icon" href='favicon.ico' />
-      <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-      <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-      <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png" />
+      <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+      <link
+        rel="icon"
+        type="image/png"
+        href="favicon-32x32.png"
+        sizes="32x32"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        href="favicon-16x16.png"
+        sizes="16x16"
+      />
+      <link
+        rel="apple-touch-icon-precomposed"
+        sizes="152x152"
+        href="apple-touch-icon-152x152.png"
+      />
 
       <meta property="og:site_name" content="Teknologi Umum Hacktoberfest" />
       <meta name="twitter:site" content="hacktoberfest.teknologiumum.com" />
@@ -92,15 +106,15 @@ export const RouterHead = component$(() => {
       />
 
       {head.meta.map((m) => (
-        <meta {...m} />
+        <meta key={m.key} {...m} />
       ))}
 
       {head.links.map((l) => (
-        <link {...l} />
+        <link key={l.key} {...l} />
       ))}
 
       {head.styles.map((s) => (
-        <style {...s.props} dangerouslySetInnerHTML={s.style} />
+        <style key={s.key} {...s.props} dangerouslySetInnerHTML={s.style} />
       ))}
     </>
   );

@@ -1,9 +1,4 @@
-import {
-  component$,
-  mutable,
-  useStore,
-  useStylesScoped$,
-} from "@builder.io/qwik";
+import { component$, useStore, useStylesScoped$ } from "@builder.io/qwik";
 import type { Repository } from "~/models/repository";
 import { GithubIcon } from "../icons/ic_github";
 import { IssueCard } from "../issue-card";
@@ -44,7 +39,7 @@ export default component$((props: RepositoryProps) => {
             .sort()
             .slice(0, 8)
             .map((language) => (
-              <div class="repository-card__language">
+              <div key={language} class="repository-card__language">
                 {LANGUAGE_ICON_MAPPING[language.toLowerCase()]}
               </div>
             ))}
@@ -53,10 +48,11 @@ export default component$((props: RepositoryProps) => {
       <div class={`issues ${state.isIssueVisible ? "visible" : "invisible"}`}>
         {props.issues.map((issue) => (
           <IssueCard
-            title={mutable(issue.title)}
-            html_url={mutable(issue.html_url)}
-            labels={mutable(
-              issue.labels.filter((label) => label.name !== "hacktoberfest")
+            key={issue.html_url}
+            title={issue.title}
+            html_url={issue.html_url}
+            labels={issue.labels.filter(
+              (label) => label.name !== "hacktoberfest"
             )}
           />
         ))}

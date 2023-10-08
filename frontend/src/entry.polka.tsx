@@ -1,8 +1,9 @@
-import { qwikCity } from "@builder.io/qwik-city/middleware/node";
+import { createQwikCity } from "@builder.io/qwik-city/middleware/node";
 import polka from "polka";
 import sirv from "sirv";
 import { fileURLToPath } from "url";
 import { join } from "path";
+import qwikCityPlan from "@qwik-city-plan";
 import render from "./entry.ssr";
 
 // Directories where the static assets are located
@@ -11,7 +12,7 @@ const BUILD_DIR = join(DIST_DIR, "build");
 const ONE_YEAR = 1000 * 60 * 60 * 24 * 365; // 1 year
 
 // Create the Qwik City express middleware
-const { router, notFound } = qwikCity(render);
+const { router, notFound } = createQwikCity({ render, qwikCityPlan });
 
 // Create the express server
 // https://expressjs.com/
@@ -29,7 +30,5 @@ app.use(router);
 app.use(notFound);
 
 // Start the express server
-app.listen(3000, () => {
-  /* eslint-disable */
-  console.log(`http://localhost:3000/`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Qwik running on localhost:${PORT}`));
