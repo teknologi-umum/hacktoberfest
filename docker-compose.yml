@@ -72,3 +72,6 @@ services:
       options:
         max-size: 10M
         max-file: 3
+networks:
+  hacktoberfest:
+    driver: bridge
